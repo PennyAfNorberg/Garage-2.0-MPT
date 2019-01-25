@@ -41,7 +41,23 @@ namespace Garage_2._0_MPT.Models
 
             return View(await res.ToListAsync());
         }
-
+        [HttpPost]
+        public async Task<IActionResult> Index(string SearchString)
+        {
+            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower() == SearchString.ToLower())
+                .Select(x => new ParkedVehicle()
+                {
+                    VehicleTyp = x.VehicleTyp,
+                    RegNr = x.RegNr,
+                    VehicleColor = x.VehicleColor,
+                    VehicleModel = x.VehicleModel,
+                    VehicleBrand = x.VehicleBrand,
+                    NumberOfWheels = x.NumberOfWheels,
+                    ParkingTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2")
+                })
+                .ToArrayAsync();
+            return View("ParkedCars", reta);
+        }
         private string PrettyPrintTime(TimeSpan? timespan)
         { 
             if (timespan == null)

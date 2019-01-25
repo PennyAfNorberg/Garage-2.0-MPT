@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +30,9 @@ namespace Garage_2._0_MPT.Models
         public DateTime ParkInDate { get; set; }
         [Display(Name = "Leaving Time")]
         public DateTime? ParkOutDate { get; set; }
+        [NotMapped]
+        [Display(Name = "Time")]
+        public string ParkingTime { get; set; }
     }
 
     public enum VehicleTyp
