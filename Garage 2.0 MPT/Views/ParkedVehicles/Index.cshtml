@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_2._0_MPT.Models.ParkedVehicle>
+﻿@model IEnumerable<Garage_2._0_MPT.Models.IndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -31,10 +31,10 @@
                 @Html.DisplayNameFor(model => model.NumberOfWheels)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkInDate)
+                @Html.DisplayNameFor(model => model.ParkedTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkOutDate)
+                Price
             </th>
             <th></th>
         </tr>
@@ -61,10 +61,10 @@
                 @Html.DisplayFor(modelItem => item.NumberOfWheels)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkInDate)
+                @Html.DisplayFor(modelItem => item.ParkedTime) 
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkOutDate)
+                @Html.DisplayFor(modelItem => item.ParkedHours)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

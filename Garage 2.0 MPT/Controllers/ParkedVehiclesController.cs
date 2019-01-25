@@ -17,11 +17,51 @@ namespace Garage_2._0_MPT.Models
             _context = context;
         }
 
+        
+
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ParkedVehicle.ToListAsync());
+            var res = _context.ParkedVehicle.Select(
+                v => new IndexViewModel
+                {
+                    Id = v.Id,
+                    VehicleTyp = v.VehicleTyp,
+                    RegNr = v.RegNr,
+                    VehicleColor = v.VehicleColor,
+                    VehicleModel = v.VehicleModel,
+                    VehicleBrand = v.VehicleBrand,
+                    NumberOfWheels = v.NumberOfWheels,
+                    ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
+                    ParkedHours = (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours)
+                    //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
+                }
+                );
+
+
+            return View(await res.ToListAsync());
         }
+
+        private string PrettyPrintTime(TimeSpan? timespan)
+        { 
+            if (timespan == null)
+                throw new ArgumentNullException();
+
+            if (timespan.Value.Days > 0)
+            {
+                return $"{timespan.Value.Days} d " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
+            }
+            else
+            {
+
+                   return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}" ;
+
+            }
+
+   
+        }
+
+
 
         // GET: ParkedVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
