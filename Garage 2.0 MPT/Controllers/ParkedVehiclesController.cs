@@ -22,7 +22,7 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var res = _context.ParkedVehicle.Select(
+            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate==null).Select(
                 v => new IndexViewModel
                 {
                     Id = v.Id,
