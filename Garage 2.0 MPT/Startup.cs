@@ -57,7 +57,7 @@ namespace Garage_2._0_MPT
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            // ---
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
