@@ -41,6 +41,24 @@ namespace Garage_2._0_MPT.Models
             return View(parkedVehicle);
         }
 
+        // GET: ParkedVehicles/Receipt
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var parkedVehicle = await _context.ParkedVehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (parkedVehicle == null)
+            {
+                return NotFound();
+            }
+
+            return View(parkedVehicle);
+        }
+
         // GET: ParkedVehicles/Create
         public IActionResult Create()
         {
