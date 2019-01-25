@@ -19,7 +19,7 @@ namespace Garage_2._0_MPT.Models
         public string VehicleBrand { get; set; }
         public int NumberOfWheels { get; set; }
         public DateTime ParkInDate { get; set; }
-        public DateTime ParkOutDate { get; set; }
+        public DateTime? ParkOutDate { get; set; }
     }
 
     public enum VehicleTyp
