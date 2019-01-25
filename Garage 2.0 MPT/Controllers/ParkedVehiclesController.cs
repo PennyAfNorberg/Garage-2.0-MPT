@@ -172,6 +172,32 @@ namespace Garage_2._0_MPT.Models
             return View(parkedVehicle);
         }
 
+
+        public async Task<IActionResult> Check_Out(int? id)
+        {
+
+            var parkedVehicle= await _context.ParkedVehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
+            parkedVehicle.ParkOutDate = DateTime.Now;
+            try
+            {
+                _context.Update(parkedVehicle);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ParkedVehicleExists(parkedVehicle.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Receipt), new { id = id });
+        }
+
         // GET: ParkedVehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
