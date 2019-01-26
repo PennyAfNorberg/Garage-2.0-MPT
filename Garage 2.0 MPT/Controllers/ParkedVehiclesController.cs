@@ -44,7 +44,7 @@ namespace Garage_2._0_MPT.Models
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
         {
-            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower() == SearchString.ToLower())
+            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower() == SearchString.ToLower() && r.ParkOutDate == null)
                 .Select(x => new ParkedVehicle()
                 {
                     VehicleTyp = x.VehicleTyp,
