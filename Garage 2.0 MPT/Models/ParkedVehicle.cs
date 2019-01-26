@@ -14,6 +14,7 @@ namespace Garage_2._0_MPT.Models
         }
         public int Id { get; set; }
         [Display(Name = "Type")]
+        public int VehicleTypId { get; set; }
         public VehicleTyp VehicleTyp { get; set; }
         [Display(Name = "Reg Nr")]
         public string RegNr { get; set; }
@@ -30,7 +31,7 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "Leaving Time")]
         public DateTime? ParkOutDate { get; set; }
     }
-
+    /*
     public enum VehicleTyp
     {
         Car,
@@ -39,5 +40,14 @@ namespace Garage_2._0_MPT.Models
         Caravan,
         RV,
         Truck
+    }
+    */
+     public class VehicleTyp
+    {
+        public int VehicleTypId { get; set; }
+        public string Name { get; set; }
+        public int CostPerHour { get; set; }
+
+        public List<ParkedVehicle> ParkedVehicle { get; set; }
     }
 }
