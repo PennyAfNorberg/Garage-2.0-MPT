@@ -116,9 +116,17 @@ namespace Garage_2._0_MPT.Models
         }
 
         // GET: ParkedVehicles/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+
+            var res = new CreateViewModel
+            {
+                ParkedVehicle = new ParkedVehicle(),
+                vehicleTypes = await _context.VehicleTyp.ToListAsync()
+
+            };
+
+            return View(res);
         }
 
         // POST: ParkedVehicles/Create
