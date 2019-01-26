@@ -12,22 +12,22 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.VehicleTyp)
             </th>
-            <th>
+            <th onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"' >
                 @Html.DisplayNameFor(model => model.RegNr)
             </th>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.VehicleColor)
             </th>
-            <th>
+            <th  >
                 @Html.DisplayNameFor(model => model.VehicleModel)
             </th>
-            <th>
+            <th onclick="location.href='@Url.Action("SortBrand", "ParkedVehicles")'" >
                 @Html.DisplayNameFor(model => model.VehicleBrand)
             </th>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.NumberOfWheels)
             </th>
             <th>

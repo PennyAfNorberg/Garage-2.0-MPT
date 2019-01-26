@@ -17,12 +17,12 @@ namespace Garage_2._0_MPT.Models
             _context = context;
         }
 
-        
+
 
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate==null).Select(
+            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate == null).Select(
                 v => new IndexViewModel
                 {
                     Id = v.Id,
@@ -44,7 +44,7 @@ namespace Garage_2._0_MPT.Models
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
         {
-            
+
             var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower().Contains(SearchString.ToLower()) && r.ParkOutDate == null)
                 .Select(x => new ParkedVehicle()
                 {
@@ -60,7 +60,7 @@ namespace Garage_2._0_MPT.Models
             return View("ParkedCars", reta);
         }
         private string PrettyPrintTime(TimeSpan? timespan)
-        { 
+        {
             if (timespan == null)
                 throw new ArgumentNullException();
 
@@ -71,11 +71,11 @@ namespace Garage_2._0_MPT.Models
             else
             {
 
-                   return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}" ;
+                return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}";
 
             }
 
-   
+
         }
 
 
@@ -193,7 +193,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var parkedVehicle= await _context.ParkedVehicle
+            var parkedVehicle = await _context.ParkedVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
@@ -247,6 +247,16 @@ namespace Garage_2._0_MPT.Models
         private bool ParkedVehicleExists(int id)
         {
             return _context.ParkedVehicle.Any(e => e.Id == id);
+        }
+        public async Task<IActionResult> SortReg()
+        {
+            var reta = await _context.ParkedVehicle.OrderBy(o => o.RegNr).ToArrayAsync();        
+            return View("ParkedCars", reta);
+        }
+        public async Task<IActionResult> SortBrand()
+        {
+            var reta = await _context.ParkedVehicle.OrderBy(o => o.VehicleBrand).ToArrayAsync();
+            return View("ParkedCars", reta);
         }
     }
 }
