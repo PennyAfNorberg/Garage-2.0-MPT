@@ -32,7 +32,11 @@ namespace Garage_2._0_MPT.Models
         public DateTime? ParkOutDate { get; set; }
         [NotMapped]
         [Display(Name = "Time")]
-        public string ParkingTime { get; set; }
+        public string ParkedTime { get; set; }
+        [NotMapped]
+        [Display(Name = "Time")]
+        public int ParkedHours { get; set; }
+
     }
 
     public enum VehicleTyp

@@ -44,7 +44,8 @@ namespace Garage_2._0_MPT.Models
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
         {
-            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower() == SearchString.ToLower() && r.ParkOutDate == null)
+            
+            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower().Contains(SearchString.ToLower()) && r.ParkOutDate == null)
                 .Select(x => new ParkedVehicle()
                 {
                     VehicleTyp = x.VehicleTyp,
@@ -53,7 +54,7 @@ namespace Garage_2._0_MPT.Models
                     VehicleModel = x.VehicleModel,
                     VehicleBrand = x.VehicleBrand,
                     NumberOfWheels = x.NumberOfWheels,
-                    ParkingTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2")
+                    ParkedTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2")
                 })
                 .ToArrayAsync();
             return View("ParkedCars", reta);
