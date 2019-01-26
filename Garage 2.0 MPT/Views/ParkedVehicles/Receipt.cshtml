@@ -1,4 +1,4 @@
-﻿@model Garage_2._0_MPT.Models.ParkedVehicle
+﻿@model Garage_2._0_MPT.Models.IndexViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -47,25 +47,25 @@
             @Html.DisplayFor(model => model.NumberOfWheels)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ParkInDate)
+            @Html.DisplayNameFor(model => model.ParkedTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ParkInDate)
+            @Html.DisplayFor(model => model.ParkedTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ParkOutDate)
+            @Html.DisplayNameFor(model => model.ParkedHours)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ParkOutDate)
+            @Html.DisplayFor(model => model.ParkedHours)
         </dd>
         <dt class="col-sm-2">
-            <nl>Price</nl>
-            @*@Html.DisplayNameFor(model => model.ParkOutDate)*@
+            <!-- <nl>Price</nl>-->
+            @Html.DisplayNameFor(model => model.CostPerHour)
 
         </dt>
-        <dd class="col-sm-0">
-            @*@Html.DisplayFor(model => model.ParkOutDate)*@
-            <dt>100SEK</dt>
+        <dd class="col-sm-10">
+           @Html.DisplayFor(model => model.CostPerHour)
+       <!-- <dt>100SEK</dt> -->
         </dd>
     </dl>
 </div>
@@ -73,3 +73,4 @@
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+@*Kommentar*@

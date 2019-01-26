@@ -26,14 +26,15 @@ namespace Garage_2._0_MPT.Models
                 v => new IndexViewModel
                 {
                     Id = v.Id,
-                    VehicleTyp = v.VehicleTyp,
+                    VehicleTyp = v.VehicleTyp.Name,
                     RegNr = v.RegNr,
                     VehicleColor = v.VehicleColor,
                     VehicleModel = v.VehicleModel,
                     VehicleBrand = v.VehicleBrand,
                     NumberOfWheels = v.NumberOfWheels,
                     ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    ParkedHours = (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours)
+                    ParkedHours = v.VehicleTyp.CostPerHour*(int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    CostPerHour = v.VehicleTyp.CostPerHour
                     //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
                 }
                 );
@@ -90,7 +91,22 @@ namespace Garage_2._0_MPT.Models
             }
 
             var parkedVehicle = await _context.ParkedVehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Select(
+                v => new IndexViewModel
+                {
+                    Id = v.Id,
+                    VehicleTyp = v.VehicleTyp.Name,
+                    RegNr = v.RegNr,
+                    VehicleColor = v.VehicleColor,
+                    VehicleModel = v.VehicleModel,
+                    VehicleBrand = v.VehicleBrand,
+                    NumberOfWheels = v.NumberOfWheels,
+                    ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
+                    ParkedHours = v.VehicleTyp.CostPerHour * (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    CostPerHour= v.VehicleTyp.CostPerHour
+                    //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
+                }
+                ).FirstOrDefaultAsync(m => m.Id == id);
             if (parkedVehicle == null)
             {
                 return NotFound();
