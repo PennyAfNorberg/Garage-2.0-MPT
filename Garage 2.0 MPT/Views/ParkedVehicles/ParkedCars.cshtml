@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    
 }
 
 <h1>Parked Cars</h1>
@@ -12,19 +13,19 @@
 <table class="table">
     <thead>
         <tr>
-            <th >
+            <th id="s_typ" onclick='location.href="@Url.Action("SortTyp", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.VehicleTyp)
             </th>
-            <th onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"' >
+            <th id="s_reg" onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.RegNr)
             </th>
-            <th >
+            <th id="s_col" onclick='location.href="@Url.Action("SortCol", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.VehicleColor)
             </th>
-            <th  >
+            <th id="s_mod" onclick='location.href="@Url.Action("SortMod", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.VehicleModel)
             </th>
-            <th onclick="location.href='@Url.Action("SortBrand", "ParkedVehicles")'" >
+            <th id="s_bra" onclick='location.href="@Url.Action("SortBrand", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.VehicleBrand)
             </th>
             <th >

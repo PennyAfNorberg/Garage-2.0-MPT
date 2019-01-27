@@ -31,7 +31,7 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "Leaving Time")]
         public DateTime? ParkOutDate { get; set; }
         [NotMapped]
-        [Display(Name = "Time")]
+        [Display(Name = "Parked Time")]
         public string ParkedTime { get; set; }
         [NotMapped]
         [Display(Name = "Time")]

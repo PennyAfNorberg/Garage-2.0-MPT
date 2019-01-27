@@ -44,20 +44,8 @@ namespace Garage_2._0_MPT.Models
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
         {
-
-            var reta = await _context.ParkedVehicle.Where(r => r.RegNr.ToLower().Contains(SearchString.ToLower()) && r.ParkOutDate == null)
-                .Select(x => new ParkedVehicle()
-                {
-                    VehicleTyp = x.VehicleTyp,
-                    RegNr = x.RegNr,
-                    VehicleColor = x.VehicleColor,
-                    VehicleModel = x.VehicleModel,
-                    VehicleBrand = x.VehicleBrand,
-                    NumberOfWheels = x.NumberOfWheels,
-                    ParkedTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2")
-                })
-                .ToArrayAsync();
-            return View("ParkedCars", reta);
+            ParkedVehicle[] reta = await AddTimeAndPrice();           
+            return View("ParkedCars", reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
         private string PrettyPrintTime(TimeSpan? timespan)
         {
@@ -248,15 +236,52 @@ namespace Garage_2._0_MPT.Models
         {
             return _context.ParkedVehicle.Any(e => e.Id == id);
         }
+        public async Task<IActionResult> Test(string SearchString)
+        {
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta);
+        }
+
+        private async Task<ParkedVehicle[]> AddTimeAndPrice()
+        {          
+            return await _context.ParkedVehicle
+                            .Select(x => new ParkedVehicle()
+                            {
+                                VehicleTyp = x.VehicleTyp,
+                                RegNr = x.RegNr,
+                                VehicleColor = x.VehicleColor,
+                                VehicleModel = x.VehicleModel,
+                                VehicleBrand = x.VehicleBrand,
+                                NumberOfWheels = x.NumberOfWheels,
+                                ParkedTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2"),
+                                ParkedHours = 0
+                            })
+                            .ToArrayAsync();
+        }
+        public async Task<IActionResult> SortTyp()
+        {
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta.OrderBy(o => o.VehicleTyp));
+        }
         public async Task<IActionResult> SortReg()
         {
-            var reta = await _context.ParkedVehicle.OrderBy(o => o.RegNr).ToArrayAsync();        
-            return View("ParkedCars", reta);
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta.OrderBy(o => o.RegNr));
+        }
+        public async Task<IActionResult> SortCol()
+        {
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta.OrderBy(o => o.VehicleColor));
+        }
+        public async Task<IActionResult> SortMod()
+        {
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta.OrderBy(o => o.VehicleModel));
         }
         public async Task<IActionResult> SortBrand()
         {
-            var reta = await _context.ParkedVehicle.OrderBy(o => o.VehicleBrand).ToArrayAsync();
-            return View("ParkedCars", reta);
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            return View("ParkedCars", reta.OrderBy(o => o.VehicleBrand));
         }
     }
 }
