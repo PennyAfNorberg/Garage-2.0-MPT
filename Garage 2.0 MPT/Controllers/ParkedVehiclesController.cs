@@ -105,7 +105,7 @@ namespace Garage_2._0_MPT.Models
             var res = new CreateViewModel
             {
                 ParkedVehicle = new ParkedVehicle(),
-                vehicleTypes = await _context.VehicleTyp.ToListAsync()
+                vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync()
 
             };
 
