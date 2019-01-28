@@ -23,17 +23,17 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Index()
         {
             var res = _context.ParkedVehicle.Where(v => v.ParkOutDate==null).Select(
-                v => new IndexViewModel
+                v => new ParkedVehicle
                 {
                     Id = v.Id,
-                    VehicleTyp = v.VehicleTyp.Name,
+                    VehicleTyp = v.VehicleTyp,
                     RegNr = v.RegNr,
                     VehicleColor = v.VehicleColor,
                     VehicleModel = v.VehicleModel,
                     VehicleBrand = v.VehicleBrand,
                     NumberOfWheels = v.NumberOfWheels,
                     ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    ParkedHours = v.VehicleTyp.CostPerHour*(int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    Price = v.VehicleTyp.CostPerHour*(int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
                     CostPerHour = v.VehicleTyp.CostPerHour
                     //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
                 }
