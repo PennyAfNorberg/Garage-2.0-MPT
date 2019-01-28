@@ -22,25 +22,8 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate==null).Select(
-                v => new ParkedVehicle
-                {
-                    Id = v.Id,
-                    VehicleTyp = v.VehicleTyp,
-                    RegNr = v.RegNr,
-                    VehicleColor = v.VehicleColor,
-                    VehicleModel = v.VehicleModel,
-                    VehicleBrand = v.VehicleBrand,
-                    NumberOfWheels = v.NumberOfWheels,
-                    ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    Price = v.VehicleTyp.CostPerHour*(int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
-                    CostPerHour = v.VehicleTyp.CostPerHour
-                    //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
-                }
-                );
-
-
-            return View(await res.ToListAsync());
+            var res = await AddTimeAndPrice();
+            return View(res);
         }
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
@@ -48,6 +31,7 @@ namespace Garage_2._0_MPT.Models
             ParkedVehicle[] reta = await AddTimeAndPrice();           
             return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
+
         private string PrettyPrintTime(TimeSpan? timespan)
         {
             if (timespan == null)
@@ -95,23 +79,8 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var parkedVehicle = await _context.ParkedVehicle
-                .Select(
-                v => new ParkedVehicle
-                {
-                    Id = v.Id,
-                    VehicleTyp = v.VehicleTyp,
-                    RegNr = v.RegNr,
-                    VehicleColor = v.VehicleColor,
-                    VehicleModel = v.VehicleModel,
-                    VehicleBrand = v.VehicleBrand,
-                    NumberOfWheels = v.NumberOfWheels,
-                    ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    Price = v.VehicleTyp.CostPerHour * (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
-                    CostPerHour= v.VehicleTyp.CostPerHour
-                    //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
-                }
-                ).FirstOrDefaultAsync(m => m.Id == id);
+            var parkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id);
+
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -266,9 +235,9 @@ namespace Garage_2._0_MPT.Models
             return View("ParkedCars", reta);
         }
 
-        private async Task<ParkedVehicle[]> AddTimeAndPrice()
+        private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
         {          
-            return await _context.ParkedVehicle
+            return await _context.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
                             .Select(x => new ParkedVehicle()
                             {
                                 VehicleTyp = x.VehicleTyp,
