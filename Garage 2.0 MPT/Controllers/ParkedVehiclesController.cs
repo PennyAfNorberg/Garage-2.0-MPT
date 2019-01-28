@@ -46,7 +46,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Index(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View(reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
+            return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
         private string PrettyPrintTime(TimeSpan? timespan)
         {
@@ -286,27 +286,27 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> SortTyp()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleTyp));
+            return View("Index", reta.OrderBy(o => o.VehicleTyp.Name));
         }
         public async Task<IActionResult> SortReg()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.RegNr));
+            return View("Index", reta.OrderBy(o => o.RegNr));
         }
         public async Task<IActionResult> SortCol()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleColor));
+            return View("Index", reta.OrderBy(o => o.VehicleColor));
         }
         public async Task<IActionResult> SortMod()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleModel));
+            return View("Index", reta.OrderBy(o => o.VehicleModel));
         }
         public async Task<IActionResult> SortBrand()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleBrand));
+            return View("Index",reta.OrderBy(o => o.VehicleBrand));
         }
     }
 }
