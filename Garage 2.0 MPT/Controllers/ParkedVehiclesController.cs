@@ -25,6 +25,15 @@ namespace Garage_2._0_MPT.Models
             var res = await AddTimeAndPrice();
             return View(res);
         }
+
+
+        // GET: ParkedVehicles
+        public async Task<IActionResult> Overview()
+        {
+            var res = await AddTimeAndPrice();
+            return View(res);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index(string SearchString)
         {
@@ -240,6 +249,7 @@ namespace Garage_2._0_MPT.Models
             return await _context.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
                             .Select(x => new ParkedVehicle()
                             {
+                                Id=x.Id,
                                 VehicleTyp = x.VehicleTyp,
                                 RegNr = x.RegNr,
                                 VehicleColor = x.VehicleColor,
