@@ -37,7 +37,12 @@ namespace Garage_2._0_MPT.Models
         [NotMapped]
         [Display(Name = "Time")]
         public int ParkedHours { get; set; }
-
+        [NotMapped]
+        [Display(Name = "Price")]
+        public int Price { get; set; }
+        [NotMapped]
+        [Display(Name = "CostPerHour")]
+        public int CostPerHour { get; set; }
     }
     /*
     public enum VehicleTyp
