@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190125200721_TestLinked")]
+    partial class TestLinked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 1,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 27, 7, 57, 27, 241, DateTimeKind.Local).AddTicks(9452),
+                            ParkInDate = new DateTime(2019, 1, 24, 19, 4, 17, 432, DateTimeKind.Local).AddTicks(5442),
                             RegNr = "Rymdopera",
                             VehicleBrand = "Ferrari",
                             VehicleColor = "Green",
@@ -63,7 +65,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 2,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 7, 57, 27, 242, DateTimeKind.Local).AddTicks(406),
+                            ParkInDate = new DateTime(2019, 1, 23, 19, 4, 17, 432, DateTimeKind.Local).AddTicks(5905),
                             RegNr = "abc 123",
                             VehicleBrand = "Volvo",
                             VehicleColor = "Red",
@@ -74,8 +76,8 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 3,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 24, 7, 57, 27, 242, DateTimeKind.Local).AddTicks(415),
-                            ParkOutDate = new DateTime(2019, 1, 26, 6, 59, 46, 242, DateTimeKind.Local).AddTicks(419),
+                            ParkInDate = new DateTime(2019, 1, 21, 19, 4, 17, 432, DateTimeKind.Local).AddTicks(5912),
+                            ParkOutDate = new DateTime(2019, 1, 23, 18, 6, 36, 432, DateTimeKind.Local).AddTicks(5914),
                             RegNr = "acc 123",
                             VehicleBrand = "Saab",
                             VehicleColor = "Blue",

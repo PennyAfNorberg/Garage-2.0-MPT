@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190128085907_MigrateToLinked")]
+    partial class MigrateToLinked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,42 +48,6 @@ namespace Garage_2._0_MPT.Migrations
                     b.HasIndex("VehicleTypId");
 
                     b.ToTable("ParkedVehicle");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 27, 7, 57, 27, 241, DateTimeKind.Local).AddTicks(9452),
-                            RegNr = "Rymdopera",
-                            VehicleBrand = "Ferrari",
-                            VehicleColor = "Green",
-                            VehicleModel = "okänd",
-                            VehicleTypId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 7, 57, 27, 242, DateTimeKind.Local).AddTicks(406),
-                            RegNr = "abc 123",
-                            VehicleBrand = "Volvo",
-                            VehicleColor = "Red",
-                            VehicleModel = "okänd",
-                            VehicleTypId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 24, 7, 57, 27, 242, DateTimeKind.Local).AddTicks(415),
-                            ParkOutDate = new DateTime(2019, 1, 26, 6, 59, 46, 242, DateTimeKind.Local).AddTicks(419),
-                            RegNr = "acc 123",
-                            VehicleBrand = "Saab",
-                            VehicleColor = "Blue",
-                            VehicleModel = "okänd",
-                            VehicleTypId = 5
-                        });
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.VehicleTyp", b =>
