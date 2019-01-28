@@ -13,7 +13,8 @@
     <thead>
         <tr>
             <th id="s_typ" onclick='location.href="@Url.Action("SortTyp", "ParkedVehicles")"'>
-                @Html.DisplayNameFor(model => model.VehicleTyp.Name)
+
+                 @Html.DisplayNameFor(model => model.VehicleTyp.Name)<span><img class="updown" src="" /></span>
             </th>
             <th id="s_reg" onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"'>
                 @Html.DisplayNameFor(model => model.RegNr)
