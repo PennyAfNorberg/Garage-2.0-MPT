@@ -20,6 +20,7 @@ namespace Garage_2._0_MPT.Models
                 .HasOne(Pv => Pv.VehicleTyp)
                 .WithMany(c => c.ParkedVehicle)
                 .HasForeignKey(v => new { v.VehicleTypId });
+
             modelBuilder.Entity<VehicleTyp>()
                 .HasData(
                     new VehicleTyp { VehicleTypId = 1, Name = "Car", CostPerHour = 100 },
