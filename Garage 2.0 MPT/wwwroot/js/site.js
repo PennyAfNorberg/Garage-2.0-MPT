@@ -1,8 +1,9 @@
 ﻿$(document).ready(function () {
 
-    //$("#s_typ").click(function () {
-    //    location.href  = '@Url.Action("SortTyp", "ParkedVehicles"';
-    //});
+    $("#s_typ").click(function () {
+        
+
+    });
     //$("#s_reg").click(function () {
     //    location.href  = '@Url.Action("SortReg", "ParkedVehicles"';
     //});
