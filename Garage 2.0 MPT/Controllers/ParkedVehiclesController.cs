@@ -38,7 +38,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Index(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
+            return View("ParkedCars", reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
 
         private string PrettyPrintTime(TimeSpan? timespan)
@@ -241,7 +241,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Test(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta);
+            return View("Index", reta);
         }
 
         private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
