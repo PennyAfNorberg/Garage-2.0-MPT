@@ -46,7 +46,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Index(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View("ParkedCars", reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
+            return View(reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
         private string PrettyPrintTime(TimeSpan? timespan)
         {
@@ -97,17 +97,17 @@ namespace Garage_2._0_MPT.Models
 
             var parkedVehicle = await _context.ParkedVehicle
                 .Select(
-                v => new IndexViewModel
+                v => new ParkedVehicle
                 {
                     Id = v.Id,
-                    VehicleTyp = v.VehicleTyp.Name,
+                    VehicleTyp = v.VehicleTyp,
                     RegNr = v.RegNr,
                     VehicleColor = v.VehicleColor,
                     VehicleModel = v.VehicleModel,
                     VehicleBrand = v.VehicleBrand,
                     NumberOfWheels = v.NumberOfWheels,
                     ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    ParkedHours = v.VehicleTyp.CostPerHour * (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    Price = v.VehicleTyp.CostPerHour * (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
                     CostPerHour= v.VehicleTyp.CostPerHour
                     //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
                 }
@@ -277,8 +277,9 @@ namespace Garage_2._0_MPT.Models
                                 VehicleModel = x.VehicleModel,
                                 VehicleBrand = x.VehicleBrand,
                                 NumberOfWheels = x.NumberOfWheels,
-                                ParkedTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2"),
-                                ParkedHours = 0
+                                ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
+                                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
+                                CostPerHour = x.VehicleTyp.CostPerHour
                             })
                             .ToArrayAsync();
         }
