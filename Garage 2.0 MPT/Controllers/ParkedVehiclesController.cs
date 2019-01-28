@@ -262,6 +262,7 @@ namespace Garage_2._0_MPT.Models
                             })
                             .ToArrayAsync();
         }
+       
         public async Task<IActionResult> SortTyp()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
