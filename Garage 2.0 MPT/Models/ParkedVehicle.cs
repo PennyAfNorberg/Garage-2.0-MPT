@@ -36,6 +36,7 @@ namespace Garage_2._0_MPT.Models
         [NotMapped]
         [Display(Name = "Time")]
         public int ParkedHours { get; set; }
+     
 
     }
 
