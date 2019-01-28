@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
 
     $("#s_typ").click(function () {
-        
+        $("#i1").attr('src', 'arrow_up');
 
     });
     //$("#s_reg").click(function () {
