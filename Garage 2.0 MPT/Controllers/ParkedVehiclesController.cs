@@ -22,8 +22,8 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate == null).Select(
-                v => new IndexViewModel
+            var res = _context.ParkedVehicle.Where(v => v.ParkOutDate==null).Select(
+                v => new ParkedVehicle
                 {
                     Id = v.Id,
                     VehicleTyp = v.VehicleTyp,
@@ -33,7 +33,8 @@ namespace Garage_2._0_MPT.Models
                     VehicleBrand = v.VehicleBrand,
                     NumberOfWheels = v.NumberOfWheels,
                     ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
-                    ParkedHours = (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours)
+                    Price = v.VehicleTyp.CostPerHour*(int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    CostPerHour = v.VehicleTyp.CostPerHour
                     //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
                 }
                 );
@@ -45,7 +46,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Index(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View("ParkedCars", reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
+            return View(reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
         }
         private string PrettyPrintTime(TimeSpan? timespan)
         {
@@ -95,7 +96,22 @@ namespace Garage_2._0_MPT.Models
             }
 
             var parkedVehicle = await _context.ParkedVehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Select(
+                v => new ParkedVehicle
+                {
+                    Id = v.Id,
+                    VehicleTyp = v.VehicleTyp,
+                    RegNr = v.RegNr,
+                    VehicleColor = v.VehicleColor,
+                    VehicleModel = v.VehicleModel,
+                    VehicleBrand = v.VehicleBrand,
+                    NumberOfWheels = v.NumberOfWheels,
+                    ParkedTime = PrettyPrintTime(((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate),
+                    Price = v.VehicleTyp.CostPerHour * (int)Math.Ceiling((((v.ParkOutDate == null) ? DateTime.Now : v.ParkOutDate) - v.ParkInDate).Value.TotalHours),
+                    CostPerHour= v.VehicleTyp.CostPerHour
+                    //(v.ParkOutDate?DateTime.Now-v.ParkInDate).toString()
+                }
+                ).FirstOrDefaultAsync(m => m.Id == id);
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -105,9 +121,17 @@ namespace Garage_2._0_MPT.Models
         }
 
         // GET: ParkedVehicles/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+
+            var res = new CreateViewModel
+            {
+                ParkedVehicle = new ParkedVehicle(),
+                vehicleTypes = await _context.VehicleTyp.ToListAsync()
+
+            };
+
+            return View(res);
         }
 
         // POST: ParkedVehicles/Create
@@ -115,7 +139,7 @@ namespace Garage_2._0_MPT.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
         {
             if (ModelState.IsValid)
             {
@@ -147,7 +171,7 @@ namespace Garage_2._0_MPT.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
         {
             if (id != parkedVehicle.Id)
             {
@@ -253,8 +277,9 @@ namespace Garage_2._0_MPT.Models
                                 VehicleModel = x.VehicleModel,
                                 VehicleBrand = x.VehicleBrand,
                                 NumberOfWheels = x.NumberOfWheels,
-                                ParkedTime = (DateTime.Now - x.ParkInDate).TotalHours.ToString("N2"),
-                                ParkedHours = 0
+                                ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
+                                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
+                                CostPerHour = x.VehicleTyp.CostPerHour
                             })
                             .ToArrayAsync();
         }
