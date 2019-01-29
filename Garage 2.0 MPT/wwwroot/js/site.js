@@ -16,12 +16,7 @@
     $("#s_bra").click(function () {
         $("#i5").attr('src', '/img/arrow_down.png'); 
     });
-    //$("#seek_text01").click(function () {      
-    //    if (window.location.href != 'https://localhost:44314/') {
-    //        location.href = 'https://localhost:44314/';       
-    //    }      
-    //});
 
-    
+   
   
 });
