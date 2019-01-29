@@ -1,7 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-a.navbar-brand {
+navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -11,11 +11,17 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
-@media (min-width: 768px) {
+@media (max-width: 1024px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
@@ -30,7 +36,7 @@ html {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
-button.accept-policy {
+accept-policy {
   font-size: 1rem;
   line-height: inherit;
 }
@@ -62,4 +68,7 @@ header {
 .mylogga{
     height: 30px;
     margin-right:1em;
+}
+.updown{
+    height: 1em;
 }

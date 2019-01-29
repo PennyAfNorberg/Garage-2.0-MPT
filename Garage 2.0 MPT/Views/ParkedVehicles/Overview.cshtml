@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<Garage_2._0_MPT.Models.ParkedVehicle>
 
 @{
-    ViewData["Title"] = "Index";
-    
+    ViewData["Title"] = "Overviev";
 }
 
-<h1>Search Result Vehicles</h1>
+<h1>Parked Cars</h1>
 
 <p>
-    <a asp-action="Index">Return to all Vehicles</a>
+    <a asp-action="Create">Park</a>
 </p>
 <table class="table">
     <thead>
@@ -21,15 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.VehicleColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleModel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleBrand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfWheels)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ParkedTime)
@@ -53,16 +43,7 @@
                 @Html.DisplayFor(modelItem => item.VehicleColor)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VehicleModel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleBrand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfWheels)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkedTime)
+                @Html.DisplayFor(modelItem => item.ParkedTime) 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
