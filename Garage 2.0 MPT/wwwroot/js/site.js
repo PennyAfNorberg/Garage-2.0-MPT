@@ -16,19 +16,12 @@
     $("#s_bra").click(function () {
         $("#i5").attr('src', '/img/arrow_down.png'); 
     });
-    //$("#seek_text01").click(function () {
-    //    window.location = "https://localhost:44314/ParkedVehicles/Index";
-    //    $("#i5").attr('src', '/img/arrow_down.png');
-        
-    //});
-    //$("#seek01").on("submit", function (event) {
+    $("#seek_text01").click(function () {      
+        if (window.location.href != 'https://localhost:44314/') {
+            location.href = 'https://localhost:44314/';       
+        }      
+    });
 
-    //    var name = document.forms["seek01"];
-    //    if (name.tableData.text == "") {
-    //        alert("Test");
-    //        event.preventDefault();
-    //    }
-    //    alert("OK");
-    //});
+    
   
 });

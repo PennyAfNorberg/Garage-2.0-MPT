@@ -238,7 +238,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Test(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta);
+            return View("Index", reta);
         }
 
         private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
