@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Garage_2._0_MPT.Utils;
 
 namespace Garage_2._0_MPT.Models
 {
@@ -46,6 +47,8 @@ namespace Garage_2._0_MPT.Models
 
         [Display(Name = "Where")]
         public string Where { get; set; }
+        [NotMapped]
+        public Position Position { get; set; }
 
 
     }
