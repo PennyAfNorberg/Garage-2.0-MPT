@@ -113,7 +113,13 @@ namespace Garage_2._0_MPT.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
         {
-            if (ModelState.IsValid)
+            var reg_bussey = await _context.ParkedVehicle.Where(v=>v.RegNr == parkedVehicle.RegNr && v.ParkOutDate == null).ToListAsync();
+            if (reg_bussey.Count > 0)
+            {
+                // return RedirectToAction(nameof(Create));
+                return View("NotCreate");
+            }
+            if (ModelState.IsValid )
             {
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();

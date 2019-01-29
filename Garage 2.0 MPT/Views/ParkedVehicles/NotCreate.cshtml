@@ -1,0 +1,20 @@
+﻿@model Garage_2._0_MPT.Models.ParkedVehicle
+
+@{
+    ViewData["Title"] = "NotCreate";
+}
+
+<h1> The Vehicle(Reg nr) Was Alredy Parked In The Garage</h1>
+
+<h4> Park a Vehicle</h4>
+<hr />
+
+
+<div>
+    <a asp-action="Create">Try again</a><br />
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
