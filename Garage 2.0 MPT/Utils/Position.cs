@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Garage_2._0_MPT.Models;
 
 namespace Garage_2._0_MPT.Utils
 {
@@ -16,6 +17,30 @@ namespace Garage_2._0_MPT.Utils
         public int? SpaceLeftForFract { get; set; }
 
         public int? SpaceOccupide { get; set; }
+
+
+        public Position()
+        {
+
+        }
+        //A (3,1)
+        public Position(ParkedVehicle parkedVehicle)
+        {
+            var parts = parkedVehicle.Where.Split(" ");
+            var Z = (char)parts[0][0]-1+'A';
+            var parts2 = parts[1].Split(",");
+            var X = Int32.Parse(parts2[0].Substring(1));
+            var Y = Int32.Parse(parts2[1].Substring(0, parts2[1].Length - 2));
+
+            if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
+            {
+                SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+            }
+            else
+            {
+                SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+            }
+        }
 
         public override string ToString()
         {

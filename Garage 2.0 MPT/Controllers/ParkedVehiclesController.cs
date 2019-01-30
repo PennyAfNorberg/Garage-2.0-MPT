@@ -30,21 +30,42 @@ namespace Garage_2._0_MPT.Models
    
         }
 
+        private async Task InitPlots()
+        {
+            if (!loadedSeed)
+            {
+
+                var res = (await AddTimeAndPrice()).Where(p => p.Where == null);
+ 
+
+                foreach (var item in res)
+                {
+                    parkhouse.Park(item);
+                }
+
+    
+                try
+                {
+                    _context.UpdateRange(res);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    throw;
+                }
+                loadedSeed = true;
+            }
+        }
 
 
         // GET: ParkedVehicles
 
         public async Task<IActionResult> Index()
         {
+            await InitPlots();
             var res = await AddTimeAndPrice();
-            if (!loadedSeed)
-            {
-                foreach (var item in res)
-                {
-                    parkhouse.Park(item);
-                }
-                loadedSeed = true;
-            }
+
 
             return View(res);
         }
@@ -54,16 +75,10 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
+            await InitPlots();
             var res = await AddTimeAndPrice();
-              if (!loadedSeed)
-               {
-                   foreach (var item in res)
-                   {
-                       parkhouse.Park(item);
-                   }
-                   loadedSeed = true;
-               }
-               
+
+
             return View(res);
         }       
         
@@ -97,16 +112,10 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-
+            await InitPlots();
             var res = await AddTimeAndPrice();
-            if (!loadedSeed)
-            {
-                foreach (var item in res)
-                {
-                    parkhouse.Park(item);
-                }
-                loadedSeed = true;
-            }
+
+
 
             var parkedVehicle = res.FirstOrDefault(m => m.Id == id);
             //await RePark();
@@ -126,14 +135,9 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-
+            await InitPlots();
             var parkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id);
-           // await RePark();
-            if (parkedVehicle == null)
-            {
-                return NotFound();
-            }
-
+  
             return View(parkedVehicle);
         }
 
@@ -169,14 +173,14 @@ namespace Garage_2._0_MPT.Models
                 var res = await AddTimeAndPrice();
                 if (!loadedSeed)
                 {
-                    foreach (var item in res)
+                    foreach (var item in res.Where(p => p.Where == null))
                     {
                         parkhouse.Park(item);
                     }
                     loadedSeed = true;
                 }
-
-
+               
+   
                 if (parkhouse.Park(parkedVehicle))
                 {
                     _context.Add(parkedVehicle);
@@ -245,19 +249,9 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Check_Out(int? id)
         {
+            await InitPlots();
 
-            var res = await AddTimeAndPrice();
-            if (!loadedSeed)
-            {
-                foreach (var item in res)
-                {
-                    parkhouse.Park(item);
-                }
-                loadedSeed = true;
-            }
-
-
-            var parkedVehicle =  res.FirstOrDefault(m => m.Id == id);
+            var parkedVehicle = (await AddTimeAndPrice()).FirstOrDefault(m => m.Id == id);
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
             {
@@ -320,11 +314,11 @@ namespace Garage_2._0_MPT.Models
         }
 
         private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
-        {          
+        {
             return await _context.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
                             .Select(x => new ParkedVehicle()
                             {
-                                Id=x.Id,
+                                Id = x.Id,
                                 VehicleTyp = x.VehicleTyp,
                                 RegNr = x.RegNr,
                                 VehicleColor = x.VehicleColor,
@@ -334,7 +328,7 @@ namespace Garage_2._0_MPT.Models
                                 ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
                                 Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
                                 CostPerHour = x.VehicleTyp.CostPerHour,
-
+                                Where = x.Where
                             })
                             .ToArrayAsync();
         }

@@ -41,6 +41,9 @@ namespace Garage_2._0_MPT.Utils
             this.Twos = Twos.ToList();
             this.Threes = Threes.ToList();
             _context = context;
+            var res = _context.ParkedVehicle.Where(p => p.Where != null);
+            AddSavedVehicles(res);
+
             var firstPosition = new Position()
             {
                 Z = 1,
@@ -90,6 +93,38 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
+
+        public void AddSavedVehicles(IEnumerable<ParkedVehicle> parkedVehicles)
+        {
+            foreach (var parkedVehicle in parkedVehicles)
+            {
+                if(parkedVehicle.Where != null)
+                  AddSavedVehicle(parkedVehicle);
+            }
+
+            foreach(var item in NextFreeSpaces)
+            {
+                NextFreeSpaces[item.Key] = null;
+            }
+
+            var firstPosition = new Position()
+            {
+                Z = 1,
+                X = 1,
+                Y = 1 // 1,2,3 
+            };
+
+        }
+        //A (3,1)
+        private void AddSavedVehicle(ParkedVehicle parkedVehicle)
+        {
+            var temppos = new Position(parkedVehicle);
+            OccupidePositions.Add(temppos);
+            parkedVehicle.Position = temppos;
+            
+
+
+        }
 
         public bool Leave(ParkedVehicle parkedVehicle)
         {
