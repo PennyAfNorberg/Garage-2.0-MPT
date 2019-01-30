@@ -132,27 +132,32 @@ namespace Garage_2._0_MPT.Utils
                 parkedVehicle.Where = nextOne.ToString();
                 parkedVehicle.Position = nextOne;
                 NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
-                nextOne = new Position()
+                var nextOne2 = new Position()
                 {
                     Z = 1,
                     X = (parkedVehicle.VehicleTyp.SpacesNeeded == 3) ? Twos[0] + 1 : 1,
                     Y = 1
                 };
-                if (TestPos(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
+                if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
                 {
                     if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
                     {
-                        nextOne.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract+1) : ((blasko != null) ? (blasko.SpaceLeftForFract+1) : (parkedVehicle.VehicleTyp.SpacesNeeded+1));
+                        nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract+1) : ((blasko != null) ? (blasko.SpaceLeftForFract+1) : (parkedVehicle.VehicleTyp.SpacesNeeded+1));
                     }
                     else
                     {
-                        nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
                     }
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
                 }
                 else
                 {
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = GetNextSpot(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded);
+                    nextOne= GetNextSpot(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded);
+                    if(nextOne== null)
+                    {
+                        nextOne = GetNextSpot(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded);
+                    }
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
                 }
 
                 return true;
@@ -610,7 +615,7 @@ namespace Garage_2._0_MPT.Utils
                 };
             }
 
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -620,7 +625,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -642,7 +647,7 @@ namespace Garage_2._0_MPT.Utils
         {
             Position testPos = null;
             int SpacesNeeded = 1;
-            if ((position.Y < 2 && position.X < Twos[position.Z - 1]))
+            if ((position.Y < 2 && position.X <= Twos[position.Z - 1]))
             {
                 testPos = new Position()
                 {
@@ -694,7 +699,7 @@ namespace Garage_2._0_MPT.Utils
                 };
             }
 
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -704,7 +709,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -753,7 +758,7 @@ namespace Garage_2._0_MPT.Utils
                 testPos = new Position()
                 { // skip middle if one space vechile and 3 space parking lot.
                     Z = position.Z,
-                    X = Twos[position.Z]+1,
+                    X = position.X +1,
                     Y = 1,
                     SpaceOccupide = SpacesNeeded
                 };

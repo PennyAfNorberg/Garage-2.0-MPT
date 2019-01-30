@@ -124,7 +124,7 @@ namespace Garage_2._0_MPT.Models
             {
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = parkedVehicle.Id });
             }
             return View(parkedVehicle);
         }
