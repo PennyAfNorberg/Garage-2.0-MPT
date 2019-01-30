@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190130100731_dd")]
+    partial class dd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +56,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 1,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 29, 9, 12, 37, 740, DateTimeKind.Local).AddTicks(1721),
+                            ParkInDate = new DateTime(2019, 1, 29, 9, 4, 27, 95, DateTimeKind.Local).AddTicks(1734),
                             RegNr = "abc123",
                             VehicleBrand = "Ferrari",
                             VehicleColor = "Green",
@@ -65,7 +67,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 2,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 28, 9, 12, 37, 740, DateTimeKind.Local).AddTicks(2482),
+                            ParkInDate = new DateTime(2019, 1, 28, 9, 4, 27, 95, DateTimeKind.Local).AddTicks(2539),
                             RegNr = "abc234",
                             VehicleBrand = "Volvo",
                             VehicleColor = "Red",
@@ -76,8 +78,8 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 3,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 9, 12, 37, 740, DateTimeKind.Local).AddTicks(2495),
-                            ParkOutDate = new DateTime(2019, 1, 28, 8, 14, 56, 740, DateTimeKind.Local).AddTicks(2499),
+                            ParkInDate = new DateTime(2019, 1, 26, 9, 4, 27, 95, DateTimeKind.Local).AddTicks(2552),
+                            ParkOutDate = new DateTime(2019, 1, 28, 8, 6, 46, 95, DateTimeKind.Local).AddTicks(2555),
                             RegNr = "abc345",
                             VehicleBrand = "Saab",
                             VehicleColor = "Blue",
@@ -88,7 +90,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 4,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 29, 8, 12, 37, 740, DateTimeKind.Local).AddTicks(2562),
+                            ParkInDate = new DateTime(2019, 1, 29, 8, 4, 27, 95, DateTimeKind.Local).AddTicks(2608),
                             RegNr = "abc456",
                             VehicleBrand = "Ferrari",
                             VehicleColor = "Green",
@@ -99,7 +101,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 5,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 28, 8, 12, 37, 740, DateTimeKind.Local).AddTicks(2568),
+                            ParkInDate = new DateTime(2019, 1, 28, 8, 4, 27, 95, DateTimeKind.Local).AddTicks(2615),
                             RegNr = "abc567",
                             VehicleBrand = "Volvo",
                             VehicleColor = "Red",
@@ -110,7 +112,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 6,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 9, 12, 37, 740, DateTimeKind.Local).AddTicks(2572),
+                            ParkInDate = new DateTime(2019, 1, 26, 9, 4, 27, 95, DateTimeKind.Local).AddTicks(2684),
                             RegNr = "abc678",
                             VehicleBrand = "Saab",
                             VehicleColor = "Black",
@@ -121,7 +123,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 7,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 29, 9, 12, 36, 740, DateTimeKind.Local).AddTicks(2578),
+                            ParkInDate = new DateTime(2019, 1, 29, 9, 4, 26, 95, DateTimeKind.Local).AddTicks(2691),
                             RegNr = "Rymdopera",
                             VehicleBrand = "Ferrari",
                             VehicleColor = "Green",
@@ -132,7 +134,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 8,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 28, 9, 12, 35, 740, DateTimeKind.Local).AddTicks(2585),
+                            ParkInDate = new DateTime(2019, 1, 28, 9, 4, 25, 95, DateTimeKind.Local).AddTicks(2698),
                             RegNr = "abc987",
                             VehicleBrand = "Volvo",
                             VehicleColor = "Red",
@@ -143,7 +145,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 9,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 9, 12, 34, 740, DateTimeKind.Local).AddTicks(2591),
+                            ParkInDate = new DateTime(2019, 1, 26, 9, 4, 24, 95, DateTimeKind.Local).AddTicks(2704),
                             RegNr = "Biffen",
                             VehicleBrand = "Bmv",
                             VehicleColor = "Black",
@@ -174,42 +176,42 @@ namespace Garage_2._0_MPT.Migrations
                             VehicleTypId = 1,
                             CostPerHour = 100,
                             Name = "Car",
-                            SpacesNeeded = 1
+                            SpacesNeeded = 0
                         },
                         new
                         {
                             VehicleTypId = 2,
                             CostPerHour = 300,
                             Name = "Bus",
-                            SpacesNeeded = 3
+                            SpacesNeeded = 0
                         },
                         new
                         {
                             VehicleTypId = 3,
                             CostPerHour = 50,
                             Name = "Motorbike",
-                            SpacesNeeded = -3
+                            SpacesNeeded = 0
                         },
                         new
                         {
                             VehicleTypId = 4,
                             CostPerHour = 150,
                             Name = "Caravan",
-                            SpacesNeeded = 1
+                            SpacesNeeded = 0
                         },
                         new
                         {
                             VehicleTypId = 5,
                             CostPerHour = 200,
                             Name = "RV",
-                            SpacesNeeded = 2
+                            SpacesNeeded = 0
                         },
                         new
                         {
                             VehicleTypId = 6,
                             CostPerHour = 200,
                             Name = "Truck",
-                            SpacesNeeded = 2
+                            SpacesNeeded = 0
                         });
                 });
 
