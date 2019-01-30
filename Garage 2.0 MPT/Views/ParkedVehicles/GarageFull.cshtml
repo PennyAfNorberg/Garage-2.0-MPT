@@ -1,10 +1,11 @@
-﻿@model Garage_2._0_MPT.Models.ParkedVehicle
+﻿@model Garage_2._0_MPT.Models.SingelViewModel
 
 @{
     ViewData["Title"] = "Full";
 }
 
 Garage is full!
+@Model.ParkedVehicle.RegNr;
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

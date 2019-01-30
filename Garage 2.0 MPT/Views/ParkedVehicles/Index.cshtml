@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_2._0_MPT.Models.ParkedVehicle>
+﻿@model Garage_2._0_MPT.Models.ListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -12,39 +12,39 @@
 <table class="table">
     <thead>
         <tr>
-            <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SortTyp", "ParkedVehicles")"'>
+                <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SortTyp", "ParkedVehicles")"'>
 
-                @Html.DisplayNameFor(model => model.VehicleTyp.Name)<span><img id="i1" class="updown" src="~/img/bullet_green.png" /></span>
-            </th>
-            <th id="s_reg" class="myTbBox" onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"'>
-                @Html.DisplayNameFor(model => model.RegNr)<span><img id="i2" class="updown" src="~/img/bullet_green.png" /></span>
-            </th>
-            <th id="s_col" class="myTbBox" onclick='location.href="@Url.Action("SortCol", "ParkedVehicles")"'>
-                @Html.DisplayNameFor(model => model.VehicleColor)<span><img id="i3" class="updown" src="~/img/bullet_green.png" /></span>
-            </th>
-            <th id="s_mod" class="myTbBox" onclick='location.href="@Url.Action("SortMod", "ParkedVehicles")"'>
-                @Html.DisplayNameFor(model => model.VehicleModel)<span><img id="i4" class="updown" src="~/img/bullet_green.png" /></span>
-            </th>
-            <th id="s_bra" class="myTbBox" onclick='location.href="@Url.Action("SortBrand", "ParkedVehicles")"'>
-                @Html.DisplayNameFor(model => model.VehicleBrand)<span><img id="i5" class="updown" src="~/img/bullet_green.png" /></span>
-            </th>
-            <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.NumberOfWheels)
-            </th>
-            <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.ParkedTime)
-            </th>
-            <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Where)
-            </th>
-            <th></th>
+                    @Html.DisplayNameFor(model => model.Header.VehicleTyp.Name)<span><img id="i1" class="updown" src="~/img/bullet_green.png" /></span>
+                </th>
+                <th id="s_reg" class="myTbBox" onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"'>
+                    @Html.DisplayNameFor(model => model.Header.RegNr)<span><img id="i2" class="updown" src="~/img/bullet_green.png" /></span>
+                </th>
+                <th id="s_col" class="myTbBox" onclick='location.href="@Url.Action("SortCol", "ParkedVehicles")"'>
+                    @Html.DisplayNameFor(model => model.Header.VehicleColor)<span><img id="i3" class="updown" src="~/img/bullet_green.png" /></span>
+                </th>
+                <th id="s_mod" class="myTbBox" onclick='location.href="@Url.Action("SortMod", "ParkedVehicles")"'>
+                    @Html.DisplayNameFor(model => model.Header.VehicleModel)<span><img id="i4" class="updown" src="~/img/bullet_green.png" /></span>
+                </th>
+                <th id="s_bra" class="myTbBox" onclick='location.href="@Url.Action("SortBrand", "ParkedVehicles")"'>
+                    @Html.DisplayNameFor(model => model.Header.VehicleBrand)<span><img id="i5" class="updown" src="~/img/bullet_green.png" /></span>
+                </th>
+                <th class="myTbBox">
+                    @Html.DisplayNameFor(model => model.Header.NumberOfWheels)
+                </th>
+                <th class="myTbBox">
+                    @Html.DisplayNameFor(model => model.Header.ParkedTime)
+                </th>
+                <th class="myTbBox">
+                    @Html.DisplayNameFor(model => model.Header.Price)
+                </th>
+                <th class="myTbBox">
+                    @Html.DisplayNameFor(model => model.Header.Where)
+                </th>
+                <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.ParkedVehicles) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.VehicleTyp.Name)

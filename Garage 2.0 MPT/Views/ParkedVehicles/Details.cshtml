@@ -1,4 +1,4 @@
-﻿@model Garage_2._0_MPT.Models.ParkedVehicle
+﻿@model Garage_2._0_MPT.Models.SingelViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -10,52 +10,52 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleTyp)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.VehicleTyp)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VehicleTyp.Name)
+            @Html.DisplayFor(model => model.ParkedVehicle.VehicleTyp.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNr)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.RegNr)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RegNr)
+            @Html.DisplayFor(model => model.ParkedVehicle.RegNr)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleColor)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.VehicleColor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VehicleColor)
+            @Html.DisplayFor(model => model.ParkedVehicle.VehicleColor)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleModel)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.VehicleModel)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VehicleModel)
+            @Html.DisplayFor(model => model.ParkedVehicle.VehicleModel)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleBrand)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.VehicleBrand)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VehicleBrand)
+            @Html.DisplayFor(model => model.ParkedVehicle.VehicleBrand)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfWheels)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.NumberOfWheels)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfWheels)
+            @Html.DisplayFor(model => model.ParkedVehicle.NumberOfWheels)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ParkInDate)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.ParkInDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ParkInDate)
+            @Html.DisplayFor(model => model.ParkedVehicle.ParkInDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Where)
+            @Html.DisplayNameFor(model => model.ParkedVehicle.Where)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Where)
+            @Html.DisplayFor(model => model.ParkedVehicle.Where)
         </dd>
     </dl>
 </div>

@@ -27,10 +27,10 @@ namespace Garage_2._0_MPT.Utils
         public Position(ParkedVehicle parkedVehicle)
         {
             var parts = parkedVehicle.Where.Split(" ");
-            var Z = (char)parts[0][0]-1+'A'-128;
+             Z = (char)parts[0][0]-1+'A'-128;
             var parts2 = parts[2].Split(",");
-            var X = Int32.Parse(parts2[0].Substring(1));
-            var Y = Int32.Parse(parts2[1].Substring(0, parts2[1].Length - 1));
+             X = Int32.Parse(parts2[0].Substring(1));
+             Y = Int32.Parse(parts2[1].Substring(0, parts2[1].Length - 1));
 
             if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
             {

@@ -1,25 +1,30 @@
-﻿@using Microsoft.AspNetCore.Http.Features
-@model 
-@{
-    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
-    var showBanner = !consentFeature?.CanTrack ?? false;
-    var cookieString = consentFeature?.CreateConsentCookie();
-}
+﻿@model Garage_2._0_MPT.Models.ParkingsHouseStatusViewModel
+<div class="row" style="position:center">
+    <table class="align-self-center bg-info border-dark" >
 
-@if (showBanner)
-{
-    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
-        Use this space to summarize your privacy and cookie use policy. <a asp-area="" asp-controller="Home" asp-action="Privacy">Learn More</a>.
-        <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
-            <span aria-hidden="true">Accept</span>
-        </button>
-    </div>
-    <script>
-        (function () {
-            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
-            button.addEventListener("click", function (event) {
-                document.cookie = button.dataset.cookieString;
-            }, false);
-        })();
-    </script>
-}
+        <thead>
+            <tr><th colspan="4">Next available places</th></tr>
+            <tr>
+                @foreach (var item in Model.NextFree)
+                {
+                    <th>@item.Key</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach (var item in Model.NextFree)
+                {
+                    <td>@item.Value</td>
+                }
+
+            </tr>
+
+        </tbody>
+
+
+    </table>
+
+</div>
+
+

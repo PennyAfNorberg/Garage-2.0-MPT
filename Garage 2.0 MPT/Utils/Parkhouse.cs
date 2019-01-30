@@ -18,7 +18,10 @@ namespace Garage_2._0_MPT.Utils
 
         private readonly Garage_2_0_MPTContext _context;
 
-
+        public Dictionary<int, Position>  GetNextFreeSpaces()
+        {
+            return NextFreeSpaces.ToDictionary(k =>k.Key, k => k.Value  );
+        }
 
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace Garage_2._0_MPT.Utils
                 {
                     firstPosition.SpaceOccupide = SpacesNeeded;
                 }
-                while (NextFreeSpaces.ContainsValue(firstPosition))
+                while (NextFreeSpaces.ContainsValue(firstPosition) || OccupidePositions.Contains(firstPosition))
                     firstPosition = GetNextSpot(firstPosition, SpacesNeeded);
 
                 NextFreeSpaces[SpacesNeeded] = firstPosition;
@@ -929,7 +932,7 @@ namespace Garage_2._0_MPT.Utils
             Position testPos = null;
             int SpacesNeeded = 3;
 
-            if (position.X <= Twos[position.Z - 1] + Threes[position.Z - 1])
+            if (position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {

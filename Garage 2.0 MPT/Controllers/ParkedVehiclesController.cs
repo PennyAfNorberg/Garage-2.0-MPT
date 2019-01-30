@@ -29,6 +29,36 @@ namespace Garage_2._0_MPT.Models
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
    
         }
+        private ParkingsHouseStatusViewModel GetParkingsHouseStatus()
+        {
+
+            var work = parkhouse.GetNextFreeSpaces();
+            ParkingsHouseStatusViewModel svar = new ParkingsHouseStatusViewModel();
+            foreach (var item in work)
+            {
+                svar.NextFree[TranslateSize(item.Key)] = item.Value==null?"Full":item.Value.ToString();
+            }
+
+            return svar;
+
+        }
+
+        private string TranslateSize(int Size)
+        {
+            switch (Size)
+            {
+                case -3:
+                      return "MC";
+                case 1:
+                    return "Car";
+                case 2:
+                    return "Truck";
+                case 3:
+                    return "Bus";
+                default:
+                    return "";
+            }
+        }
 
         private async Task InitPlots()
         {
@@ -65,9 +95,15 @@ namespace Garage_2._0_MPT.Models
         {
             await InitPlots();
             var res = await AddTimeAndPrice();
+            ViewData["PHouseStatus"] = GetParkingsHouseStatus();
 
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = res
+            };
 
-            return View(res);
+            return View(svar);
         }
 
 
@@ -78,8 +114,13 @@ namespace Garage_2._0_MPT.Models
             await InitPlots();
             var res = await AddTimeAndPrice();
 
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = res
+            };
 
-            return View(res);
+            return View(svar);
         }       
         
         
@@ -117,14 +158,20 @@ namespace Garage_2._0_MPT.Models
 
 
 
-            var parkedVehicle = res.FirstOrDefault(m => m.Id == id);
+
+            var svar = new SingelViewModel
+            {
+                ParkedVehicle = res.FirstOrDefault(m => m.Id == id),
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
+            };
+
             //await RePark();
-            if (parkedVehicle == null)
+            if (svar.ParkedVehicle == null)
             {
                 return NotFound();
             }
 
-            return View(parkedVehicle);
+            return View(svar);
         }
 
         // GET: ParkedVehicles/Receipt
@@ -136,20 +183,25 @@ namespace Garage_2._0_MPT.Models
             }
 
             await InitPlots();
-            var parkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id);
-  
-            return View(parkedVehicle);
+            var svar = new SingelViewModel
+            {
+                ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id),
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
+            };
+
+
+            return View(svar);
         }
 
         // GET: ParkedVehicles/Create
         public async Task<IActionResult> Create()
         {
-
+            ViewData["PHouseStatus"] = GetParkingsHouseStatus();
             var res = new CreateViewModel
             {
                 ParkedVehicle = new ParkedVehicle(),
-                vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync()
-
+                vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
             };
 
             return View(res);
@@ -163,10 +215,21 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
         {
             var reg_bussey = await _context.ParkedVehicle.Where(v=>v.RegNr == parkedVehicle.RegNr && v.ParkOutDate == null).ToListAsync();
+
+            var svar = new SingelViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicle = new ParkedVehicle
+                {
+                    RegNr = parkedVehicle.RegNr
+                }
+               };
+
+
             if (reg_bussey.Count > 0)
             {
                 // return RedirectToAction(nameof(Create));
-                return View("NotCreate");
+                return View("NotCreate",svar);
             }
             if (ModelState.IsValid )
             {
@@ -189,10 +252,14 @@ namespace Garage_2._0_MPT.Models
                 }
                 else
                 {
-                    return View("GarageFull");
+
+                    return View("GarageFull",svar);
                 }
             }
-            return View(parkedVehicle);
+
+
+
+            return View(svar);
         }
 
         // GET: ParkedVehicles/Edit/5
@@ -271,6 +338,7 @@ namespace Garage_2._0_MPT.Models
                     throw;
                 }
             }
+
             return RedirectToAction(nameof(Receipt), new { id = id });
         }
 
@@ -338,44 +406,78 @@ namespace Garage_2._0_MPT.Models
         
         public async Task<IActionResult> ParkedCars(string SearchString)
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()))
+            };
+
+            return View("ParkedCars",svar);
+            //return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
         }
         public async Task<IActionResult> SortTyp()
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();          
-            return View("Index", reta.OrderBy(o => o.VehicleTyp.Name));
+            ParkedVehicle[] reta = await AddTimeAndPrice();
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.OrderBy(o => o.VehicleTyp.Name)
+            };
+            return View("Index", svar);
+         //   return View("Index", reta.OrderBy(o => o.VehicleTyp.Name));
         }
        
         public async Task<IActionResult> SortReg()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("Index", reta.OrderBy(o => o.RegNr));
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.OrderBy(o => o.RegNr)
+            };
+            return View("Index", svar);
+            //return View("Index", reta.OrderBy(o => o.RegNr));
         }
         
         public async Task<IActionResult> SortCol()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("Index", reta.OrderBy(o => o.VehicleColor));
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.OrderBy(o => o.VehicleColor)
+            };
+            return View("Index", svar);
+           // return View("Index", reta.OrderBy(o => o.VehicleColor));
         }
         
         public async Task<IActionResult> SortMod()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("Index", reta.OrderBy(o => o.VehicleModel));
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.OrderBy(o => o.VehicleModel)
+            };
+            return View("Index", svar);
+           // return View("Index", reta.OrderBy(o => o.VehicleModel));
         }
         
         public async Task<IActionResult> SortBrand()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("Index",reta.OrderBy(o => o.VehicleBrand));
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.OrderBy(o => o.VehicleBrand)
+            };
+            return View("Index", svar);
+           // return View("Index",reta.OrderBy(o => o.VehicleBrand));
         }
 
 
-           var res = parkhouse.getNextFreeSpaces();
-            var res2 = parkhouse.GetOccupidePositions();
-            return View("Labb", res);
-        }
+
         public async Task<IActionResult> Statistik()
         {
             var reta = await AddTimeAndPrice(true);
@@ -386,8 +488,8 @@ namespace Garage_2._0_MPT.Models
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
            
             stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
-            
-            
+
+            stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 
             return View(stat);
         }
