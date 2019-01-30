@@ -41,7 +41,12 @@ namespace Garage_2._0_MPT.Utils
             this.Twos = Twos.ToList();
             this.Threes = Threes.ToList();
             _context = context;
-            var res = _context.ParkedVehicle.Where(p => p.Where != null);
+            var res = _context.ParkedVehicle.Where(p => p.Where != null).Select(x => new ParkedVehicle()
+            {
+                Id = x.Id,
+                VehicleTyp = x.VehicleTyp,
+                Where = x.Where
+            });
             AddSavedVehicles(res);
 
             var firstPosition = new Position()

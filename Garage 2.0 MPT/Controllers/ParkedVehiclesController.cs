@@ -35,7 +35,7 @@ namespace Garage_2._0_MPT.Models
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.Where == null);
+                var res = (await AddTimeAndPrice()).Where(p => p.Where == null).ToList();
  
 
                 foreach (var item in res)
@@ -47,7 +47,7 @@ namespace Garage_2._0_MPT.Models
                 try
                 {
                     _context.UpdateRange(res);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
