@@ -33,7 +33,7 @@ namespace Garage_2._0_MPT.Models
 
 
         // GET: ParkedVehicles
-        
+
         public async Task<IActionResult> Index()
         {
             var res = await AddTimeAndPrice();
@@ -45,22 +45,25 @@ namespace Garage_2._0_MPT.Models
                 }
                 loadedSeed = true;
             }
-            
+
             return View(res);
         }
+
+
+
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
             var res = await AddTimeAndPrice();
-            if (!loadedSeed)
-            {
-                foreach (var item in res)
-                {
-                    parkhouse.Park(item);
-                }
-                loadedSeed = true;
-            }
-
+              if (!loadedSeed)
+               {
+                   foreach (var item in res)
+                   {
+                       parkhouse.Park(item);
+                   }
+                   loadedSeed = true;
+               }
+               
             return View(res);
         }       
         
@@ -95,8 +98,18 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var parkedVehicle = await _context.ParkedVehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var res = await AddTimeAndPrice();
+            if (!loadedSeed)
+            {
+                foreach (var item in res)
+                {
+                    parkhouse.Park(item);
+                }
+                loadedSeed = true;
+            }
+
+            var parkedVehicle = res.FirstOrDefault(m => m.Id == id);
+            //await RePark();
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -113,8 +126,9 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var parkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id);
 
+            var parkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id);
+           // await RePark();
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -152,6 +166,17 @@ namespace Garage_2._0_MPT.Models
             }
             if (ModelState.IsValid )
             {
+                var res = await AddTimeAndPrice();
+                if (!loadedSeed)
+                {
+                    foreach (var item in res)
+                    {
+                        parkhouse.Park(item);
+                    }
+                    loadedSeed = true;
+                }
+
+
                 if (parkhouse.Park(parkedVehicle))
                 {
                     _context.Add(parkedVehicle);
@@ -221,11 +246,23 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var parkedVehicle = await _context.ParkedVehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var res = await AddTimeAndPrice();
+            if (!loadedSeed)
+            {
+                foreach (var item in res)
+                {
+                    parkhouse.Park(item);
+                }
+                loadedSeed = true;
+            }
+
+
+            var parkedVehicle =  res.FirstOrDefault(m => m.Id == id);
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
             {
+
+                parkhouse.Leave(parkedVehicle);
                 _context.Update(parkedVehicle);
                 await _context.SaveChangesAsync();
             }
@@ -296,7 +333,8 @@ namespace Garage_2._0_MPT.Models
                                 NumberOfWheels = x.NumberOfWheels,
                                 ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
                                 Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
-                                CostPerHour = x.VehicleTyp.CostPerHour
+                                CostPerHour = x.VehicleTyp.CostPerHour,
+
                             })
                             .ToArrayAsync();
         }
