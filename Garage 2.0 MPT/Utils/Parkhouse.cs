@@ -124,12 +124,37 @@ namespace Garage_2._0_MPT.Utils
         public bool GetNextSpot(ParkedVehicle parkedVehicle)
         {
             Position nextOne = null;
+            Position blaskn = null;
+            Position blasko = null;
             if(NextFreeSpaces.TryGetValue(parkedVehicle.VehicleTyp.SpacesNeeded, out nextOne))
             {
                 OccupidePositions.Add(nextOne);
-                NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = GetNextSpot(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded);
                 parkedVehicle.Where = nextOne.ToString();
                 parkedVehicle.Position = nextOne;
+                NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
+                nextOne = new Position()
+                {
+                    Z = 1,
+                    X = (parkedVehicle.VehicleTyp.SpacesNeeded == 3) ? Twos[0] + 1 : 1,
+                    Y = 1
+                };
+                if (TestPos(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
+                {
+                    if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
+                    {
+                        nextOne.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract+1) : ((blasko != null) ? (blasko.SpaceLeftForFract+1) : (parkedVehicle.VehicleTyp.SpacesNeeded+1));
+                    }
+                    else
+                    {
+                        nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                    }
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
+                }
+                else
+                {
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = GetNextSpot(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded);
+                }
+
                 return true;
             }
             return false;
@@ -142,7 +167,7 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="checkthisN">Hit from nextpos if any</param>
         /// <param name="checkthisO">Hit from occupied if any</param>
         /// <returns>true if no hit.</returns>
-        public bool TestPos(Position position, int SpacesNeeded, Position checkthisN, Position checkthisO )
+        public bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
         {
             checkthisN = null;
             checkthisO = null;
@@ -167,7 +192,25 @@ namespace Garage_2._0_MPT.Utils
                     {
                         if (checkthisN.SpaceLeftForFract != null)
                             return false;
-                        if (checkthisN.SpaceOccupide > SpacesNeeded)
+                        if(checkthisN.SpaceOccupide != null)
+                        {
+                            if (delta == 0)
+                                return false;
+                            if(delta<0)
+                            {
+                                if (delta + SpacesNeeded > 0)
+                                    return false;
+                                return true;
+                            }
+                            if(delta>0)
+                            {
+                                if (delta > SpacesNeeded)
+                                    return false;
+                                return true;
+                            }
+                        }
+
+                        if (checkthisN.SpaceOccupide >= SpacesNeeded)
                             return false;
                     }
                 }
@@ -178,8 +221,16 @@ namespace Garage_2._0_MPT.Utils
                 checkthisO = GetPosFromOccupidePositions(position);
                 if (SpacesNeeded < 0)
                 {
-                    
-                  //  SpaceLeftForFractO = checkthisO.SpaceLeftForFract;
+                    // we need to get all parked items for this space now
+
+                    var checkAllThese= getAllPosFromOccupidePositions(position);
+                    if((-SpacesNeeded) <= checkAllThese.Where(vt => vt.SpaceOccupide == null).Count())
+                        return false;
+                    if (checkAllThese.Any(vt => vt.SpaceOccupide != null))
+                        return false;
+                    return true;
+
+                 /*   //  SpaceLeftForFractO = checkthisO.SpaceLeftForFract;
                     if (checkthisO.SpaceOccupide == null && checkthisO.SpaceLeftForFract < 0)
                     {
                         checkthisO.SpaceLeftForFract++;
@@ -187,6 +238,7 @@ namespace Garage_2._0_MPT.Utils
                     }
                     else
                         return false;
+                        */
                 }
                 else
                 {
@@ -195,7 +247,25 @@ namespace Garage_2._0_MPT.Utils
                         // heltäckande
                         if (checkthisO.SpaceLeftForFract != null)
                             return false;
-                        if (checkthisO.SpaceOccupide > SpacesNeeded)
+
+                        if (checkthisO.SpaceOccupide != null)
+                        {
+                            if (delta == 0)
+                                return false;
+                            if (delta < 0)
+                            {
+                                if (delta + SpacesNeeded > 0)
+                                    return false;
+                                return true;
+                            }
+                            if (delta > 0)
+                            {
+                                if (delta > SpacesNeeded)
+                                    return false;
+                                return true;
+                            }
+                        }
+                        if (checkthisO.SpaceOccupide >= SpacesNeeded)
                             return false;
                     }
                     return true;
@@ -204,6 +274,7 @@ namespace Garage_2._0_MPT.Utils
             return true;
 
         }
+
 
 
         /// <summary>
@@ -241,7 +312,7 @@ namespace Garage_2._0_MPT.Utils
             if (position == null)
                 return null;
 
-            if (TestPos(position, SpacesNeeded, checkthisN, checkthisO))
+            if (TestPos(position, SpacesNeeded, out checkthisN, out checkthisO))
             { // first ok needed allways
                 if (SpacesNeeded < 0)
                 { // mc now
@@ -258,7 +329,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
                         {
                             testPos = new Position()
                             {
@@ -266,7 +337,7 @@ namespace Garage_2._0_MPT.Utils
                                 X = position.X,
                                 Y = position.Y - 2,
                             };
-                            if (TestPos(testPos, SpacesNeeded, blaskN, blaskO))
+                            if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
                             {
                                 return new Position()
                                 {
@@ -288,7 +359,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y - 2,
                         };
-                        if (TestPos(testPos, SpacesNeeded, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
                         {
                             return new Position()
                             {
@@ -314,7 +385,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded+1, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO, -1))
                         {
                             testPos = new Position()
                             {
@@ -322,7 +393,7 @@ namespace Garage_2._0_MPT.Utils
                                 X = position.X,
                                 Y = position.Y - 2,
                             };
-                            if (TestPos(testPos, SpacesNeeded+2, blaskN, blaskO))
+                            if (TestPos(testPos, SpacesNeeded+2, out blaskN, out blaskO,-2))
                             {
                                 position.SpaceOccupide = SpacesNeeded;
                                 return position;
@@ -330,6 +401,33 @@ namespace Garage_2._0_MPT.Utils
                             }
 
                         }
+                        else
+                        {
+                            if ((blaskN != null && blaskN.SpaceLeftForFract != null) || (blaskO != null && blaskO.SpaceLeftForFract != null))
+                            {
+                                testPos = new Position()
+                                {
+                                    Z = position.Z,
+                                    X = position.X,
+                                    Y = position.Y - 2,
+                                };
+                                if (TestPos(testPos, SpacesNeeded + 2, out blaskN, out blaskO,-2))
+                                {
+                                    position.SpaceOccupide = SpacesNeeded;
+                                    return position;
+
+                                }
+                                else
+                                {
+                                    if ((blaskN != null && blaskN.SpaceLeftForFract != null) || (blaskO != null && blaskO.SpaceLeftForFract != null))
+                                    {
+                                        position.SpaceOccupide = SpacesNeeded;
+                                        return position;
+                                    }
+                                }
+
+                            }
+                         }
                     }
                     if (position.Y == 2)
                     {
@@ -339,11 +437,19 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded+1, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO,-1))
                         {
                             position.SpaceOccupide = SpacesNeeded;
                             return position;
 
+                        }
+                        else
+                        {
+                            if ((blaskN != null && blaskN.SpaceLeftForFract != null) || (blaskO != null && blaskO.SpaceLeftForFract != null))
+                            {
+                                position.SpaceOccupide = SpacesNeeded;
+                                return position;
+                            }
                         }
                     }
                     if (position.Y == 1)
@@ -364,7 +470,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y + 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded-1, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                         {
                             position.SpaceOccupide = SpacesNeeded;
                             return position;
@@ -379,7 +485,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded+1, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO,-1))
                         {
 
                             if (position.X > Twos[position.Z] - 1)
@@ -390,7 +496,7 @@ namespace Garage_2._0_MPT.Utils
                                     X = position.X,
                                     Y = position.Y + 1,
                                 };
-                                if (TestPos(testPos, SpacesNeeded-1, blaskN, blaskO))
+                                if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                                 {
                                     position.SpaceOccupide = SpacesNeeded;
                                     return position;
@@ -408,7 +514,7 @@ namespace Garage_2._0_MPT.Utils
                                     X = position.X,
                                     Y = position.Y + 1,
                                 };
-                                if (TestPos(testPos, SpacesNeeded-1, blaskN, blaskO))
+                                if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                                 {
                                     return position;
                                 }
@@ -428,7 +534,7 @@ namespace Garage_2._0_MPT.Utils
                         X = position.X,
                         Y = 2
                     };
-                    if (TestPos(testPos, SpacesNeeded-2, blaskN, blaskO))
+                    if (TestPos(testPos, SpacesNeeded-2, out blaskN, out blaskO,2))
                     {
                         testPos = new Position
                         {
@@ -436,7 +542,7 @@ namespace Garage_2._0_MPT.Utils
                             X = position.X,
                             Y = 3
                         };
-                        if (TestPos(testPos, SpacesNeeded-2, blaskN, blaskO))
+                        if (TestPos(testPos, SpacesNeeded-2, out blaskN, out blaskO,2))
                         {
                             return position;
                         }
@@ -449,7 +555,7 @@ namespace Garage_2._0_MPT.Utils
                 else
                     throw new NotImplementedException();
             }
-            return null;
+            return GetNextSpot(position, SpacesNeeded);
         }
 
 
@@ -473,22 +579,12 @@ namespace Garage_2._0_MPT.Utils
                 };
 
             }
-            else if (position.X <= Twos[position.Z - 1] && position.Z <= Floors)
+            else if (position.X < Twos[position.Z - 1] && position.Z <= Floors)
             {
                 testPos = new Position()
                 {
                     Z = position.Z,
                     X = position.X + 1,
-                    Y = 1,
-                    SpaceLeftForFract = SpacesNeeded + 1
-                };
-            }
-            else if (position.X == Twos[position.Z] && position.Z <= Floors)
-            {
-                testPos = new Position()
-                {
-                    Z = position.Z + 1,
-                    X = 1,
                     Y = 1,
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
@@ -503,7 +599,18 @@ namespace Garage_2._0_MPT.Utils
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X == Twos[position.Z-1] && position.Z <= Floors)
+            {
+                testPos = new Position()
+                {
+                    Z = position.Z + 1,
+                    X = 1,
+                    Y = 1,
+                    SpaceLeftForFract = SpacesNeeded + 1
+                };
+            }
+
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -513,7 +620,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -535,7 +642,7 @@ namespace Garage_2._0_MPT.Utils
         {
             Position testPos = null;
             int SpacesNeeded = 1;
-            if ((position.Y < 2 && position.X <= Twos[position.Z - 1]))
+            if ((position.Y < 2 && position.X < Twos[position.Z - 1]))
             {
                 testPos = new Position()
                 {
@@ -556,22 +663,12 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X <= Twos[position.Z - 1] && position.Z <= Floors)
+            else if (position.X < Twos[position.Z - 1] && position.Z <= Floors)
             {
                 testPos = new Position()
                 {
                     Z = position.Z,
                     X = position.X + 1,
-                    Y = 1,
-                    SpaceOccupide = SpacesNeeded
-                };
-            }
-            else if (position.X == Twos[position.Z] && position.Z <= Floors)
-            {
-                testPos = new Position()
-                {
-                    Z = position.Z + 1,
-                    X = 1,
                     Y = 1,
                     SpaceOccupide = SpacesNeeded
                 };
@@ -586,7 +683,18 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X == Twos[position.Z-1] && position.Z <= Floors)
+            {
+                testPos = new Position()
+                {
+                    Z = position.Z + 1,
+                    X = 1,
+                    Y = 1,
+                    SpaceOccupide = SpacesNeeded
+                };
+            }
+
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -596,7 +704,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -619,13 +727,13 @@ namespace Garage_2._0_MPT.Utils
         {
             Position testPos = null;
             int SpacesNeeded = 2;
-            if ((position.Y == 1 && position.X <= Twos[position.Z - 1]))
+            if ((position.Y == 1 && position.X < Twos[position.Z - 1]))
             {
                 testPos = new Position()
                 {
                     Z = position.Z,
-                    X = position.X,
-                    Y = position.Y + 1,
+                    X = position.X+1,
+                    Y = 1,
                     SpaceOccupide = SpacesNeeded
                 };
 
@@ -640,22 +748,22 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X <= Twos[position.Z - 1] && position.Z <= Floors)
+            else if (position.Y == 2 && position.X > Twos[position.Z - 1])
+            {
+                testPos = new Position()
+                { // skip middle if one space vechile and 3 space parking lot.
+                    Z = position.Z,
+                    X = Twos[position.Z]+1,
+                    Y = 1,
+                    SpaceOccupide = SpacesNeeded
+                };
+            }
+            else if (position.X < Twos[position.Z - 1] && position.Z <= Floors)
             {
                 testPos = new Position()
                 {
                     Z = position.Z,
                     X = position.X + 1,
-                    Y = 1,
-                    SpaceOccupide = SpacesNeeded
-                };
-            }
-            else if (position.X == Twos[position.Z] && position.Z <= Floors)
-            {
-                testPos = new Position()
-                {
-                    Z = position.Z + 1,
-                    X = 1,
                     Y = 1,
                     SpaceOccupide = SpacesNeeded
                 };
@@ -670,7 +778,18 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X == Twos[position.Z-1] && position.Z <= Floors)
+            {
+                testPos = new Position()
+                {
+                    Z = position.Z + 1,
+                    X = 1,
+                    Y = 1,
+                    SpaceOccupide = SpacesNeeded
+                };
+            }
+
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -680,7 +799,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X >= Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -729,6 +848,24 @@ namespace Garage_2._0_MPT.Utils
             return testPos;
         }
 
+
+        private List<Position> getAllPosFromOccupidePositions(Position position)
+        {
+            return OccupidePositions.Where(p => p != null).Where(p => position.Equals(p)).ToList();
+            /*
+            List<Position> svar = new List<Position>();
+            foreach (var items in OccupidePositions)
+            {
+                if (items != null)
+                {
+                    if (position.Equals(items))
+                        svar.Add(items);
+                }
+            }
+            return svar;
+            */
+        }
+
         /// <summary>
         /// Gets first hit from OccupidePositions that matches position
         /// </summary>
@@ -736,12 +873,17 @@ namespace Garage_2._0_MPT.Utils
         /// <returns>the hit or null if no hit</returns>
         public Position GetPosFromOccupidePositions(Position position)
         {
+            return OccupidePositions.Where(p => p != null).FirstOrDefault(p => position.Equals(p));
+            /*
             foreach (var items in OccupidePositions)
             {
-                if (position == items)
+                if (items != null)
+                {
+                    if (position.Equals(items))
                     return items;
+                }
             }
-            return null;
+            return null;*/
         }
 
         /// <summary>
@@ -751,12 +893,18 @@ namespace Garage_2._0_MPT.Utils
         /// <returns>the hit or null if no hit</returns>
         public Position GetPosFromNextFreeSpaces(Position position)
         {
+            return NextFreeSpaces.Values.Where(p=>p!=null).FirstOrDefault(p => position.Equals(p));
+            /*
             foreach (var items in NextFreeSpaces.Values)
             {
-                if (position == items)
-                    return items;
+                if (items != null)
+                {
+                    if (position.Equals(items))
+                        return items;
+                }
             }
             return null;
+            */
         }
 
     }

@@ -301,12 +301,7 @@ namespace Garage_2._0_MPT.Models
 
             Parkhouse parkhouse = new Parkhouse(Floor, Twos, Threes, _context);
 
-            List<ParkedVehicle> Parkthese = new List<ParkedVehicle>
-            {
-                new ParkedVehicle { Id = 1, VehicleTypId = 1, RegNr = "Rymdopera", VehicleColor = "Green", VehicleModel="okänd", VehicleBrand= "Ferrari", NumberOfWheels=4, ParkInDate = DateTime.Now-new TimeSpan(1,2,3,4), ParkOutDate =null},
-                    new ParkedVehicle { Id = 2, VehicleTypId = 2, RegNr = "abc 123", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4, ParkInDate = DateTime.Now - new TimeSpan(2, 2, 3, 4), ParkOutDate = null },
-                    new ParkedVehicle { Id = 3, VehicleTypId = 5 , RegNr = "acc 123", VehicleColor = "Blue", VehicleModel = "okänd", VehicleBrand = "Saab", NumberOfWheels = 4, ParkInDate = DateTime.Now - new TimeSpan(4, 2, 3, 4), ParkOutDate = DateTime.Now - new TimeSpan(2, 3, 0, 45) }
-            };
+            var Parkthese = await AddTimeAndPrice(true);
             foreach(var item  in Parkthese)
             {
                 parkhouse.Park(item);
