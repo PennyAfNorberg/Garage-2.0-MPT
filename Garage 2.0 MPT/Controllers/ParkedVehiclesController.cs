@@ -12,10 +12,22 @@ namespace Garage_2._0_MPT.Models
     public class ParkedVehiclesController : Controller
     {
         private readonly Garage_2_0_MPTContext _context;
+        private ParkHouse parkhouse;
+        private bool loadedSeed = false;
 
         public ParkedVehiclesController(Garage_2_0_MPTContext context)
         {
             _context = context;
+            int Floor = 2;
+            int[] Twos = new int[2]
+                { 2,3
+                };
+            int[] Threes = new int[2]
+                    { 3,2
+                    };
+
+            parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
+   
         }
 
 
@@ -23,14 +35,32 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         
         public async Task<IActionResult> Index()
-        {          
+        {
             var res = await AddTimeAndPrice();
+            if (!loadedSeed)
+            {
+                foreach (var item in res)
+                {
+                    parkhouse.Park(item);
+                }
+                loadedSeed = true;
+            }
+            
             return View(res);
         }
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
             var res = await AddTimeAndPrice();
+            if (!loadedSeed)
+            {
+                foreach (var item in res)
+                {
+                    parkhouse.Park(item);
+                }
+                loadedSeed = true;
+            }
+
             return View(res);
         }       
         
@@ -122,9 +152,16 @@ namespace Garage_2._0_MPT.Models
             }
             if (ModelState.IsValid )
             {
-                _context.Add(parkedVehicle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = parkedVehicle.Id });
+                if (parkhouse.Park(parkedVehicle))
+                {
+                    _context.Add(parkedVehicle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { id = parkedVehicle.Id });
+                }
+                else
+                {
+                    return View("GarageFull");
+                }
             }
             return View(parkedVehicle);
         }
@@ -300,27 +337,6 @@ namespace Garage_2._0_MPT.Models
             return View("Index",reta.OrderBy(o => o.VehicleBrand));
         }
 
-        public async Task<IActionResult> Labb()
-        {
-            int Floor = 2;
-            int[] Twos = new int[2]
-                { 2,3
-                };
-            int[] Threes = new int[2]
-                    { 3,2
-                    };
 
-            Parkhouse parkhouse = new Parkhouse(Floor, Twos, Threes, _context);
-
-            var Parkthese = await AddTimeAndPrice(true);
-            foreach(var item  in Parkthese)
-            {
-                parkhouse.Park(item);
-            }
-
-           var res = parkhouse.getNextFreeSpaces();
-            var res2 = parkhouse.GetOccupidePositions();
-            return View("Labb", res);
-        }
     }
 }

@@ -37,8 +37,8 @@
             <th class="myTbBox">
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-            <th class="myTbBox">
-                
+            <th>
+                Parking Lot
             </th>
             <th></th>
         </tr>
@@ -65,10 +65,13 @@
                 @Html.DisplayFor(modelItem => item.NumberOfWheels)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkedTime) 
+                @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Where)
             </td>
             <td>
                 <div class="allBtnTB">
@@ -77,7 +80,7 @@
                     <!-- <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> | -->
                     <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item.Id">Receipt</a>
                 </div>
-                
+
             </td>
         </tr>
 }
