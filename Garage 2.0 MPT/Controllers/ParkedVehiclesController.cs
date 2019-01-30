@@ -257,6 +257,8 @@ namespace Garage_2._0_MPT.Models
                                 VehicleModel = x.VehicleModel,
                                 VehicleBrand = x.VehicleBrand,
                                 NumberOfWheels = x.NumberOfWheels,
+                                ParkInDate = x.ParkInDate,
+                                ParkOutDate = x.ParkOutDate,
                                 ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
                                 Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
                                 CostPerHour = x.VehicleTyp.CostPerHour
@@ -321,6 +323,21 @@ namespace Garage_2._0_MPT.Models
            var res = parkhouse.getNextFreeSpaces();
             var res2 = parkhouse.GetOccupidePositions();
             return View("Labb", res);
+        }
+        public async Task<IActionResult> Statistik()
+        {
+            var reta = await AddTimeAndPrice(true);
+            var reta_no = await AddTimeAndPrice();
+            //   reta.Select(o => o.NumberOfWheels).Sum();
+            StatViewModel stat = new StatViewModel();
+            stat.TotalWeels = reta_no.Select(o => o.NumberOfWheels).Sum();
+            stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
+           
+            stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
+            
+            
+
+            return View(stat);
         }
     }
 }
