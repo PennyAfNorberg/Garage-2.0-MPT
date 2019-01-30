@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190128165720_extra")]
+    partial class extra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,8 +43,6 @@ namespace Garage_2._0_MPT.Migrations
 
                     b.Property<int>("VehicleTypId");
 
-                    b.Property<string>("Where");
-
                     b.HasKey("Id");
 
                     b.HasIndex("VehicleTypId");
@@ -54,7 +54,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 1,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 27, 8, 34, 49, 841, DateTimeKind.Local).AddTicks(280),
+                            ParkInDate = new DateTime(2019, 1, 27, 15, 54, 15, 366, DateTimeKind.Local).AddTicks(5446),
                             RegNr = "Rymdopera",
                             VehicleBrand = "Ferrari",
                             VehicleColor = "Green",
@@ -65,7 +65,7 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 2,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 26, 8, 34, 49, 841, DateTimeKind.Local).AddTicks(1181),
+                            ParkInDate = new DateTime(2019, 1, 26, 15, 54, 15, 366, DateTimeKind.Local).AddTicks(5872),
                             RegNr = "abc 123",
                             VehicleBrand = "Volvo",
                             VehicleColor = "Red",
@@ -76,8 +76,8 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             Id = 3,
                             NumberOfWheels = 4,
-                            ParkInDate = new DateTime(2019, 1, 24, 8, 34, 49, 841, DateTimeKind.Local).AddTicks(1198),
-                            ParkOutDate = new DateTime(2019, 1, 26, 7, 37, 8, 841, DateTimeKind.Local).AddTicks(1201),
+                            ParkInDate = new DateTime(2019, 1, 24, 15, 54, 15, 366, DateTimeKind.Local).AddTicks(5879),
+                            ParkOutDate = new DateTime(2019, 1, 26, 14, 56, 34, 366, DateTimeKind.Local).AddTicks(5882),
                             RegNr = "acc 123",
                             VehicleBrand = "Saab",
                             VehicleColor = "Blue",
@@ -96,8 +96,6 @@ namespace Garage_2._0_MPT.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("SpacesNeeded");
-
                     b.HasKey("VehicleTypId");
 
                     b.ToTable("VehicleTyp");
@@ -107,43 +105,37 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             VehicleTypId = 1,
                             CostPerHour = 100,
-                            Name = "Car",
-                            SpacesNeeded = 0
+                            Name = "Car"
                         },
                         new
                         {
                             VehicleTypId = 2,
                             CostPerHour = 300,
-                            Name = "Bus",
-                            SpacesNeeded = 0
+                            Name = "Bus"
                         },
                         new
                         {
                             VehicleTypId = 3,
                             CostPerHour = 50,
-                            Name = "Motorbike",
-                            SpacesNeeded = 0
+                            Name = "Motorbike"
                         },
                         new
                         {
                             VehicleTypId = 4,
                             CostPerHour = 150,
-                            Name = "Caravan",
-                            SpacesNeeded = 0
+                            Name = "Caravan"
                         },
                         new
                         {
                             VehicleTypId = 5,
                             CostPerHour = 200,
-                            Name = "RV",
-                            SpacesNeeded = 0
+                            Name = "RV"
                         },
                         new
                         {
                             VehicleTypId = 6,
                             CostPerHour = 200,
-                            Name = "Truck",
-                            SpacesNeeded = 0
+                            Name = "Truck"
                         });
                 });
 

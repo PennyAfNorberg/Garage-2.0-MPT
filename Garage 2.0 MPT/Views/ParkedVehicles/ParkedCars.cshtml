@@ -5,37 +5,37 @@
     
 }
 
-<h1>Parked Cars</h1>
+<h1>Search Result Vehicles</h1>
 
 <p>
-    <a asp-action="Create">Park</a>
+    <a asp-action="Index">Return to all Vehicles</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th id="s_typ" onclick='location.href="@Url.Action("SortTyp", "ParkedVehicles")"'>
+            <th>
                 @Html.DisplayNameFor(model => model.VehicleTyp.Name)
             </th>
-            <th id="s_reg" onclick='location.href="@Url.Action("SortReg", "ParkedVehicles")"'>
+            <th>
                 @Html.DisplayNameFor(model => model.RegNr)
             </th>
-            <th id="s_col" onclick='location.href="@Url.Action("SortCol", "ParkedVehicles")"'>
+            <th>
                 @Html.DisplayNameFor(model => model.VehicleColor)
             </th>
-            <th id="s_mod" onclick='location.href="@Url.Action("SortMod", "ParkedVehicles")"'>
+            <th>
                 @Html.DisplayNameFor(model => model.VehicleModel)
             </th>
-            <th id="s_bra" onclick='location.href="@Url.Action("SortBrand", "ParkedVehicles")"'>
+            <th>
                 @Html.DisplayNameFor(model => model.VehicleBrand)
             </th>
-            <th >
+            <th>
                 @Html.DisplayNameFor(model => model.NumberOfWheels)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkInDate)
+                @Html.DisplayNameFor(model => model.ParkedTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkedTime)
+                @Html.DisplayNameFor(model => model.Price)
             </th>
             <th></th>
         </tr>
@@ -62,10 +62,10 @@
                 @Html.DisplayFor(modelItem => item.NumberOfWheels)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkInDate) 
+                @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkedTime)
+                @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
                 <a asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a> |

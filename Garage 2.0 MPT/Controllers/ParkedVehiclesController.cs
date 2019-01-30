@@ -21,26 +21,20 @@ namespace Garage_2._0_MPT.Models
 
 
         // GET: ParkedVehicles
+        
         public async Task<IActionResult> Index()
-        {
+        {          
             var res = await AddTimeAndPrice();
             return View(res);
         }
-
-
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
             var res = await AddTimeAndPrice();
             return View(res);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(string SearchString)
-        {
-            ParkedVehicle[] reta = await AddTimeAndPrice();           
-            return View(reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()) && o.ParkOutDate == null));
-        }
+        }       
+        
+        
 
         private string PrettyPrintTime(TimeSpan? timespan)
         {
@@ -120,7 +114,13 @@ namespace Garage_2._0_MPT.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
         {
-            if (ModelState.IsValid)
+            var reg_bussey = await _context.ParkedVehicle.Where(v=>v.RegNr == parkedVehicle.RegNr && v.ParkOutDate == null).ToListAsync();
+            if (reg_bussey.Count > 0)
+            {
+                // return RedirectToAction(nameof(Create));
+                return View("NotCreate");
+            }
+            if (ModelState.IsValid )
             {
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
@@ -242,7 +242,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Test(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta);
+            return View("Index", reta);
         }
 
         private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
@@ -263,30 +263,41 @@ namespace Garage_2._0_MPT.Models
                             })
                             .ToArrayAsync();
         }
+
+        
+        public async Task<IActionResult> ParkedCars(string SearchString)
+        {
+            ParkedVehicle[] reta = await AddTimeAndPrice();           
+            return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
+        }
         public async Task<IActionResult> SortTyp()
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleTyp));
+            ParkedVehicle[] reta = await AddTimeAndPrice();          
+            return View("Index", reta.OrderBy(o => o.VehicleTyp.Name));
         }
+       
         public async Task<IActionResult> SortReg()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.RegNr));
+            return View("Index", reta.OrderBy(o => o.RegNr));
         }
+        
         public async Task<IActionResult> SortCol()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleColor));
+            return View("Index", reta.OrderBy(o => o.VehicleColor));
         }
+        
         public async Task<IActionResult> SortMod()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleModel));
+            return View("Index", reta.OrderBy(o => o.VehicleModel));
         }
+        
         public async Task<IActionResult> SortBrand()
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
-            return View("ParkedCars", reta.OrderBy(o => o.VehicleBrand));
+            return View("Index",reta.OrderBy(o => o.VehicleBrand));
         }
 
         public async Task<IActionResult> Labb()

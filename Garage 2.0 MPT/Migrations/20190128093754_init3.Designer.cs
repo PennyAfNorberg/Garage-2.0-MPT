@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190128093754_init3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,8 +42,6 @@ namespace Garage_2._0_MPT.Migrations
                     b.Property<string>("VehicleModel");
 
                     b.Property<int>("VehicleTypId");
-
-                    b.Property<string>("Where");
 
                     b.HasKey("Id");
 
@@ -96,8 +96,6 @@ namespace Garage_2._0_MPT.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("SpacesNeeded");
-
                     b.HasKey("VehicleTypId");
 
                     b.ToTable("VehicleTyp");
@@ -107,43 +105,37 @@ namespace Garage_2._0_MPT.Migrations
                         {
                             VehicleTypId = 1,
                             CostPerHour = 100,
-                            Name = "Car",
-                            SpacesNeeded = 0
+                            Name = "Car"
                         },
                         new
                         {
                             VehicleTypId = 2,
                             CostPerHour = 300,
-                            Name = "Bus",
-                            SpacesNeeded = 0
+                            Name = "Bus"
                         },
                         new
                         {
                             VehicleTypId = 3,
                             CostPerHour = 50,
-                            Name = "Motorbike",
-                            SpacesNeeded = 0
+                            Name = "Motorbike"
                         },
                         new
                         {
                             VehicleTypId = 4,
                             CostPerHour = 150,
-                            Name = "Caravan",
-                            SpacesNeeded = 0
+                            Name = "Caravan"
                         },
                         new
                         {
                             VehicleTypId = 5,
                             CostPerHour = 200,
-                            Name = "RV",
-                            SpacesNeeded = 0
+                            Name = "RV"
                         },
                         new
                         {
                             VehicleTypId = 6,
                             CostPerHour = 200,
-                            Name = "Truck",
-                            SpacesNeeded = 0
+                            Name = "Truck"
                         });
                 });
 

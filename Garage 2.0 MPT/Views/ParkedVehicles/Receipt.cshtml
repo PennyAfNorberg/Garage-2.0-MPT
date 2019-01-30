@@ -3,73 +3,172 @@
 @{
     ViewData["Title"] = "Details";
 }
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <address>
+                <strong>The Chevrolet Sunset Parking</strong>
+                <br>
+                Årstaängsvägen 5B
+                <br>
+                Marievik, Stockholm
+                <br>
+                <abbr title="Phone">Tel:</abbr> +468 34027452
+            </address>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+            <p>
+                <em>Date: 1st November, 2013</em>
+            </p>
+            <p>
+                <em>Receipt#: 2394dbcg1298347</em>
+        </div>
+    </div>
+   
+            <h1>Receipt</h1>
+        </div>
+<div class="row">
+    <table class="table table-hover">
+        <thead>  
+            <tr>
+                <t>Vehicle</t>
+                <th>RegNo</th>
+                <th>Vehiclemodel</th>
+                <th>Parked Time</th>
+                <th>Cost/Hour (SEK)</th>
+                <th>Total Cost (SEK)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DisplayFor(model => model.VehicleTyp.Name)</td>
+                <td>@Html.DisplayFor(model => model.RegNr)</td>
+                <td>@Html.DisplayFor(model => model.VehicleModel)</td>
+                <td>@Html.DisplayFor(model => model.ParkedTime)</td>
+                <td>@Html.DisplayFor(model => model.CostPerHour)</td>
+                <td>@Html.DisplayFor(model => model.Price)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>            <!--  </tr>
+     <tr>
 
-<h1>Receipt</h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleTyp.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VehicleTyp.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNr)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RegNr)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleColor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VehicleColor)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleModel)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VehicleModel)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VehicleBrand)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VehicleBrand)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfWheels)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfWheels)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ParkedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ParkedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            <!-- <nl>Price</nl>-->
-            @Html.DisplayNameFor(model => model.CostPerHour)
+     </tr>
+     <tr>
 
-        </dt>
-        <dd class="col-sm-10">
-           @Html.DisplayFor(model => model.CostPerHour)
-       <!-- <dt>100SEK</dt> -->
-        </dd>
-    </dl>
+     </tr>
+     <tr>
+         <td class="col-md-3">@Html.DisplayFor(model => model.NumberOfWheels)</td>
+     </tr>
+     <tr>
+         <td class="col-md-3">@Html.DisplayFor(model => model.VehicleBrand)</td>
+     </tr>
+     <tr>
+         <td class="col-md-3">@Html.DisplayFor(model => model.VehicleColor)</td>
+          <td class="col-md-3" style="text-align: center"> 3 </td>
+    <td class="col-md-3 text-center">$16</td>
+    <td class="col-md-3 text-center">$48</td>
+                </tr>
+
+                <tr>
+                    <td>   </td>
+                    <td>   </td>-right">
+                    <p>
+                        <strong>Subtotal: </strong>
+                    </p>
+                    <p>
+                        <strong>Tax: </strong>
+                    </p>
+                    </td>
+                    <td class="text-center">
+                        <p>
+                            <strong>$6.94</strong>
+                        </p>
+                        <p>
+                            <strong>$6.94</strong>
+                        </p>
+                    </td>
+                </tr>-->
+@*<tr>
+                    <td>   </td>
+                    <td>   </td>
+                    <td class="text-right"><h4><strong>Total: </strong></h4></td>
+                    <td class="text-center text-danger"><h4><strong>$31.53</strong></h4></td>
+                </tr>
+            </tbody>
+            </table>
+            <button type="button" class="btn btn-success btn-lg btn-block">
+                Pay Now   <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </div>
+            
+
+        <h4>ParkedVehicle</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.VehicleTyp.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VehicleTyp.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RegNr)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.RegNr)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.VehicleColor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VehicleColor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.VehicleModel)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VehicleModel)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.VehicleBrand)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VehicleBrand)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NumberOfWheels)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NumberOfWheels)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ParkedTime)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ParkedTime)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt class="col-sm-2">
+                <!-- <nl>Price</nl>-->
+                    @Html.DisplayNameFor(model => model.CostPerHour)
+
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.CostPerHour)
+                        <!-- <dt>100SEK</dt> -->
+                    </dd>
+                    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 @*Kommentar*@
