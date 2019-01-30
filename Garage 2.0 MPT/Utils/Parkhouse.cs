@@ -6,7 +6,7 @@ using Garage_2._0_MPT.Models;
 
 namespace Garage_2._0_MPT.Utils
 {
-    public class Parkhouse
+    public class ParkHouse
     {
         public int Floors { get;  }
         public List<int> Twos { get; set; }
@@ -20,22 +20,14 @@ namespace Garage_2._0_MPT.Utils
 
 
 
-        public Dictionary<int, Position>  getNextFreeSpaces()
-        {
-            return NextFreeSpaces;
-        }
 
-        public List<Position> GetOccupidePositions()
-        {
-            return OccupidePositions;
-        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Floors">Numbers of floors</param>
         /// <param name="Twos">Number of double spots, needs Floors many</param>
         /// <param name="Threes">Number of tripple spots, needs Floors many</param>
-        public Parkhouse( int Floors, int[] Twos, int[] Threes, Garage_2_0_MPTContext context)
+        public ParkHouse( int Floors, int[] Twos, int[] Threes, Garage_2_0_MPTContext context)
         {
             this.Floors = Floors;
             if(Twos.Length != Floors)
@@ -98,6 +90,7 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
+
         public bool Leave(ParkedVehicle parkedVehicle)
         {
             OccupidePositions.Remove(parkedVehicle.Position);
@@ -117,11 +110,11 @@ namespace Garage_2._0_MPT.Utils
 
 
         /// <summary>
-        ///  Actuallde do the parking
+        ///  Actualldy do the parking
         /// </summary>
         /// <param name="parkedVehicle"></param>
         /// <returns>ok/full></returns>
-        public bool GetNextSpot(ParkedVehicle parkedVehicle)
+        private bool GetNextSpot(ParkedVehicle parkedVehicle)
         {
             Position nextOne = null;
             Position blaskn = null;
@@ -134,9 +127,9 @@ namespace Garage_2._0_MPT.Utils
                 NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
                 var nextOne2 = new Position()
                 {
-                    Z = 1,
-                    X = (parkedVehicle.VehicleTyp.SpacesNeeded == 3) ? Twos[0] + 1 : 1,
-                    Y = 1
+                    Z = nextOne.Z,
+                    X = nextOne.X,
+                    Y = nextOne.Y
                 };
                 if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
                 {
@@ -152,15 +145,38 @@ namespace Garage_2._0_MPT.Utils
                 }
                 else
                 {
-                    nextOne= GetNextSpot(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded);
-                    if(nextOne== null)
-                    {
-                        nextOne = GetNextSpot(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded);
-                    }
+                    nextOne= GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
                     NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
                 }
 
                 return true;
+            }
+            else
+            { // then we try to steal a prebooked slot.
+                if (NextFreeSpaces.Keys.Any(p=>p> parkedVehicle.VehicleTyp.SpacesNeeded))
+                { // something to steal
+                    int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
+                    nextOne = NextFreeSpaces[stealfromhere];
+                    var saveoldSpaceneed = (nextOne.SpaceOccupide == null) ? nextOne.SpaceLeftForFract - 1 : nextOne.SpaceOccupide;
+                    if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                    {
+                        nextOne.SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                    }
+                    else
+                    {
+                        nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                    }
+                    OccupidePositions.Add(nextOne);
+                    NextFreeSpaces[stealfromhere] = null;
+                    var nextOne2 = new Position()
+                    {
+                        Z = nextOne.Z,
+                        X = nextOne.X,
+                        Y = nextOne.Y
+                    };
+                    NextFreeSpaces[stealfromhere] = GetNextSpotWrapper(nextOne, saveoldSpaceneed.Value, nextOne);
+
+                }
             }
             return false;
         }
@@ -171,8 +187,9 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="SpacesNeeded"> how big left when testing</param>
         /// <param name="checkthisN">Hit from nextpos if any</param>
         /// <param name="checkthisO">Hit from occupied if any</param>
+        /// <param name="delta">used if slide check, default 0</param>
         /// <returns>true if no hit.</returns>
-        public bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
+        private bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
         {
             checkthisN = null;
             checkthisO = null;
@@ -203,7 +220,7 @@ namespace Garage_2._0_MPT.Utils
                                 return false;
                             if(delta<0)
                             {
-                                if (delta + SpacesNeeded > 0)
+                                if (checkthisN.SpaceOccupide + delta > 0)
                                     return false;
                                 return true;
                             }
@@ -231,8 +248,16 @@ namespace Garage_2._0_MPT.Utils
                     var checkAllThese= getAllPosFromOccupidePositions(position);
                     if((-SpacesNeeded) <= checkAllThese.Where(vt => vt.SpaceOccupide == null).Count())
                         return false;
-                    if (checkAllThese.Any(vt => vt.SpaceOccupide != null))
-                        return false;
+                    if (delta < 0)
+                    {
+                        if (checkAllThese.Any(vt => vt.SpaceOccupide != null && vt.SpaceOccupide>-delta))
+                            return false;
+                    }
+                    else
+                    {
+                        if (checkAllThese.Any(vt => vt.SpaceOccupide != null ))
+                            return false;
+                    }
                     return true;
 
                  /*   //  SpaceLeftForFractO = checkthisO.SpaceLeftForFract;
@@ -259,7 +284,7 @@ namespace Garage_2._0_MPT.Utils
                                 return false;
                             if (delta < 0)
                             {
-                                if (delta + SpacesNeeded > 0)
+                                if (checkthisO.SpaceOccupide + delta > 0)
                                     return false;
                                 return true;
                             }
@@ -281,15 +306,45 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
+        private Position GetNextSpotWrapper(Position Position, int SpacesNeeded, Position StopPosition = null)
+        {
+            if (StopPosition == null)
+            {
+                return GetNextSpot(Position, SpacesNeeded, StopPosition);
+            }
+            else
+            {
+
+                Position SavePos = new Position
+                {
+                    Z = Position.Z,
+                    X = Position.X,
+                    Y = Position.Y,
+                    SpaceLeftForFract = Position.SpaceLeftForFract,
+                    SpaceOccupide = Position.SpaceOccupide
+
+                };
+                Position = GetNextSpot(Position, SpacesNeeded, null);
+                if(Position==null)
+                {
+                    Position = GetNextSpot(SavePos, SpacesNeeded, StopPosition);
+                }
+                return Position;
+            }
+
+        }
+
 
         /// <summary>
         ///  Tries to find the next free position uses recursion 
         /// </summary>
-        /// <param name="position">to test</param>
+        /// <param name="Position">to test</param>
         /// <param name="SpacesNeeded">Needed spaces</param>
+        /// <param name="StopPosition">Stopps here or null</param>
         /// <returns>a free position or null if no avabile</returns>
-        public Position GetNextSpot(Position position, int SpacesNeeded)
+        private Position GetNextSpot(Position Position, int SpacesNeeded, Position StopPosition = null)
         {
+             
             Position testPos = null;
             Position checkthisN = null;
             Position checkthisO = null;
@@ -298,26 +353,33 @@ namespace Garage_2._0_MPT.Utils
             int nextfract;
             if (SpacesNeeded < 0)
             {
-                position = NextPostminus(position, SpacesNeeded);
+                Position = NextPostminus(Position, SpacesNeeded);
             }
             else if (SpacesNeeded == 1)
             {
-                position = NextPos1(position);
+                Position = NextPos1(Position);
             }
             else if (SpacesNeeded == 2)
             {
-                position = NextPos2(position);
+                Position = NextPos2(Position);
             }
             else if (SpacesNeeded == 3)
             {
-                position = NextPos3(position);
+                Position = NextPos3(Position);
             }
             else
                 throw new NotImplementedException();
-            if (position == null)
-                return null;
-
-            if (TestPos(position, SpacesNeeded, out checkthisN, out checkthisO))
+            if (StopPosition == null)
+            {
+                if (Position == null)
+                    return null;
+            }
+            else
+            {
+                if (Position == null || Position.Equals(StopPosition))
+                    return null;
+            }
+            if (TestPos(Position, SpacesNeeded, out checkthisN, out checkthisO))
             { // first ok needed allways
                 if (SpacesNeeded < 0)
                 { // mc now
@@ -326,29 +388,29 @@ namespace Garage_2._0_MPT.Utils
                         nextfract = checkthisN.SpaceLeftForFract.Value + 1;
                     if (checkthisO != null && checkthisO.SpaceLeftForFract != null)
                         nextfract = checkthisO.SpaceLeftForFract.Value + 1;
-                    if (position.Y == 3)
+                    if (Position.Y == 3)
                     {
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y - 1,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
+                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO,-1))
                         {
                             testPos = new Position()
                             {
-                                Z = position.Z,
-                                X = position.X,
-                                Y = position.Y - 2,
+                                Z = Position.Z,
+                                X = Position.X,
+                                Y = Position.Y - 2,
                             };
-                            if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
+                            if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO,-2))
                             {
                                 return new Position()
                                 {
-                                    Z = position.Z,
-                                    X = position.X,
-                                    Y = position.Y,
+                                    Z = Position.Z,
+                                    X = Position.X,
+                                    Y = Position.Y,
                                     SpaceLeftForFract = nextfract
                                 };
 
@@ -356,21 +418,21 @@ namespace Garage_2._0_MPT.Utils
 
                         }
                     }
-                    if (position.Y == 2)
+                    if (Position.Y == 2)
                     {
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y - 2,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y - 1,
                         };
-                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO))
+                        if (TestPos(testPos, SpacesNeeded, out blaskN, out blaskO,-1))
                         {
                             return new Position()
                             {
-                                Z = position.Z,
-                                X = position.X,
-                                Y = position.Y,
+                                Z = Position.Z,
+                                X = Position.X,
+                                Y = Position.Y,
                                 SpaceLeftForFract = nextfract
                             };
 
@@ -378,30 +440,30 @@ namespace Garage_2._0_MPT.Utils
 
                     }
                     // get next and return
-                    return GetNextSpot(position, SpacesNeeded);
+                    return GetNextSpot(Position, SpacesNeeded, StopPosition);
                 }
                 else if (SpacesNeeded == 1)
                 {
-                    if (position.Y == 3)
+                    if (Position.Y == 3)
                     {
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y - 1,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y - 1,
                         };
                         if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO, -1))
                         {
                             testPos = new Position()
                             {
-                                Z = position.Z,
-                                X = position.X,
-                                Y = position.Y - 2,
+                                Z = Position.Z,
+                                X = Position.X,
+                                Y = Position.Y - 2,
                             };
                             if (TestPos(testPos, SpacesNeeded+2, out blaskN, out blaskO,-2))
                             {
-                                position.SpaceOccupide = SpacesNeeded;
-                                return position;
+                                Position.SpaceOccupide = SpacesNeeded;
+                                return Position;
 
                             }
 
@@ -412,73 +474,73 @@ namespace Garage_2._0_MPT.Utils
                             {
                                 testPos = new Position()
                                 {
-                                    Z = position.Z,
-                                    X = position.X,
-                                    Y = position.Y - 2,
+                                    Z = Position.Z,
+                                    X = Position.X,
+                                    Y = Position.Y - 2,
                                 };
                                 if (TestPos(testPos, SpacesNeeded + 2, out blaskN, out blaskO,-2))
                                 {
-                                    position.SpaceOccupide = SpacesNeeded;
-                                    return position;
+                                    Position.SpaceOccupide = SpacesNeeded;
+                                    return Position;
 
                                 }
                                 else
                                 {
                                     if ((blaskN != null && blaskN.SpaceLeftForFract != null) || (blaskO != null && blaskO.SpaceLeftForFract != null))
                                     {
-                                        position.SpaceOccupide = SpacesNeeded;
-                                        return position;
+                                        Position.SpaceOccupide = SpacesNeeded;
+                                        return Position;
                                     }
                                 }
 
                             }
                          }
                     }
-                    if (position.Y == 2)
+                    if (Position.Y == 2)
                     {
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y - 1,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y - 1,
                         };
                         if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO,-1))
                         {
-                            position.SpaceOccupide = SpacesNeeded;
-                            return position;
+                            Position.SpaceOccupide = SpacesNeeded;
+                            return Position;
 
                         }
                         else
                         {
                             if ((blaskN != null && blaskN.SpaceLeftForFract != null) || (blaskO != null && blaskO.SpaceLeftForFract != null))
                             {
-                                position.SpaceOccupide = SpacesNeeded;
-                                return position;
+                                Position.SpaceOccupide = SpacesNeeded;
+                                return Position;
                             }
                         }
                     }
-                    if (position.Y == 1)
+                    if (Position.Y == 1)
                     {
-                        position.SpaceOccupide = SpacesNeeded;
-                        return position;
+                        Position.SpaceOccupide = SpacesNeeded;
+                        return Position;
                     }
                         // get next and return
-                    return GetNextSpot(position, SpacesNeeded);
+                    return GetNextSpot(Position, SpacesNeeded, StopPosition);
                 }
                 else if (SpacesNeeded == 2)
                 {
-                    if (position.Y == 1)
+                    if (Position.Y == 1)
                     {
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y + 1,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y + 1,
                         };
                         if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                         {
-                            position.SpaceOccupide = SpacesNeeded;
-                            return position;
+                            Position.SpaceOccupide = SpacesNeeded;
+                            return Position;
                         }
 
                     }
@@ -486,48 +548,48 @@ namespace Garage_2._0_MPT.Utils
                     { // y=2
                         testPos = new Position()
                         {
-                            Z = position.Z,
-                            X = position.X,
-                            Y = position.Y - 1,
+                            Z = Position.Z,
+                            X = Position.X,
+                            Y = Position.Y - 1,
                         };
                         if (TestPos(testPos, SpacesNeeded+1, out blaskN, out blaskO,-1))
                         {
 
-                            if (position.X > Twos[position.Z] - 1)
+                            if (Position.X > Twos[Position.Z] - 1)
                             {
                                 testPos = new Position()
                                 {
-                                    Z = position.Z,
-                                    X = position.X,
-                                    Y = position.Y + 1,
+                                    Z = Position.Z,
+                                    X = Position.X,
+                                    Y = Position.Y + 1,
                                 };
                                 if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                                 {
-                                    position.SpaceOccupide = SpacesNeeded;
-                                    return position;
+                                    Position.SpaceOccupide = SpacesNeeded;
+                                    return Position;
                                 }
                             }
 
                         }
                         if ((blaskN == null || (blaskN.SpaceOccupide == null || blaskN.SpaceOccupide == 0)) && (blaskO == null || (blaskO.SpaceOccupide == null || blaskO.SpaceOccupide == 0)))
                         { // är ledig ändå
-                            if (position.X > Twos[position.Z])
+                            if (Position.X > Twos[Position.Z])
                             {
                                 testPos = new Position()
                                 {
-                                    Z = position.Z,
-                                    X = position.X,
-                                    Y = position.Y + 1,
+                                    Z = Position.Z,
+                                    X = Position.X,
+                                    Y = Position.Y + 1,
                                 };
                                 if (TestPos(testPos, SpacesNeeded-1, out blaskN, out blaskO,1))
                                 {
-                                    return position;
+                                    return Position;
                                 }
                             }
 
                         }
                         // get next
-                        return GetNextSpot(position, SpacesNeeded);
+                        return GetNextSpot(Position, SpacesNeeded, StopPosition);
                     }
                 }
                 else if (SpacesNeeded == 3)
@@ -535,32 +597,32 @@ namespace Garage_2._0_MPT.Utils
                     
                     testPos = new Position
                     {
-                        Z = position.Z,
-                        X = position.X,
+                        Z = Position.Z,
+                        X = Position.X,
                         Y = 2
                     };
                     if (TestPos(testPos, SpacesNeeded-2, out blaskN, out blaskO,2))
                     {
                         testPos = new Position
                         {
-                            Z = position.Z,
-                            X = position.X,
+                            Z = Position.Z,
+                            X = Position.X,
                             Y = 3
                         };
                         if (TestPos(testPos, SpacesNeeded-2, out blaskN, out blaskO,2))
                         {
-                            return position;
+                            return Position;
                         }
 
                     }
                     // get next
-                    return GetNextSpot(position, SpacesNeeded);
+                    return GetNextSpot(Position, SpacesNeeded, StopPosition);
 
                 }
                 else
                     throw new NotImplementedException();
             }
-            return GetNextSpot(position, SpacesNeeded);
+            return GetNextSpot(Position, SpacesNeeded, StopPosition);
         }
 
 
@@ -570,7 +632,7 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="position">The last</param>
         /// <param name="SpacesNeeded">allways negative == fraktion</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        public Position NextPostminus(Position position, int SpacesNeeded)
+        private Position NextPostminus(Position position, int SpacesNeeded)
         {
             Position testPos = null;
             if ((position.Y < 2 && position.X <= Twos[position.Z - 1]) || (position.Y < 3 && position.X > Twos[position.Z - 1]))
@@ -643,7 +705,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">Start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        public Position NextPos1(Position position)
+        private Position NextPos1(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 1;
@@ -728,7 +790,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        public Position NextPos2(Position position)
+        private Position NextPos2(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 2;
@@ -822,7 +884,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        public Position NextPos3(Position position)
+        private Position NextPos3(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 3;
@@ -876,7 +938,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">To find</param>
         /// <returns>the hit or null if no hit</returns>
-        public Position GetPosFromOccupidePositions(Position position)
+        private Position GetPosFromOccupidePositions(Position position)
         {
             return OccupidePositions.Where(p => p != null).FirstOrDefault(p => position.Equals(p));
             /*
@@ -896,7 +958,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">To find</param>
         /// <returns>the hit or null if no hit</returns>
-        public Position GetPosFromNextFreeSpaces(Position position)
+        private Position GetPosFromNextFreeSpaces(Position position)
         {
             return NextFreeSpaces.Values.Where(p=>p!=null).FirstOrDefault(p => position.Equals(p));
             /*
