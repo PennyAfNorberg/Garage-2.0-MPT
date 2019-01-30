@@ -245,7 +245,7 @@ namespace Garage_2._0_MPT.Utils
                 {
                     // we need to get all parked items for this space now
 
-                    var checkAllThese= getAllPosFromOccupidePositions(position);
+                    var checkAllThese= GetAllPosFromOccupidePositions(position);
                     if((-SpacesNeeded) <= checkAllThese.Where(vt => vt.SpaceOccupide == null).Count())
                         return false;
                     if (delta < 0)
@@ -916,7 +916,7 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
-        private List<Position> getAllPosFromOccupidePositions(Position position)
+        private List<Position> GetAllPosFromOccupidePositions(Position position)
         {
             return OccupidePositions.Where(p => p != null).Where(p => position.Equals(p)).ToList();
             /*
