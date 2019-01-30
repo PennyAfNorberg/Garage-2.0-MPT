@@ -77,8 +77,9 @@ header {
 }
 .myBtnTb {
     white-space: nowrap;
+    margin-left:.5em;
 }
 .allBtnTB {
     font-size:80%;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
