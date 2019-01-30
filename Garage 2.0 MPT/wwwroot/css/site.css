@@ -21,7 +21,7 @@ html {
 
 @media (max-width: 768px) {
   html {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
@@ -71,4 +71,14 @@ header {
 }
 .updown{
     height: 1em;
+}
+.myTbBox {      
+    white-space: nowrap;
+}
+.myBtnTb {
+    white-space: nowrap;
+}
+.allBtnTB {
+    font-size:80%;
+    white-space: nowrap;
 }
