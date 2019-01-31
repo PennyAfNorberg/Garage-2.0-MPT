@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(model => model.Header.ParkedTime)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Header.ParkOutDate)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Header.Price)
             </th>
             <th>
@@ -49,16 +52,19 @@
                 @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.ParkOutDate)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <th>
                 @Html.DisplayFor(modelItem => item.Where)
             </th>
             <td>
-                <a asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a> 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                <a asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 <!-- <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-    <a asp-action="Receipt" asp-route-id="@item.Id">Receipt</a>-->
+        <a asp-action="Receipt" asp-route-id="@item.Id">Receipt</a>-->
             </td>
         </tr>
 }

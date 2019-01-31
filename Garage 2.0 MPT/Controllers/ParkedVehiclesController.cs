@@ -112,7 +112,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Overview()
         {
             await InitPlots();
-            var res = await AddTimeAndPrice();
+            var res = await AddTimeAndPrice(true);
 
             var svar = new ListViewModel
             {
