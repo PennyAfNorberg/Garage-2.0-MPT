@@ -18,12 +18,12 @@ namespace Garage_2._0_MPT.Models
         public ParkedVehiclesController(Garage_2_0_MPTContext context)
         {
             _context = context;
-            int Floor = 2;
-            int[] Twos = new int[2]
-                { 2,3
+            int Floor = 3;
+            int[] Twos = new int[3]
+                { 2,3,2
                 };
-            int[] Threes = new int[2]
-                    { 3,2
+            int[] Threes = new int[3]
+                    { 3,2,3
                     };
 
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
