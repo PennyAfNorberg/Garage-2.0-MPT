@@ -1,7 +1,7 @@
 ﻿@model Garage_2._0_MPT.Models.ParkedVehicle
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Receipt";
 }
 <div class="container">
     <div class="row">
@@ -18,7 +18,10 @@
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 text-right">
             <p>
-            Date:<em>1st November, 2013</em>
+                ParkeInDate:<em>@Html.DisplayFor(model => model.ParkInDate)</em>
+            </p>
+            <p>
+                ParkOutDate:<em>@Html.DisplayFor(model => model.ParkOutDate)</em>
             </p>
             <p>
                 Receipt#:<em>ARSTA1801201523ID21w</em>
