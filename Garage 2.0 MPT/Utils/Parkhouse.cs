@@ -167,35 +167,64 @@ namespace Garage_2._0_MPT.Utils
             Position blasko = null;
             if(NextFreeSpaces.TryGetValue(parkedVehicle.VehicleTyp.SpacesNeeded, out nextOne))
             {
-                OccupidePositions.Add(nextOne);
-                parkedVehicle.Where = nextOne.ToString();
-                parkedVehicle.Position = nextOne;
-                NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
-                var nextOne2 = new Position()
+                if (nextOne != null)
                 {
-                    Z = nextOne.Z,
-                    X = nextOne.X,
-                    Y = nextOne.Y
-                };
-                if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
-                {
-                    if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
+                    OccupidePositions.Add(nextOne);
+                    parkedVehicle.Where = nextOne.ToString();
+                    parkedVehicle.Position = nextOne;
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
+                    var nextOne2 = new Position()
                     {
-                        nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract+1) : ((blasko != null) ? (blasko.SpaceLeftForFract+1) : (parkedVehicle.VehicleTyp.SpacesNeeded+1));
+                        Z = nextOne.Z,
+                        X = nextOne.X,
+                        Y = nextOne.Y
+                    };
+                    if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
+                    {
+                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        {
+                            nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract + 1) : ((blasko != null) ? (blasko.SpaceLeftForFract + 1) : (parkedVehicle.VehicleTyp.SpacesNeeded + 1));
+                        }
+                        else
+                        {
+                            nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        }
+                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
                     }
                     else
                     {
-                        nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        nextOne = GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
+                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
                     }
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
+
+                    return true;
                 }
                 else
-                {
-                    nextOne= GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
+                { // then we try to steal a prebooked slot.
+                    if (NextFreeSpaces.Keys.Any(p => p > parkedVehicle.VehicleTyp.SpacesNeeded))
+                    { // something to steal
+                        int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
+                        nextOne = NextFreeSpaces[stealfromhere];
+                        var saveoldSpaceneed = (nextOne.SpaceOccupide == null) ? nextOne.SpaceLeftForFract - 1 : nextOne.SpaceOccupide;
+                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        {
+                            nextOne.SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                        }
+                        else
+                        {
+                            nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        }
+                        OccupidePositions.Add(nextOne);
+                        NextFreeSpaces[stealfromhere] = null;
+                        var nextOne2 = new Position()
+                        {
+                            Z = nextOne.Z,
+                            X = nextOne.X,
+                            Y = nextOne.Y
+                        };
+                        NextFreeSpaces[stealfromhere] = GetNextSpotWrapper(nextOne, saveoldSpaceneed.Value, nextOne);
+                    }
                 }
-
-                return true;
             }
             else
             { // then we try to steal a prebooked slot.
