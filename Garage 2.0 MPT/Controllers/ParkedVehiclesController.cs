@@ -471,13 +471,20 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Statistik()
         {
             var reta = await AddTimeAndPrice(true);
-            var reta_no = await AddTimeAndPrice();
+           // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();
-            stat.TotalWeels = reta_no.Select(o => o.NumberOfWheels).Sum();
+            stat.TotalWeels = reta.Where(o=>o.ParkOutDate==null).Select(o => o.NumberOfWheels).Sum();
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
            
             stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
+
+
+            //var q = reta.GroupBy(x => x)
+            //.Select(g => new { Value = g.Key, Count = g.Count() })
+            //.OrderByDescending(x => x.Count);
+
+           // stat.myTypes= q;
 
             stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 
