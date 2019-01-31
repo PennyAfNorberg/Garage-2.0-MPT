@@ -84,11 +84,14 @@ header {
     /*white-space: nowrap;*/
 }
 
-.Gobig
-{
-
+.Gobig {
+    width: 100%;
     display: inline-block;
-
-
-
+    margin-left: 0px;
+    background-color:aqua;
+}
+.wider {
+    width: 100%;
+    background-color: aqua;
+    margin: 0em 0.5em 0.5em 0;
 }

@@ -233,17 +233,9 @@ namespace Garage_2._0_MPT.Models
             }
             if (ModelState.IsValid )
             {
-                var res = await AddTimeAndPrice();
-                if (!loadedSeed)
-                {
-                    foreach (var item in res.Where(p => p.Where == null))
-                    {
-                        parkhouse.Park(item);
-                    }
-                    loadedSeed = true;
-                }
-               
-   
+                await InitPlots();
+                parkedVehicle.VehicleTyp = await _context.VehicleTyp.Where(v => v.VehicleTypId == parkedVehicle.VehicleTypId).FirstOrDefaultAsync();
+
                 if (parkhouse.Park(parkedVehicle))
                 {
                     _context.Add(parkedVehicle);
