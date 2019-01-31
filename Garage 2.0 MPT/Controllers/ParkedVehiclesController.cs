@@ -95,7 +95,7 @@ namespace Garage_2._0_MPT.Models
         {
             await InitPlots();
             var res = await AddTimeAndPrice();
-            ViewData["PHouseStatus"] = GetParkingsHouseStatus();
+      
 
             var svar = new ListViewModel
             {
@@ -112,7 +112,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Overview()
         {
             await InitPlots();
-            var res = await AddTimeAndPrice();
+            var res = await AddTimeAndPrice(true);
 
             var svar = new ListViewModel
             {
@@ -196,7 +196,7 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["PHouseStatus"] = GetParkingsHouseStatus();
+   
             var res = new CreateViewModel
             {
                 ParkedVehicle = new ParkedVehicle(),
