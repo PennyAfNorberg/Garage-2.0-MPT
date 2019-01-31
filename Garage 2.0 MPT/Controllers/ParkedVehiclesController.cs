@@ -476,8 +476,6 @@ namespace Garage_2._0_MPT.Models
            // return View("Index",reta.OrderBy(o => o.VehicleBrand));
         }
 
-
-
         public async Task<IActionResult> Statistik()
         {
             var reta = await AddTimeAndPrice(true);
