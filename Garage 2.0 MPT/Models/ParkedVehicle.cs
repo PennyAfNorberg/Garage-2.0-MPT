@@ -45,7 +45,7 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "CostPerHour")]
         public int CostPerHour { get; set; }
 
-        [Display(Name = "Where")]
+        [Display(Name = "Parking Lot")]
         public string Where { get; set; }
         [NotMapped]
         public Position Position { get; set; }

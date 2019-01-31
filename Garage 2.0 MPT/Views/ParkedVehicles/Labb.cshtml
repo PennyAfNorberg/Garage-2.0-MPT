@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Where)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,10 +46,13 @@
                 @Html.DisplayFor(modelItem => item.VehicleColor)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkedTime) 
+                @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Where)
             </td>
             <td>
                 <a asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a> |
