@@ -53,7 +53,10 @@
         </header>
     <div class="container">
          <partial name="_CookieConsentPartial" />
-      <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  /> 
+        @if(@ViewData["Title"].ToString() != "Receipt")
+        {
+             <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  /> 
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
