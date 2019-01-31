@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(model => model.Header.ParkedTime)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Header.ParkInDate)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Header.ParkOutDate)
             </th>
             <th>
@@ -50,6 +53,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ParkedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkInDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ParkOutDate)

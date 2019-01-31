@@ -137,6 +137,8 @@ namespace Garage_2._0_MPT.Utils
         public bool Leave(ParkedVehicle parkedVehicle)
         {
             OccupidePositions.Remove(parkedVehicle.Position);
+            parkedVehicle.Where = null;
+            parkedVehicle.Position = null;
             foreach (var item in NextFreeSpaces)
             {
                 if (item.Value == null)
