@@ -29,9 +29,6 @@
                     @Html.DisplayNameFor(model => model.Header.VehicleBrand)<span><img id="i5" class="updown" src="~/img/bullet_green.png" /></span>
                 </th>
                 <th class="myTbBox">
-                    @Html.DisplayNameFor(model => model.Header.NumberOfWheels)
-                </th>
-                <th class="myTbBox">
                     @Html.DisplayNameFor(model => model.Header.ParkedTime)
                 </th>
                 <th class="myTbBox">
@@ -62,9 +59,6 @@
                 @Html.DisplayFor(modelItem => item.VehicleBrand)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NumberOfWheels)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
@@ -75,10 +69,10 @@
             </td>
             <td>
                 <div class="allBtnTB">
-                    <a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a> 
-                    <a class="myBtnTb" asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                    <!-- <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> | -->
-                    <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item.Id">Receipt</a>
+                    <a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a>
+                    <a class="myBtnTb" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <!-- <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+    <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item.Id">Receipt</a> -->
                 </div>
 
             </td>
