@@ -353,9 +353,13 @@ namespace Garage_2._0_MPT.Models
            
             stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
 
-            
 
-            stat.myTypes= reta.Select(o => o.VehicleTyp.Name).GroupBy(o=>o).ToArray();
+            //var q = reta.GroupBy(x => x)
+            //.Select(g => new { Value = g.Key, Count = g.Count() })
+            //.OrderByDescending(x => x.Count);
+
+           // stat.myTypes= q;
+
             return View(stat);
         }
     }
