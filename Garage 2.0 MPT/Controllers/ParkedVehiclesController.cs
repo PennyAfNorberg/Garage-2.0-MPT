@@ -476,15 +476,9 @@ namespace Garage_2._0_MPT.Models
             StatViewModel stat = new StatViewModel();
             stat.TotalWeels = reta.Where(o=>o.ParkOutDate==null).Select(o => o.NumberOfWheels).Sum();
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
-           
-            stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
-
-
-            //var q = reta.GroupBy(x => x)
-            //.Select(g => new { Value = g.Key, Count = g.Count() })
-            //.OrderByDescending(x => x.Count);
-
-           // stat.myTypes= q;
+                      
+            stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
+     
 
             stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 
