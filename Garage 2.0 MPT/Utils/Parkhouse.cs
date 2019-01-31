@@ -18,7 +18,10 @@ namespace Garage_2._0_MPT.Utils
 
         private readonly Garage_2_0_MPTContext _context;
 
-
+        public Dictionary<int, Position>  GetNextFreeSpaces()
+        {
+            return NextFreeSpaces.ToDictionary(k =>k.Key, k => k.Value  );
+        }
 
 
         /// <summary>
@@ -41,6 +44,14 @@ namespace Garage_2._0_MPT.Utils
             this.Twos = Twos.ToList();
             this.Threes = Threes.ToList();
             _context = context;
+            var res = _context.ParkedVehicle.Where(p => p.Where != null).Select(x => new ParkedVehicle()
+            {
+                Id = x.Id,
+                VehicleTyp = x.VehicleTyp,
+                Where = x.Where
+            });
+            AddSavedVehicles(res);
+
             var firstPosition = new Position()
             {
                 Z = 1,
@@ -68,7 +79,7 @@ namespace Garage_2._0_MPT.Utils
                 {
                     firstPosition.SpaceOccupide = SpacesNeeded;
                 }
-                while (NextFreeSpaces.ContainsValue(firstPosition))
+                while (NextFreeSpaces.ContainsValue(firstPosition) || OccupidePositions.Contains(firstPosition))
                     firstPosition = GetNextSpot(firstPosition, SpacesNeeded);
 
                 NextFreeSpaces[SpacesNeeded] = firstPosition;
@@ -90,6 +101,38 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
+
+        public void AddSavedVehicles(IEnumerable<ParkedVehicle> parkedVehicles)
+        {
+            foreach (var parkedVehicle in parkedVehicles)
+            {
+                if(parkedVehicle.Where != null)
+                  AddSavedVehicle(parkedVehicle);
+            }
+
+            foreach(var item in NextFreeSpaces)
+            {
+                NextFreeSpaces[item.Key] = null;
+            }
+
+            var firstPosition = new Position()
+            {
+                Z = 1,
+                X = 1,
+                Y = 1 // 1,2,3 
+            };
+
+        }
+        //A (3,1)
+        private void AddSavedVehicle(ParkedVehicle parkedVehicle)
+        {
+            var temppos = new Position(parkedVehicle);
+            OccupidePositions.Add(temppos);
+            parkedVehicle.Position = temppos;
+            
+
+
+        }
 
         public bool Leave(ParkedVehicle parkedVehicle)
         {
@@ -245,7 +288,7 @@ namespace Garage_2._0_MPT.Utils
                 {
                     // we need to get all parked items for this space now
 
-                    var checkAllThese= getAllPosFromOccupidePositions(position);
+                    var checkAllThese= GetAllPosFromOccupidePositions(position);
                     if((-SpacesNeeded) <= checkAllThese.Where(vt => vt.SpaceOccupide == null).Count())
                         return false;
                     if (delta < 0)
@@ -889,7 +932,7 @@ namespace Garage_2._0_MPT.Utils
             Position testPos = null;
             int SpacesNeeded = 3;
 
-            if (position.X <= Twos[position.Z - 1] + Threes[position.Z - 1])
+            if (position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -916,7 +959,7 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
-        private List<Position> getAllPosFromOccupidePositions(Position position)
+        private List<Position> GetAllPosFromOccupidePositions(Position position)
         {
             return OccupidePositions.Where(p => p != null).Where(p => position.Equals(p)).ToList();
             /*

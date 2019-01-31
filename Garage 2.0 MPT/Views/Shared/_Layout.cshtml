@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -43,9 +44,6 @@
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Overview">Overview</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Labb">Labb</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Statistik">Statistik</a>
                         </li>
                     </ul>
@@ -53,12 +51,13 @@
                 </div>
             </nav>
         </header>
-        <div class="container">
-            <partial name="_CookieConsentPartial" />
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+    <div class="container">
+         <partial name="_CookieConsentPartial" />
+      <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  /> 
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
         <footer class="border-top footer text-muted">
             <div class="container">

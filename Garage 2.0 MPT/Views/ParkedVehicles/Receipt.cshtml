@@ -1,4 +1,4 @@
-﻿@model Garage_2._0_MPT.Models.ParkedVehicle
+﻿@model Garage_2._0_MPT.Models.SingelViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -41,12 +41,12 @@
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.VehicleTyp.Name)</td>
-                <td>@Html.DisplayFor(model => model.RegNr)</td>
-                <td>@Html.DisplayFor(model => model.VehicleModel)</td>
-                <td>@Html.DisplayFor(model => model.ParkedTime)</td>
-                <td>@Html.DisplayFor(model => model.CostPerHour)</td>
-                <td>@Html.DisplayFor(model => model.Price)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.VehicleTyp.Name)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.RegNr)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.VehicleModel)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.ParkedTime)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.CostPerHour)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.Price)</td>
             </tr>
         </tbody>
     </table>
@@ -59,13 +59,13 @@
 
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.NumberOfWheels)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.NumberOfWheels)</td>
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.VehicleBrand)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.VehicleBrand)</td>
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.VehicleColor)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.VehicleColor)</td>
           <td class="col-md-3" style="text-align: center"> 3 </td>
     <td class="col-md-3 text-center">$16</td>
     <td class="col-md-3 text-center">$48</td>

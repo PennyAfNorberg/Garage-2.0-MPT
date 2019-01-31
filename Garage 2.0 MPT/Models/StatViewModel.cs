@@ -14,5 +14,6 @@ namespace Garage_2._0_MPT.Models
         public string sTyp { get; set; }
       
 
+        public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
     }
 }

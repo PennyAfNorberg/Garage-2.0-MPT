@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_2._0_MPT.Models.ParkedVehicle>
+﻿@model Garage_2._0_MPT.Models.ListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -14,34 +14,35 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleTyp.Name)
+                @Html.DisplayNameFor(model => model.Header.VehicleTyp.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegNr)
+                @Html.DisplayNameFor(model => model.Header.RegNr)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleColor)
+                @Html.DisplayNameFor(model => model.Header.VehicleColor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleModel)
+                @Html.DisplayNameFor(model => model.Header.VehicleModel)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleBrand)
+                @Html.DisplayNameFor(model => model.Header.VehicleBrand)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfWheels)
+                @Html.DisplayNameFor(model => model.Header.NumberOfWheels)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkedTime)
+                @Html.DisplayNameFor(model => model.Header.ParkedTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Header.Price)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.ParkedVehicles)
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
