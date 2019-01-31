@@ -26,15 +26,9 @@
             CountByType: @Html.DisplayFor(model => model.sTyp)
         </dd>
         <dd class="col-sm-10">
-            CountByType: @Html.DisplayFor(model => model.myTypes)
+            
         </dd>
-        @foreach (var item in Model.myTypes)
-        {
-            <dd>
-            @Html.DisplayFor(modelItem => item) - 
-            <br />
-            </dd> 
-        }
+       
         </dl>
 </div>
 <div>
