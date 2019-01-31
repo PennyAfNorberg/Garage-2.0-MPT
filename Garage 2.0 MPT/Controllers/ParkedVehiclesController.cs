@@ -18,12 +18,12 @@ namespace Garage_2._0_MPT.Models
         public ParkedVehiclesController(Garage_2_0_MPTContext context)
         {
             _context = context;
-            int Floor = 2;
-            int[] Twos = new int[2]
-                { 2,3
+            int Floor = 3;
+            int[] Twos = new int[3]
+                { 2,3,2
                 };
-            int[] Threes = new int[2]
-                    { 3,2
+            int[] Threes = new int[3]
+                    { 3,2,3
                     };
 
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
@@ -233,17 +233,9 @@ namespace Garage_2._0_MPT.Models
             }
             if (ModelState.IsValid )
             {
-                var res = await AddTimeAndPrice();
-                if (!loadedSeed)
-                {
-                    foreach (var item in res.Where(p => p.Where == null))
-                    {
-                        parkhouse.Park(item);
-                    }
-                    loadedSeed = true;
-                }
-               
-   
+                await InitPlots();
+                parkedVehicle.VehicleTyp = await _context.VehicleTyp.Where(v => v.VehicleTypId == parkedVehicle.VehicleTypId).FirstOrDefaultAsync();
+
                 if (parkhouse.Park(parkedVehicle))
                 {
                     _context.Add(parkedVehicle);
@@ -479,13 +471,20 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Statistik()
         {
             var reta = await AddTimeAndPrice(true);
-            var reta_no = await AddTimeAndPrice();
+           // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();
-            stat.TotalWeels = reta_no.Select(o => o.NumberOfWheels).Sum();
+            stat.TotalWeels = reta.Where(o=>o.ParkOutDate==null).Select(o => o.NumberOfWheels).Sum();
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
            
             stat.TodayTotalIncome = reta.Where(o=>o.ParkInDate.Date == DateTime.Now.Date).Select(o => o.Price).Sum();
+
+
+            //var q = reta.GroupBy(x => x)
+            //.Select(g => new { Value = g.Key, Count = g.Count() })
+            //.OrderByDescending(x => x.Count);
+
+           // stat.myTypes= q;
 
             stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 

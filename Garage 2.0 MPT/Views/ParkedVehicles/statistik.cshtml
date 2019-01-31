@@ -2,29 +2,34 @@
 
 @{
     ViewData["Title"] = "Statistik";
+    
 }
 
-<h1>StatyStat</h1>
+<h1>Garage statistik </h1>
 
 <div>
     <hr />
     <dl class="row">
         <dt class="col-sm-10">
-            Super
+            
         </dt>
         <dd class="col-sm-10">
-            Total weels in the garage: @Html.DisplayFor(model => model.TotalWeels)
+            Total weels in the garage: @Html.DisplayFor(model => model.TotalWeels) 
         </dd>
         <dd class="col-sm-10">
-            Today revenue: @Html.DisplayFor(model => model.TodayTotalIncome)
+            Today revenue:  @Html.DisplayFor(model => model.TodayTotalIncome) Sek
         </dd>
         <dd class="col-sm-10">
-            Total revenue from start: @Html.DisplayFor(model => model.TotalIncome)
+            Total revenue from start:  @Html.DisplayFor(model => model.TotalIncome) Sek
         </dd>
         <dd class="col-sm-10">
-            CountByType: @Html.DisplayFor(model => model.sTyp)
+            CountByType: @Html.DisplayFor(model => model.sTyp) In development
         </dd>
-    </dl>
+        <dd class="col-sm-10">
+            
+        </dd>
+       
+        </dl>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
