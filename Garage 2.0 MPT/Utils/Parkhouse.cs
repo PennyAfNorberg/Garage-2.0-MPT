@@ -730,7 +730,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -814,7 +814,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -899,7 +899,7 @@ namespace Garage_2._0_MPT.Utils
                 };
             }
 
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -942,7 +942,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.Z <= Floors)
+            else if (position.Z < Floors)
             {
                 testPos = new Position()
                 {
