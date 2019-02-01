@@ -396,15 +396,18 @@ namespace Garage_2._0_MPT.Models
         }
 
         
-        public async Task<IActionResult> ParkedCars(string SearchString)
-        {
+        public async Task<IActionResult> ParkedCars( string Message, string Sort="RegNr", string SearchString = "")
+        {        
             ParkedVehicle[] reta = await AddTimeAndPrice();
+
+            
             var svar = new ListViewModel
             {
                 ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()))
+                ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())),
+    
             };
-            var a = Sort + Message;
+            
             return View("ParkedCars",svar);
             //return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
         }

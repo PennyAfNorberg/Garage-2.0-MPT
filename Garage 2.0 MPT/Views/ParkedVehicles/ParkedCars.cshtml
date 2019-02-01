@@ -16,10 +16,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Header.VehicleTyp.Name)
             </th>
-            <th>
+            <th onclick='location.href="@Url.Action("ParkedCars", "ParkedVehicles", new {Sort = "RegNR" })"'>
                 @Html.DisplayNameFor(model => model.Header.RegNr)
             </th>
-            <th>
+            <th onclick='location.href="@Url.Action("ParkedCars", "ParkedVehicles", new {Sort = "VehicleColor" })"'>
                 @Html.DisplayNameFor(model => model.Header.VehicleColor)
             </th>
             <th>
