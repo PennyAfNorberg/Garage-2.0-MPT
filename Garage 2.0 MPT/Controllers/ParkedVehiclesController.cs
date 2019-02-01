@@ -404,7 +404,7 @@ namespace Garage_2._0_MPT.Models
                 ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()))
             };
-            var a = Sort + Message;
+            //var a = Sort + Message;
             return View("ParkedCars",svar);
             //return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
         }
