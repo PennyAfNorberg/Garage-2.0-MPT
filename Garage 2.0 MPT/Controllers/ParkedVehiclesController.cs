@@ -396,7 +396,7 @@ namespace Garage_2._0_MPT.Models
         }
 
         
-        public async Task<IActionResult> ParkedCars(string SearchString,string Sort,string Message)
+        public async Task<IActionResult> ParkedCars(string SearchString)
         {
             ParkedVehicle[] reta = await AddTimeAndPrice();
             var svar = new ListViewModel
