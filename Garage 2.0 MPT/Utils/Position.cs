@@ -44,7 +44,7 @@ namespace Garage_2._0_MPT.Utils
 
         public override string ToString()
         {
-            return $"{((char)((char)Z - 1 + 'A')).ToString()}  ({X},{Y}) ";
+            return $"{((char)((char)Z - 1 + 'A')).ToString()}  ({X},{Y})";
         }
 
         public bool Equals(Position x, Position y)
