@@ -11,10 +11,10 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-10">
-            
+
         </dt>
         <dd class="col-sm-10">
-            Total weels in the garage: @Html.DisplayFor(model => model.TotalWeels) 
+            Total weels in the garage: @Html.DisplayFor(model => model.TotalWeels)
         </dd>
         <dd class="col-sm-10">
             Today revenue:  @Html.DisplayFor(model => model.TodayTotalIncome) Sek
@@ -22,14 +22,18 @@
         <dd class="col-sm-10">
             Total revenue from start:  @Html.DisplayFor(model => model.TotalIncome) Sek
         </dd>
+        @foreach (var item in Model.myTypes)
+        {
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.Name) : 
+                @Html.DisplayFor(modelItem => item.Count)
+            </dd>
+        }
         <dd class="col-sm-10">
-            CountByType: @Html.DisplayFor(model => model.sTyp) In development
+
         </dd>
-        <dd class="col-sm-10">
-            
-        </dd>
-       
-        </dl>
+
+    </dl>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
