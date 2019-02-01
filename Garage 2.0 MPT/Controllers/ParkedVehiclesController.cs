@@ -100,7 +100,9 @@ namespace Garage_2._0_MPT.Models
             var svar = new ListViewModel
             {
                 ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = res
+                ParkedVehicles = res,
+                Message= "Parked Vehicles"
+
             };
 
             return View(svar);
@@ -396,79 +398,31 @@ namespace Garage_2._0_MPT.Models
         }
 
         
-        public async Task<IActionResult> ParkedCars( string Message, string Sort="RegNr", string SearchString = "")
-        {        
+        public async Task<IActionResult> ParkedCars( string Message, string Sort="Name", string SearchString = "")
+        {
             ParkedVehicle[] reta = await AddTimeAndPrice();
+            string txt;
+            if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
+            else txt = $"Parked Vehicles sorted by {Message}";
 
+            var svar = new ListViewModel
+            {
+                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
+                ParkedVehicles = reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s,Sort)),
+                Message = txt
             
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())),
-    
             };
-            //var a = Sort + Message;
-            return View("ParkedCars",svar);
-            //return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
+            return View("Index", svar);           
         }
-        public async Task<IActionResult> SortTyp()
+        private static string Get_seek(ParkedVehicle s, string sort)
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = reta.OrderBy(o => o.VehicleTyp.Name)
-            };
-            return View("Index", svar);
-         //   return View("Index", reta.OrderBy(o => o.VehicleTyp.Name));
-        }
-       
-        public async Task<IActionResult> SortReg()
-        {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = reta.OrderBy(o => o.RegNr)
-            };
-            return View("Index", svar);
-            //return View("Index", reta.OrderBy(o => o.RegNr));
-        }
-        
-        public async Task<IActionResult> SortCol()
-        {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = reta.OrderBy(o => o.VehicleColor)
-            };
-            return View("Index", svar);
-           // return View("Index", reta.OrderBy(o => o.VehicleColor));
-        }
-        
-        public async Task<IActionResult> SortMod()
-        {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = reta.OrderBy(o => o.VehicleModel)
-            };
-            return View("Index", svar);
-           // return View("Index", reta.OrderBy(o => o.VehicleModel));
-        }
-        
-        public async Task<IActionResult> SortBrand()
-        {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
-            var svar = new ListViewModel
-            {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
-                ParkedVehicles = reta.OrderBy(o => o.VehicleBrand)
-            };
-            return View("Index", svar);
-           // return View("Index",reta.OrderBy(o => o.VehicleBrand));
+            if (sort.Equals("Name")) return s.VehicleTyp.Name;
+            else if (sort.Equals("RegNr")) return s.RegNr;
+            else if (sort.Equals("VehicleColor")) return s.VehicleColor;
+            else if (sort.Equals("VehicleModel")) return s.VehicleModel;
+            else if (sort.Equals("VehicleBrand")) return s.VehicleBrand;           
+            else
+            return s.VehicleTyp.Name;
         }
 
         public async Task<IActionResult> Statistik()
@@ -478,17 +432,11 @@ namespace Garage_2._0_MPT.Models
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();
             stat.TotalWeels = reta.Where(o=>o.ParkOutDate==null).Select(o => o.NumberOfWheels).Sum();
-            stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
-                      
+            stat.TotalIncome = reta.Select(o => o.Price).Sum() ;                     
             stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
-
             stat.myTypes = reta.Where(o => o.ParkOutDate == null).GroupBy(v => v.VehicleTyp.Name)
                     .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
 
-            
-
-
-          
 
             stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 

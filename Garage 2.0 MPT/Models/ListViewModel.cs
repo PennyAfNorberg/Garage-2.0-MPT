@@ -10,5 +10,6 @@ namespace Garage_2._0_MPT.Models
         public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
         public IEnumerable<ParkedVehicle> ParkedVehicles { get; set; }
         public ParkedVehicle Header { get; set; }
+        public string Message { get; set; }
     }
 }

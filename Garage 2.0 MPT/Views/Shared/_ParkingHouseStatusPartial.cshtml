@@ -3,24 +3,15 @@
     <table class="align-self-center border-dark wider" >
 
         <thead>
-            <tr><th colspan="4" class="text-center">Next available places</th></tr>
-            <tr>
+            <tr><th class="status_header text-center" colspan="4" >Next available places</th></tr>
+            <tr class="status_body">
                 @foreach (var item in Model.NextFree)
                 {
-                    <th>@item.Key</th>
+                <th><span class="status_typ">@item.Key </span><span class="status_place">@item.Value</span> </th>
                 }
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                @foreach (var item in Model.NextFree)
-                {
-                    <td>@item.Value</td>
-                }
-
-            </tr>
-
-        </tbody>
+       
 
 
     </table>

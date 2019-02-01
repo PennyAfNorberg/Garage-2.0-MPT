@@ -6,6 +6,7 @@ navbar-brand {
     text-align: center;
     word-break: break-all;
     font-family: 'Baloo Thambi', sans-serif;
+    
 }
 
 /* Sticky footer styles
@@ -51,6 +52,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    background-color:floralwhite;
     font-family: 'Ubuntu', sans-serif;
 }
 header {
@@ -88,10 +90,39 @@ header {
     width: 100%;
     display: inline-block;
     margin-left: 0px;
-    background-color:aqua;
+    background-color: #938c8c;
+    color: white;
+    font-size: 1.2em;
+    
 }
 .wider {
-    width: 100%;
-    background-color: aqua;
+    width: 100%;   
     margin: 0em 0.5em 0.5em 0;
+}
+.status_header {
+    background-color: #4d4747;
+    padding:4px;
+}
+
+.status_typ {
+    color: whitesmoke;
+    font-size: 1.2em;
+    margin: 1em;
+    
+}
+.status_place {
+    color: cornsilk;
+    
+    font-style: normal;
+    font-size: .7em;
+    padding-top: 4px;
+}
+.header_table {
+    padding-left: 10px;
+    background-color:antiquewhite;
+}
+.table-borderless td,
+.table-borderless th {
+    border: 0;
+    background-color: antiquewhite;
 }
