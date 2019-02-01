@@ -404,7 +404,7 @@ namespace Garage_2._0_MPT.Models
                 ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicles =reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower()))
             };
-
+            var a = Sort + Message;
             return View("ParkedCars",svar);
             //return View("ParkedCars",reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())));
         }
@@ -478,11 +478,19 @@ namespace Garage_2._0_MPT.Models
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;
                       
             stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
-     
+
+            stat.myTypes = reta.Where(o => o.ParkOutDate == null).GroupBy(v => v.VehicleTyp.Name)
+                    .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
+
+            
+
+
+          
 
             stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 
             return View(stat);
         }
     }
+
 }
