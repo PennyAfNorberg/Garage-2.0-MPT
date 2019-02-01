@@ -6,6 +6,7 @@ using Garage_2._0_MPT.Models;
 
 namespace Garage_2._0_MPT.Utils
 {
+
     public class ParkHouse
     {
         public int Floors { get;  }
@@ -23,6 +24,29 @@ namespace Garage_2._0_MPT.Utils
             return NextFreeSpaces.ToDictionary(k =>k.Key, k => k.Value  );
         }
 
+        /// <summary>
+        /// TEMP for Testing!!
+        /// </summary>
+        /// <returns></returns>
+        public List<Position> GetOccupidePositions()
+        {
+            return OccupidePositions.ToList();
+        }
+
+        public ParkHouse(int Floors, int[] Twos, int[] Threes)
+        {
+            this.Floors = Floors;
+            if (Twos.Length != Floors)
+            {
+                throw new ArgumentOutOfRangeException($"Got {Twos.Length  } two arguments, needed {Floors} ");
+            }
+            if (Threes.Length != Floors)
+            {
+                throw new ArgumentOutOfRangeException($"Got {Threes.Length} three arguments, needed {Floors} ");
+            }
+            this.Twos = Twos.ToList();
+            this.Threes = Threes.ToList();
+        }
 
         /// <summary>
         /// 
@@ -52,6 +76,12 @@ namespace Garage_2._0_MPT.Utils
             });
             AddSavedVehicles(res);
 
+            PopulateNextFreeSpaces();
+        }
+
+        protected void PopulateNextFreeSpaces()
+        {
+
             var firstPosition = new Position()
             {
                 Z = 1,
@@ -71,11 +101,11 @@ namespace Garage_2._0_MPT.Utils
                             SpaceOccupide = 3
                         };
                 }
-                if(SpacesNeeded<0 && firstPosition.SpaceOccupide== null)
+                if (SpacesNeeded < 0 && firstPosition.SpaceOccupide == null)
                 {
                     firstPosition.SpaceLeftForFract = SpacesNeeded + 1;
                 }
-                else if(SpacesNeeded > 0 && firstPosition.SpaceLeftForFract == null && firstPosition.SpaceOccupide == null)
+                else if (SpacesNeeded > 0 && firstPosition.SpaceLeftForFract == null && firstPosition.SpaceOccupide == null)
                 {
                     firstPosition.SpaceOccupide = SpacesNeeded;
                 }
@@ -85,8 +115,8 @@ namespace Garage_2._0_MPT.Utils
                 NextFreeSpaces[SpacesNeeded] = firstPosition;
 
             }
-        }
 
+        }
         /// <summary>
         ///  Gives parkedVehicle a park or returns false
         /// </summary>
@@ -124,7 +154,7 @@ namespace Garage_2._0_MPT.Utils
 
         }
         //A (3,1)
-        private void AddSavedVehicle(ParkedVehicle parkedVehicle)
+        protected void AddSavedVehicle(ParkedVehicle parkedVehicle)
         {
             var temppos = new Position(parkedVehicle);
             OccupidePositions.Add(temppos);
@@ -137,6 +167,7 @@ namespace Garage_2._0_MPT.Utils
         public bool Leave(ParkedVehicle parkedVehicle)
         {
             OccupidePositions.Remove(parkedVehicle.Position);
+            NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null;
             parkedVehicle.Where = null;
             parkedVehicle.Position = null;
             foreach (var item in NextFreeSpaces)
@@ -159,42 +190,71 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="parkedVehicle"></param>
         /// <returns>ok/full></returns>
-        private bool GetNextSpot(ParkedVehicle parkedVehicle)
+        protected bool GetNextSpot(ParkedVehicle parkedVehicle)
         {
             Position nextOne = null;
             Position blaskn = null;
             Position blasko = null;
             if(NextFreeSpaces.TryGetValue(parkedVehicle.VehicleTyp.SpacesNeeded, out nextOne))
             {
-                OccupidePositions.Add(nextOne);
-                parkedVehicle.Where = nextOne.ToString();
-                parkedVehicle.Position = nextOne;
-                NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
-                var nextOne2 = new Position()
+                if (nextOne != null)
                 {
-                    Z = nextOne.Z,
-                    X = nextOne.X,
-                    Y = nextOne.Y
-                };
-                if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
-                {
-                    if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
+                    OccupidePositions.Add(nextOne);
+                    parkedVehicle.Where = nextOne.ToString();
+                    parkedVehicle.Position = nextOne;
+                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
+                    var nextOne2 = new Position()
                     {
-                        nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract+1) : ((blasko != null) ? (blasko.SpaceLeftForFract+1) : (parkedVehicle.VehicleTyp.SpacesNeeded+1));
+                        Z = nextOne.Z,
+                        X = nextOne.X,
+                        Y = nextOne.Y
+                    };
+                    if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
+                    {
+                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        {
+                            nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract + 1) : ((blasko != null) ? (blasko.SpaceLeftForFract + 1) : (parkedVehicle.VehicleTyp.SpacesNeeded + 1));
+                        }
+                        else
+                        {
+                            nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        }
+                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
                     }
                     else
                     {
-                        nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        nextOne = GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
+                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
                     }
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
+
+                    return true;
                 }
                 else
-                {
-                    nextOne= GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
+                { // then we try to steal a prebooked slot.
+                    if (NextFreeSpaces.Keys.Any(p => p > parkedVehicle.VehicleTyp.SpacesNeeded))
+                    { // something to steal
+                        int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
+                        nextOne = NextFreeSpaces[stealfromhere];
+                        var saveoldSpaceneed = (nextOne.SpaceOccupide == null) ? nextOne.SpaceLeftForFract - 1 : nextOne.SpaceOccupide;
+                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        {
+                            nextOne.SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                        }
+                        else
+                        {
+                            nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        }
+                        OccupidePositions.Add(nextOne);
+                        NextFreeSpaces[stealfromhere] = null;
+                        var nextOne2 = new Position()
+                        {
+                            Z = nextOne.Z,
+                            X = nextOne.X,
+                            Y = nextOne.Y
+                        };
+                        NextFreeSpaces[stealfromhere] = GetNextSpotWrapper(nextOne, saveoldSpaceneed.Value, nextOne);
+                    }
                 }
-
-                return true;
             }
             else
             { // then we try to steal a prebooked slot.
@@ -234,7 +294,7 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="checkthisO">Hit from occupied if any</param>
         /// <param name="delta">used if slide check, default 0</param>
         /// <returns>true if no hit.</returns>
-        private bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
+        protected bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
         {
             checkthisN = null;
             checkthisO = null;
@@ -351,7 +411,7 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
-        private Position GetNextSpotWrapper(Position Position, int SpacesNeeded, Position StopPosition = null)
+        protected Position GetNextSpotWrapper(Position Position, int SpacesNeeded, Position StopPosition = null)
         {
             if (StopPosition == null)
             {
@@ -387,7 +447,7 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="SpacesNeeded">Needed spaces</param>
         /// <param name="StopPosition">Stopps here or null</param>
         /// <returns>a free position or null if no avabile</returns>
-        private Position GetNextSpot(Position Position, int SpacesNeeded, Position StopPosition = null)
+        protected Position GetNextSpot(Position Position, int SpacesNeeded, Position StopPosition = null)
         {
              
             Position testPos = null;
@@ -677,7 +737,7 @@ namespace Garage_2._0_MPT.Utils
         /// <param name="position">The last</param>
         /// <param name="SpacesNeeded">allways negative == fraktion</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        private Position NextPostminus(Position position, int SpacesNeeded)
+        protected Position NextPostminus(Position position, int SpacesNeeded)
         {
             Position testPos = null;
             if ((position.Y < 2 && position.X <= Twos[position.Z - 1]) || (position.Y < 3 && position.X > Twos[position.Z - 1]))
@@ -732,7 +792,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceLeftForFract = SpacesNeeded + 1
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -750,7 +810,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">Start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        private Position NextPos1(Position position)
+        protected Position NextPos1(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 1;
@@ -816,7 +876,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X == Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -835,7 +895,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        private Position NextPos2(Position position)
+        protected Position NextPos2(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 2;
@@ -901,7 +961,7 @@ namespace Garage_2._0_MPT.Utils
                 };
             }
 
-            else if (position.X > Twos[position.Z - 1] && position.Z < Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
+            else if (position.X > Twos[position.Z - 1] && position.Z <= Floors && position.X < Twos[position.Z - 1] + Threes[position.Z - 1])
             {
                 testPos = new Position()
                 {
@@ -929,7 +989,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">start position</param>
         /// <returns>Next to test or null if no leave to test</returns>
-        private Position NextPos3(Position position)
+        protected Position NextPos3(Position position)
         {
             Position testPos = null;
             int SpacesNeeded = 3;
@@ -944,7 +1004,7 @@ namespace Garage_2._0_MPT.Utils
                     SpaceOccupide = SpacesNeeded
                 };
             }
-            else if (position.Z <= Floors)
+            else if (position.Z < Floors)
             {
                 testPos = new Position()
                 {
@@ -961,7 +1021,7 @@ namespace Garage_2._0_MPT.Utils
         }
 
 
-        private List<Position> GetAllPosFromOccupidePositions(Position position)
+        protected List<Position> GetAllPosFromOccupidePositions(Position position)
         {
             return OccupidePositions.Where(p => p != null).Where(p => position.Equals(p)).ToList();
             /*
@@ -983,7 +1043,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">To find</param>
         /// <returns>the hit or null if no hit</returns>
-        private Position GetPosFromOccupidePositions(Position position)
+        protected Position GetPosFromOccupidePositions(Position position)
         {
             return OccupidePositions.Where(p => p != null).FirstOrDefault(p => position.Equals(p));
             /*
@@ -1003,7 +1063,7 @@ namespace Garage_2._0_MPT.Utils
         /// </summary>
         /// <param name="position">To find</param>
         /// <returns>the hit or null if no hit</returns>
-        private Position GetPosFromNextFreeSpaces(Position position)
+        protected Position GetPosFromNextFreeSpaces(Position position)
         {
             return NextFreeSpaces.Values.Where(p=>p!=null).FirstOrDefault(p => position.Equals(p));
             /*

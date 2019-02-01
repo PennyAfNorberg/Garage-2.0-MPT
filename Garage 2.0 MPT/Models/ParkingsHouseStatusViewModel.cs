@@ -12,16 +12,4 @@ namespace Garage_2._0_MPT.Models
 
     }
 
-    public class ListViewModel
-    {
-        public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
-        public IEnumerable<ParkedVehicle> ParkedVehicles { get; set; }
-        public ParkedVehicle Header { get; set; }
-    }
-
-    public class SingelViewModel
-    {
-        public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
-        public ParkedVehicle ParkedVehicle { get; set; }
-    }
 }
