@@ -231,6 +231,7 @@ namespace Garage_2._0_MPT.Models
             if (reg_bussey.Count > 0)
             {
                 // return RedirectToAction(nameof(Create));
+                
                 return View("NotCreate",svar);
             }
             if (ModelState.IsValid )
