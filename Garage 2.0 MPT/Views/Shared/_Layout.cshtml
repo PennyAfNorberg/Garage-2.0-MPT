@@ -1,4 +1,4 @@
-﻿
+﻿@addTagHelper *,LexiconMovies
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,10 +29,10 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <form id="seek01" name="seek01" class="form-inline" asp-controller="ParkedVehicles" asp-action="ParkedCars" metode="Post">
-                        <input id="seek_text01" type="text" name="SearchString" class="form-control mr-sm-2" placeholder="Reg nr" aria-label="Search"  required pattern="\b(?x) \d+ \s \w+">
-                        <button id ="sbtn"class="btn btn-outline-success my-2 my-sm-0"  type="submit"  value="Filter" >Search</button>
+                        <input id="seek_text01" type="text" name="SearchString" class="form-control mr-sm-2" placeholder="Reg nr" aria-label="Search" required pattern="\b(?x) \d+ \s \w+">
+                        <button id="sbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Filter">Search</button>
                     </form>
-                        }
+                    }
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Home</a>
@@ -47,47 +47,49 @@
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Statistik">Statistik</a>
                         </li>
                     </ul>
-                    </div>
                 </div>
-            </nav>
-        </header>
+            </div>
+        </nav>
+    </header>
     <div class="container">
-         <partial name="_CookieConsentPartial" />
-        @if(@ViewData["Title"].ToString() != "Receipt")
+        <partial name="_CookieConsentPartial" />
+        @if (@ViewData["Title"].ToString() != "Receipt")
         {
-             <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  /> 
+            @*  <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  />*@
+            @await Component.InvokeAsync("ParkingHouseStatus");
+            <vc:parking_house_status />
         }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2019 - Garage_2._0_MPT - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
-        </footer>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2019 - Garage_2._0_MPT - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
 
-        <environment include="Development">
-            <script src="~/lib/jquery/dist/jquery.js"></script>
-            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        </environment>
-        <environment exclude="Development">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery"
-                    crossorigin="anonymous"
-                    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-            </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                    crossorigin="anonymous"
-                    integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
-            </script>
-        </environment>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
+        </script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-        @RenderSection("Scripts", required: false)
-    </body>
-    </html>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

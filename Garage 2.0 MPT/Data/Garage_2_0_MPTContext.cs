@@ -47,7 +47,7 @@ namespace Garage_2._0_MPT.Models
                 );
 
         }
-
+      
 
         public DbSet<Garage_2._0_MPT.Models.ParkedVehicle> ParkedVehicle { get; set; }
 
