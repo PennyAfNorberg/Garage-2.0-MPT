@@ -170,10 +170,16 @@ namespace Garage_2._0_MPT.Utils
             NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null;
             parkedVehicle.Where = null;
             parkedVehicle.Position = null;
-            foreach (var item in NextFreeSpaces)
+            var dickcount = NextFreeSpaces.Count;
+            Dictionary<int, Position> TempNextFreeSpaces = NextFreeSpaces.ToDictionary(k => k.Key, k => k.Value);
+
+
+            for (int i = 0; i < dickcount; i++)
             {
-                if (item.Value == null)
-                    NextFreeSpaces[item.Key] = GetNextSpot(new Position()
+                var itemK = TempNextFreeSpaces.Keys.ElementAt(i);
+                var itemv = TempNextFreeSpaces[itemK];
+                if (itemv == null)
+                    TempNextFreeSpaces[itemK] = GetNextSpot(new Position()
                     {
                         Z = 1,
                         X = 1,
@@ -181,6 +187,7 @@ namespace Garage_2._0_MPT.Utils
                     }
                         , parkedVehicle.VehicleTyp.SpacesNeeded);
             }
+            NextFreeSpaces = TempNextFreeSpaces;
             return true;
         }
 

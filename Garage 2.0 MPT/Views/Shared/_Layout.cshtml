@@ -1,5 +1,4 @@
-﻿@addTagHelper *,LexiconMovies
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -53,7 +52,7 @@
     </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />
-        @if (@ViewData["Title"].ToString() != "Receipt")
+        @if (ViewContext.RouteData.Values["action"].ToString() != "Receipt")
         {
             @*  <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  />*@
             @await Component.InvokeAsync("ParkingHouseStatus");
