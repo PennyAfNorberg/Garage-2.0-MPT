@@ -93,13 +93,11 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Index()
         {
-            await InitPlots();
             var res = await AddTimeAndPrice();
       
 
             var svar = new ListViewModel
             {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicles = res,
                 Message= "Parked Vehicles"
 
@@ -113,12 +111,10 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
-            await InitPlots();
             var res = await AddTimeAndPrice(true);
 
             var svar = new ListViewModel
             {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicles = res
             };
 
@@ -155,7 +151,7 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-            await InitPlots();
+
             var res = await AddTimeAndPrice();
 
 
@@ -164,7 +160,6 @@ namespace Garage_2._0_MPT.Models
             var svar = new SingelViewModel
             {
                 ParkedVehicle = res.FirstOrDefault(m => m.Id == id),
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
             };
 
             //await RePark();
@@ -188,7 +183,7 @@ namespace Garage_2._0_MPT.Models
             var svar = new SingelViewModel
             {
                 ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id),
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
+
             };
 
 
@@ -203,7 +198,7 @@ namespace Garage_2._0_MPT.Models
             {
                 ParkedVehicle = new ParkedVehicle(),
                 vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus()
+
             };
 
             return View(res);
@@ -220,7 +215,6 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new SingelViewModel
             {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicle = new ParkedVehicle
                 {
                     RegNr = parkedVehicle.RegNr
@@ -311,9 +305,9 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Check_Out(int? id)
         {
-            await InitPlots();
 
             var parkedVehicle = (await AddTimeAndPrice()).FirstOrDefault(m => m.Id == id);
+            await InitPlots();
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
             {
@@ -408,13 +402,13 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new ListViewModel
             {
-                ParkingsHouseStatusViewModel = GetParkingsHouseStatus(),
                 ParkedVehicles = reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s,Sort)),
                 Message = txt
             
             };
             return View("Index", svar);           
         }
+
         private static string Get_seek(ParkedVehicle s, string sort)
         {
             if (sort.Equals("Name")) return s.VehicleTyp.Name;
@@ -439,7 +433,6 @@ namespace Garage_2._0_MPT.Models
                     .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
 
 
-            stat.ParkingsHouseStatusViewModel = GetParkingsHouseStatus();
 
             return View(stat);
         }

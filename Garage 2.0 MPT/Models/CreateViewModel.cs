@@ -9,7 +9,5 @@ namespace Garage_2._0_MPT.Models
     {
         public ParkedVehicle ParkedVehicle { get; set; }
         public List<VehicleTyp>  vehicleTypes { get; set; }
-        public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
-
     }
 }
