@@ -65,7 +65,7 @@ namespace Garage_2._0_MPT.Models
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
+                var res = ( AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
  
 
                 foreach (var item in res)
@@ -91,14 +91,14 @@ namespace Garage_2._0_MPT.Models
 
         // GET: ParkedVehicles
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var res = await AddTimeAndPrice();
+            var res =  AddTimeAndPrice();
       
 
             var svar = new ListViewModel
             {
-                ParkedViewModel = res,
+                ParkedViewModel = (IEnumerable<ParkedViewModel>) res,
                 Message= "Parked Vehicles"
 
             };
@@ -111,7 +111,7 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
-            var res = await AddTimeAndPrice(true);
+            var res =  AddTimeAndPrice(true);
 
             var svar = new ListViewModel
             {
@@ -152,7 +152,7 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var res = await AddTimeAndPrice();
+            var res =  AddTimeAndPrice();
 
 
 
@@ -182,7 +182,7 @@ namespace Garage_2._0_MPT.Models
             await InitPlots();
             var svar = new SingelViewModel
             {
-                ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.ParkedVehicle.Id == id)
+                ParkedVehicle = ( AddTimeAndPrice(true)).FirstOrDefault(m => m.ParkedVehicle.Id == id)
 
             };
 
@@ -319,7 +319,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var parkedVehicle = (await AddTimeAndPrice()).Select(pwm => pwm.ParkedVehicle).FirstOrDefault(m => m.Id == id);
+            var parkedVehicle = ( AddTimeAndPrice()).Select(pwm => pwm.ParkedVehicle).FirstOrDefault(m => m.Id == id);
             await InitPlots();
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
@@ -379,19 +379,19 @@ namespace Garage_2._0_MPT.Models
         }
         public async Task<IActionResult> Test(string SearchString)
         {
-            var reta = await AddTimeAndPrice();
+            var reta =  AddTimeAndPrice();
             return View("Index", reta);
         }
 
-        private async Task<ParkedViewModel[]> AddTimeAndPrice( bool includeparkedout = false)
+        private ParkedViewModel[] AddTimeAndPrice( bool includeparkedout = false)
         {
             var res = _context.Vehicles
                 .Include(v => v.ParkedVehicles)
                 .Include(v => v.VehicleTyp)
                 .Include(v => v.Member);
 
-            var res2 = res
-                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))));
+            var res2 =  res
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null)))).ToArray(); ;
 
 
 
@@ -407,15 +407,15 @@ namespace Garage_2._0_MPT.Models
                 CostPerHour = x.VehicleTyp.CostPerHour,
 
             });
-            return await res3
+            return  res3.ToArray();
                             
-                            .ToArrayAsync();
+                         //   .ToArrayAsync();
         }
 
         
         public async Task<IActionResult> ParkedCars( string Message, string Sort="Name", string SearchString = "")
         {
-            var reta = await AddTimeAndPrice();
+            var reta =  AddTimeAndPrice();
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
             else txt = $"Parked Vehicles sorted by {Message}";
@@ -443,7 +443,7 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Statistik()
         {
-            var reta = await AddTimeAndPrice(true);
+            var reta =  AddTimeAndPrice(true);
            // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();

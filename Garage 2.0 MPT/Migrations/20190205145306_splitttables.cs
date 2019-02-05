@@ -8,6 +8,9 @@ namespace Garage_2._0_MPT.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
+
+
             migrationBuilder.DropForeignKey(
                 name: "FK_ParkedVehicle_VehicleTyp_VehicleTypId",
                 table: "ParkedVehicle");
@@ -40,22 +43,34 @@ namespace Garage_2._0_MPT.Migrations
             migrationBuilder.DeleteData(
                 table: "ParkedVehicle",
                 keyColumn: "Id",
-                keyValue: 6);
+                keyValue: 1004);
 
             migrationBuilder.DeleteData(
                 table: "ParkedVehicle",
                 keyColumn: "Id",
-                keyValue: 7);
+                keyValue: 1005);
 
             migrationBuilder.DeleteData(
                 table: "ParkedVehicle",
                 keyColumn: "Id",
-                keyValue: 8);
+                keyValue: 1006);
 
             migrationBuilder.DeleteData(
                 table: "ParkedVehicle",
                 keyColumn: "Id",
-                keyValue: 9);
+                keyValue: 1007);
+
+            migrationBuilder.DeleteData(
+    table: "ParkedVehicle",
+    keyColumn: "Id",
+    keyValue: 1008);
+
+            migrationBuilder.DeleteData(
+    table: "ParkedVehicle",
+    keyColumn: "Id",
+    keyValue: 1009);
+
+    
 
             migrationBuilder.DropColumn(
                 name: "RegNr",
@@ -131,6 +146,7 @@ namespace Garage_2._0_MPT.Migrations
                         principalColumn: "VehicleTypId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
 
             migrationBuilder.InsertData(
                 table: "Vehicles",

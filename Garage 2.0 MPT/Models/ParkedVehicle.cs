@@ -28,35 +28,13 @@ namespace Garage_2._0_MPT.Models
         public Position Position { get; set; } // parked
 
 
-        public int? MemberId { get; set; }
+        public int MemberId { get; set; }
         public Member Member { get; set; }
 
-        public int? VehicleId { get; set; } 
+        public int VehicleId { get; set; } 
         public Vehicle Vehicle { get; set; }
 
 
-    }
-
-    public class ParkedViewModel
-    {
-
-        public VehicleTyp VehicleTyp { get; set; } //Vech
-        public Vehicle Vehicle { get; set; }
-        public ParkedVehicle ParkedVehicle { get; set; }
-        public Member Member { get; set; }
-        [NotMapped]
-        [Display(Name = "Parked Time")]
-        public string ParkedTime { get; set; } // viewmodel
-        [NotMapped]
-        [Display(Name = "Time")]
-        public int ParkedHours { get; set; } // viewmodel
-        [NotMapped]
-        [Display(Name = "Price")]
-        public int Price { get; set; }  // viewmodel
-        [NotMapped]
-        [Display(Name = "CostPerHour")]
-        public int CostPerHour { get; set; } // viewmodel
-        
     }
 
     public class Vehicle
@@ -77,7 +55,7 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "Wheels")]
         public int NumberOfWheels { get; set; }  //Vech
 
-        public int? MemberId { get; set; }
+        public int MemberId { get; set; }
         public Member Member { get; set; }
 
 
@@ -85,6 +63,10 @@ namespace Garage_2._0_MPT.Models
 
 
     }
+
+
+
+
 
     /*
     public enum VehicleTyp
@@ -105,5 +87,28 @@ namespace Garage_2._0_MPT.Models
         public int SpacesNeeded { get; set; } // - => 1/
 
         public List<Vehicle> Vehicles { get; set; }
+    }
+
+
+    public class ParkedViewModel
+    {
+
+        public VehicleTyp VehicleTyp { get; set; } //Vech
+        public Vehicle Vehicle { get; set; }
+        public ParkedVehicle ParkedVehicle { get; set; }
+        public Member Member { get; set; }
+        [NotMapped]
+        [Display(Name = "Parked Time")]
+        public string ParkedTime { get; set; } // viewmodel
+        [NotMapped]
+        [Display(Name = "Time")]
+        public int ParkedHours { get; set; } // viewmodel
+        [NotMapped]
+        [Display(Name = "Price")]
+        public int Price { get; set; }  // viewmodel
+        [NotMapped]
+        [Display(Name = "CostPerHour")]
+        public int CostPerHour { get; set; } // viewmodel
+
     }
 }

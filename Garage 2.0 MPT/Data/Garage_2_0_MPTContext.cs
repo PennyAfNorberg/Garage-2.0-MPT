@@ -23,6 +23,23 @@ namespace Garage_2._0_MPT.Models
                 .HasForeignKey(v => new { v.VehicleTypId });
 
 
+            modelBuilder.Entity<Vehicle>()
+            .HasOne(Pv => Pv.Member)
+            .WithMany(c => c.Vehicles)
+            .HasForeignKey(v => new { v.MemberId });
+
+
+            modelBuilder.Entity<ParkedVehicle>()
+          .HasOne(Pv => Pv.Vehicle)
+          .WithMany(c => c.ParkedVehicles)
+          .HasForeignKey(v => new { v.VehicleId });
+
+
+            modelBuilder.Entity<ParkedVehicle>()
+         .HasOne(Pv => Pv.Member)
+         .WithMany(c => c.ParkedVehicles)
+         .HasForeignKey(v => new { v.MemberId });
+
             modelBuilder.Entity<VehicleTyp>()
                 .HasData(
                     new VehicleTyp { VehicleTypId = 1, Name = "Car", CostPerHour = 100, SpacesNeeded=1 },
@@ -33,22 +50,77 @@ namespace Garage_2._0_MPT.Models
                     new VehicleTyp { VehicleTypId = 6, Name = "Truck", CostPerHour = 200, SpacesNeeded = 2 }
 
                 );
+  
+
+            modelBuilder.Entity<Member>()
+    .HasData(
+        new Member { Id = 1, FirstName = "Test", LastName = "Testsson",
+            Address= new Address
+            {
+                Street = "Testgatan 123",
+                ZipCode = "12345",
+                City = "Testville"
+            }
+            ,PassWord=new byte[] { 255, 255 }
+
+            }
+    );
+
+
 
 
             modelBuilder.Entity<Vehicle>()
                 .HasData(
-                    new Vehicle { Id = 1, VehicleTypId = 1, RegNr = "abc123", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4  },
-                    new Vehicle { Id = 2, VehicleTypId = 2, RegNr = "abc234", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4  },
-                    new Vehicle { Id = 3, VehicleTypId = 5, RegNr = "abc345", VehicleColor = "Blue", VehicleModel = "okänd", VehicleBrand = "Saab", NumberOfWheels = 4  },
-                    new Vehicle { Id = 4, VehicleTypId = 1, RegNr = "abc456", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4},
-                    new Vehicle { Id = 5, VehicleTypId = 2, RegNr = "abc567", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4},
-                    new Vehicle { Id = 6, VehicleTypId = 5, RegNr = "abc678", VehicleColor = "Black", VehicleModel = "okänd", VehicleBrand = "Saab", NumberOfWheels = 4 },
-                    new Vehicle { Id = 7, VehicleTypId = 1, RegNr = "Rymdopera", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4 },
-                    new Vehicle { Id = 8, VehicleTypId = 2, RegNr = "abc987", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4 },
-                    new Vehicle { Id = 9, VehicleTypId = 5, RegNr = "Biffen", VehicleColor = "Black", VehicleModel = "okänd", VehicleBrand = "Bmv", NumberOfWheels = 4 }
+                    new Vehicle { Id = 1, VehicleTypId = 1, RegNr = "abc123", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4,MemberId=1  },
+                    new Vehicle { Id = 2, VehicleTypId = 2, RegNr = "abc234", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 3, VehicleTypId = 5, RegNr = "abc345", VehicleColor = "Blue", VehicleModel = "okänd", VehicleBrand = "Saab", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 4, VehicleTypId = 1, RegNr = "abc456", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 5, VehicleTypId = 2, RegNr = "abc567", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 6, VehicleTypId = 5, RegNr = "abc678", VehicleColor = "Black", VehicleModel = "okänd", VehicleBrand = "Saab", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 7, VehicleTypId = 1, RegNr = "Rymdopera", VehicleColor = "Green", VehicleModel = "okänd", VehicleBrand = "Ferrari", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 8, VehicleTypId = 2, RegNr = "abc987", VehicleColor = "Red", VehicleModel = "okänd", VehicleBrand = "Volvo", NumberOfWheels = 4, MemberId = 1 },
+                    new Vehicle { Id = 9, VehicleTypId = 5, RegNr = "Biffen", VehicleColor = "Black", VehicleModel = "okänd", VehicleBrand = "Bmv", NumberOfWheels = 4, MemberId = 1 }
                 );
 
         }
+        /*    public class ParkedVehicle
+    {
+        public ParkedVehicle()
+        {
+            ParkInDate = DateTime.Now;
+        }
+        public int Id { get; set; } // Alla
+        
+        [Display(Name = "Parking Time")]
+        public DateTime ParkInDate { get; set; } // Parked
+        [Display(Name = "Leaving Time")]
+        public DateTime? ParkOutDate { get; set; } // Parked
+
+
+        [Display(Name = "Parking Lot")]  // Parked
+        public string Where { get; set; }
+        [NotMapped]
+        public Position Position { get; set; } // parked
+
+
+        public int MemberId { get; set; }
+        public Member Member { get; set; }
+
+        public int VehicleId { get; set; } 
+        public Vehicle Vehicle { get; set; }
+
+
+    }*/
+
+
+        modelBuilder.Entity<ParkedVehicle>()
+    .HasData(
+        new ParkedVehicle { Id = 1, parkInDate=DateTime.Now()
+      
+
+            }
+    );
+
       
 
         public DbSet<ParkedVehicle> ParkedVehicle { get; set; }
