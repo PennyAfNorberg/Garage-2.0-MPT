@@ -7,33 +7,29 @@
 
 <h1 class="header_table">Garage statistik </h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-10">
 
-        </dt>
-        <dd class="col-sm-10">
-            Total weels in the garage: @Html.DisplayFor(model => model.TotalWeels)
-        </dd>
-        <dd class="col-sm-10">
-            Today revenue:  @Html.DisplayFor(model => model.TodayTotalIncome) Sek
-        </dd>
-        <dd class="col-sm-10">
-            Total revenue from start:  @Html.DisplayFor(model => model.TotalIncome) Sek
-        </dd>
+<div class="container">
+    <div class="row">
+        <div class="col stat_head ">Statistik of</div>
+        <div class="col stat_head ">sum</div>
+        <div class="w-100"></div>
+        <div class="col">Total weels in the garage:</div>
+        <div class="col">@Html.DisplayFor(model => model.TotalWeels)</div>
+        <div class="w-100"></div>
+        <div class="col">Today revenue:</div>
+        <div class="col">@Html.DisplayFor(model => model.TodayTotalIncome) Sek</div>
+        <div class="w-100"></div>
+        <div class="col">Total revenue from start:</div>
+        <div class="col">@Html.DisplayFor(model => model.TotalIncome) Sek</div>
+        <div class="w-100"></div>
         @foreach (var item in Model.myTypes)
         {
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Name) : 
-                @Html.DisplayFor(modelItem => item.Count)
-            </dd>
+            <div class="col"> @Html.DisplayFor(modelItem => item.Name)</div>
+            <div class="col"> @Html.DisplayFor(modelItem => item.Count)</div>
+            <div class="w-100"></div>
         }
-        <dd class="col-sm-10">
-
-        </dd>
-
-    </dl>
+        <br/>
+    </div>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>

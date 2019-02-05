@@ -127,3 +127,9 @@ header {
     border-top:1px solid;
     border-top-color:bisque;
 }
+.stat_head {
+    background-color: antiquewhite;
+    margin-bottom:.5em;
+    font-size: 1.4em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

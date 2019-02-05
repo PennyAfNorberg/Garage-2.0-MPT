@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Garage_2._0_MPT.Models;
 
 namespace Garage_2._0_MPT.Models
 {
@@ -52,6 +53,8 @@ namespace Garage_2._0_MPT.Models
         public DbSet<Garage_2._0_MPT.Models.ParkedVehicle> ParkedVehicle { get; set; }
 
         public DbSet<Garage_2._0_MPT.Models.VehicleTyp> VehicleTyp { get; set; }
+
+        public DbSet<Garage_2._0_MPT.Models.Members> Members { get; set; }
     }
 }
 /*
