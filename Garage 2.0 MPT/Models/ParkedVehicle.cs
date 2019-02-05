@@ -16,10 +16,11 @@ namespace Garage_2._0_MPT.Models
         }
         public int Id { get; set; } // Alla
         [Display(Name = "Type")]
-        public int VehicleTypId { get; set; } //Vech
-        public VehicleTyp VehicleTyp { get; set; }  //Vech
-        [Display(Name = "Reg Nr")]  
-        public string RegNr { get; set; }  //Vech
+        public int VehicleTypId { get; set; }
+        public VehicleTyp VehicleTyp { get; set; }
+        [Display(Name = "Reg Nr")]
+        [Required(ErrorMessage = "Reg nr is required")]
+        public string RegNr { get; set; }
         [Display(Name = "Color")]
         public string VehicleColor { get; set; }  //Vech
         [Display(Name = "Model")]

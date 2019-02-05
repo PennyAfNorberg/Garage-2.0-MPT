@@ -13,7 +13,6 @@ namespace Garage_2._0_MPT.Models
         public int TodayTotalIncome { get; set; }
         public IEnumerable<MyTypes> myTypes { get; set; }
 
-        public ParkingsHouseStatusViewModel ParkingsHouseStatusViewModel { get; set; }
     }
     public class MyTypes
     {

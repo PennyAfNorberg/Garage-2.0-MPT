@@ -1,5 +1,4 @@
-﻿@addTagHelper *,LexiconMovies
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -28,11 +27,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <form id="seek01" name="seek01" class="form-inline" asp-controller="ParkedVehicles" asp-action="ParkedCars" metode="Post">
-                        <input id="seek_text01" type="text" name="SearchString" class="form-control mr-sm-2" placeholder="Reg nr" aria-label="Search" required pattern="\b(?x) \d+ \s \w+">
-                        <button id="sbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Filter">Search</button>
+                    <form id="seek01" name="seek01" class="form-inline"  asp-action="ParkedCars" metode="Post">
+                        <span class="myTbBox">
+                            <input id="seek_text01" type="text" name="SearchString" class="form-control mr-sm-2" placeholder="Reg nr" aria-label="Search" required pattern="\b(?x) \d+ \s \w+">
+                            <button id="sbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Filter">Search</button>
+                        </span>
                     </form>
-                    }
+                        }
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Home</a>
@@ -46,6 +47,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Statistik">Statistik</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -53,7 +57,7 @@
     </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />
-        @if (@ViewData["Title"].ToString() != "Receipt")
+        @if (ViewContext.RouteData.Values["action"].ToString() != "Receipt")
         {
             @*  <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  />*@
             @await Component.InvokeAsync("ParkingHouseStatus");
