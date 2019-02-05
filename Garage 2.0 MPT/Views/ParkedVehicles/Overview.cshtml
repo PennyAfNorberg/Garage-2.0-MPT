@@ -11,64 +11,64 @@
     <thead>
         <tr>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.VehicleTyp.Name)
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)
             </th>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.RegNr)
+                @Html.DisplayNameFor(model => model.Header.Vehicle.RegNr)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Header.VehicleColor)
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleColor)
             </th>
             <th class="myTbBox">
                 @Html.DisplayNameFor(model => model.Header.ParkedTime)
             </th>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.ParkInDate)
+                @Html.DisplayNameFor(model => model.Header.ParkedVehicle.ParkInDate)
             </th>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.ParkOutDate)
+                @Html.DisplayNameFor(model => model.Header.ParkedVehicle.ParkOutDate)
             </th>
             <th class="myTbBox">
                 @Html.DisplayNameFor(model => model.Header.Price)
             </th>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.Where)
+                @Html.DisplayNameFor(model => model.Header.ParkedVehicle.Where)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.ParkedVehicles) {
+@foreach (var item in Model.ParkedViewModel) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RegNr)
+                @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VehicleColor)
+                @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ParkedTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkInDate)
+                @Html.DisplayFor(modelItem => item.ParkedVehicle.ParkInDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkOutDate)
+                @Html.DisplayFor(modelItem => item.ParkedVehicle.ParkOutDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <th>
-                @Html.DisplayFor(modelItem => item.Where)
+                @Html.DisplayFor(modelItem => item.ParkedVehicle.Where)
             </th>
             <td>
-                <a asp-action="Check_Out" asp-route-id="@item.Id">Check Out</a>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                <!-- <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-        <a asp-action="Receipt" asp-route-id="@item.Id">Receipt</a>-->
+                <a asp-action="Check_Out" asp-route-id="@item.ParkedVehicle.Id">Check Out</a>
+                <a asp-action="Details" asp-route-id="@item.ParkedVehicle.Id">Details</a>
+                <!-- <a asp-action="Delete" asp-route-id="@item.ParkedVehicle.Id">Delete</a> |
+        <a asp-action="Receipt" asp-route-id="@item.ParkedVehicle.Id">Receipt</a>-->
             </td>
         </tr>
 }

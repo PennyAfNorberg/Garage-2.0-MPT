@@ -8,7 +8,7 @@ namespace Garage_2._0_MPT.Models
 
     public class SingelViewModel
     {
-        public ParkedVehicle ParkedVehicle { get; set; }
+        public ParkedViewModel ParkedVehicle { get; set; }
         
     }
 }

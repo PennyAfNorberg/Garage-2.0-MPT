@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190205145306_splitttables")]
+    partial class splitttables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,11 @@ namespace Garage_2._0_MPT.Migrations
                     b.Property<string>("LastName")
                         .HasMaxLength(25);
 
+                    b.Property<int>("ParkedVehicleId");
+
                     b.Property<byte[]>("PassWord");
+
+                    b.Property<int>("VehicleId");
 
                     b.HasKey("Id");
 
@@ -47,13 +53,13 @@ namespace Garage_2._0_MPT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MemberId");
+                    b.Property<int>("MemberId");
 
                     b.Property<DateTime>("ParkInDate");
 
                     b.Property<DateTime?>("ParkOutDate");
 
-                    b.Property<int?>("VehicleId");
+                    b.Property<int>("VehicleId");
 
                     b.Property<string>("Where");
 
@@ -75,6 +81,8 @@ namespace Garage_2._0_MPT.Migrations
                     b.Property<int?>("MemberId");
 
                     b.Property<int>("NumberOfWheels");
+
+                    b.Property<int?>("ParkedVehicleId");
 
                     b.Property<string>("RegNr")
                         .IsRequired();
@@ -281,11 +289,13 @@ namespace Garage_2._0_MPT.Migrations
                 {
                     b.HasOne("Garage_2._0_MPT.Models.Member", "Member")
                         .WithMany("ParkedVehicles")
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Garage_2._0_MPT.Models.Vehicle", "Vehicle")
                         .WithMany("ParkedVehicles")
-                        .HasForeignKey("VehicleId");
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.Vehicle", b =>

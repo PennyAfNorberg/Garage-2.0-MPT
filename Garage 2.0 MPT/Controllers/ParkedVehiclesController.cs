@@ -65,12 +65,12 @@ namespace Garage_2._0_MPT.Models
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.Where == null).ToList();
+                var res = (await AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
  
 
                 foreach (var item in res)
                 {
-                    parkhouse.Park(item);
+                    parkhouse.Park(item.ParkedVehicle);
                 }
 
     
@@ -98,7 +98,7 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new ListViewModel
             {
-                ParkedVehicles = res,
+                ParkedViewModel = res,
                 Message= "Parked Vehicles"
 
             };
@@ -115,7 +115,7 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new ListViewModel
             {
-                ParkedVehicles = res
+                ParkedViewModel = res
             };
 
             return View(svar);
@@ -159,7 +159,7 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new SingelViewModel
             {
-                ParkedVehicle = res.FirstOrDefault(m => m.Id == id),
+                ParkedVehicle = res.FirstOrDefault(m => m.ParkedVehicle.Id == id),
             };
 
             //await RePark();
@@ -182,7 +182,7 @@ namespace Garage_2._0_MPT.Models
             await InitPlots();
             var svar = new SingelViewModel
             {
-                ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.Id == id),
+                ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.ParkedVehicle.Id == id)
 
             };
 
@@ -209,15 +209,18 @@ namespace Garage_2._0_MPT.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Create([Bind("Id,VehicleTypId,VehicleTyp,RegNr,VehicleColor,VehicleModel,VehicleBrand,NumberOfWheels,ParkInDate,ParkOutDate,MemberId")] CreateSetViewModel parkedVehicle)
         {
-            var reg_bussey = await _context.ParkedVehicle.Where(v=>v.RegNr == parkedVehicle.RegNr && v.ParkOutDate == null).ToListAsync();
+            var reg_bussey = await _context.ParkedVehicle.Where(v=>v.Vehicle.RegNr == parkedVehicle.RegNr && v.ParkOutDate == null).ToListAsync();
 
             var svar = new SingelViewModel
             {
-                ParkedVehicle = new ParkedVehicle
+                ParkedVehicle = new ParkedViewModel
                 {
-                    RegNr = parkedVehicle.RegNr
+                    Vehicle = new Vehicle
+                    {
+                        RegNr = parkedVehicle.RegNr
+                    }
                 }
                };
 
@@ -228,14 +231,24 @@ namespace Garage_2._0_MPT.Models
                 
                 return View("NotCreate",svar);
             }
+
             if (ModelState.IsValid )
             {
                 await InitPlots();
                 parkedVehicle.VehicleTyp = await _context.VehicleTyp.Where(v => v.VehicleTypId == parkedVehicle.VehicleTypId).FirstOrDefaultAsync();
 
-                if (parkhouse.Park(parkedVehicle))
+                ParkedVehicle InparkedVehicle = new ParkedVehicle
                 {
-                    _context.Add(parkedVehicle);
+                    MemberId = parkedVehicle.MemberId,
+                    Member = await _context.Members.Where(m => m.Id == parkedVehicle.MemberId).FirstOrDefaultAsync(),
+                    VehicleId = await _context.Vehicles.Where(m => m.RegNr == parkedVehicle.RegNr).Select(m => m.Id).FirstOrDefaultAsync(),
+                    Vehicle = await _context.Vehicles.Where(m => m.RegNr == parkedVehicle.RegNr).FirstOrDefaultAsync()
+
+                };
+
+                if (parkhouse.Park(InparkedVehicle))
+                {
+                    _context.Add(InparkedVehicle);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Details), new { id = parkedVehicle.Id });
                 }
@@ -306,7 +319,7 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var parkedVehicle = (await AddTimeAndPrice()).FirstOrDefault(m => m.Id == id);
+            var parkedVehicle = (await AddTimeAndPrice()).Select(pwm => pwm.ParkedVehicle).FirstOrDefault(m => m.Id == id);
             await InitPlots();
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
@@ -366,58 +379,66 @@ namespace Garage_2._0_MPT.Models
         }
         public async Task<IActionResult> Test(string SearchString)
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
+            var reta = await AddTimeAndPrice();
             return View("Index", reta);
         }
 
-        private async Task<ParkedVehicle[]> AddTimeAndPrice( bool includeparkedout = false)
+        private async Task<ParkedViewModel[]> AddTimeAndPrice( bool includeparkedout = false)
         {
-            return await _context.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
-                            .Select(x => new ParkedVehicle()
-                            {
-                                Id = x.Id,
-                                VehicleTyp = x.VehicleTyp,
-                                RegNr = x.RegNr,
-                                VehicleColor = x.VehicleColor,
-                                VehicleModel = x.VehicleModel,
-                                VehicleBrand = x.VehicleBrand,
-                                NumberOfWheels = x.NumberOfWheels,
-                                ParkInDate = x.ParkInDate,
-                                ParkOutDate = x.ParkOutDate,
-                                ParkedTime = PrettyPrintTime(((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate),
-                                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
-                                CostPerHour = x.VehicleTyp.CostPerHour,
-                                Where = x.Where
-                            })
+            var res = _context.Vehicles
+                .Include(v => v.ParkedVehicles)
+                .Include(v => v.VehicleTyp)
+                .Include(v => v.Member);
+
+            var res2 = res
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))));
+
+
+
+            var res3 = res2.Select(x => new ParkedViewModel()
+            {
+                ParkedVehicle = x.ParkedVehicles.FirstOrDefault(),
+                Vehicle = x,
+                VehicleTyp = x.VehicleTyp,
+                Member = x.Member,
+
+                ParkedTime = PrettyPrintTime(((x.ParkedVehicles.FirstOrDefault().ParkOutDate == null) ? DateTime.Now : x.ParkedVehicles.FirstOrDefault().ParkOutDate) - x.ParkedVehicles.FirstOrDefault().ParkInDate),
+                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkedVehicles.FirstOrDefault().ParkOutDate == null) ? DateTime.Now : x.ParkedVehicles.FirstOrDefault().ParkOutDate) - x.ParkedVehicles.FirstOrDefault().ParkInDate).Value.TotalHours),
+                CostPerHour = x.VehicleTyp.CostPerHour,
+
+            });
+            return await res3
+                            
                             .ToArrayAsync();
         }
 
         
         public async Task<IActionResult> ParkedCars( string Message, string Sort="Name", string SearchString = "")
         {
-            ParkedVehicle[] reta = await AddTimeAndPrice();
+            var reta = await AddTimeAndPrice();
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
             else txt = $"Parked Vehicles sorted by {Message}";
 
             var svar = new ListViewModel
             {
-                ParkedVehicles = reta.Where(o => o.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s,Sort)),
+                ParkedViewModel  = reta.Where(o => o.Vehicle.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s, Sort)),
+ 
                 Message = txt
             
             };
             return View("Index", svar);           
         }
 
-        private static string Get_seek(ParkedVehicle s, string sort)
+        private static string Get_seek(ParkedViewModel s, string sort)
         {
-            if (sort.Equals("Name")) return s.VehicleTyp.Name;
-            else if (sort.Equals("RegNr")) return s.RegNr;
-            else if (sort.Equals("VehicleColor")) return s.VehicleColor;
-            else if (sort.Equals("VehicleModel")) return s.VehicleModel;
-            else if (sort.Equals("VehicleBrand")) return s.VehicleBrand;           
+            if (sort.Equals("Name")) return s.Vehicle.VehicleTyp.Name;
+            else if (sort.Equals("RegNr")) return s.Vehicle.RegNr;
+            else if (sort.Equals("VehicleColor")) return s.Vehicle.VehicleColor;
+            else if (sort.Equals("VehicleModel")) return s.Vehicle.VehicleModel;
+            else if (sort.Equals("VehicleBrand")) return s.Vehicle.VehicleBrand;           
             else
-            return s.VehicleTyp.Name;
+            return s.Vehicle.VehicleTyp.Name;
         }
 
         public async Task<IActionResult> Statistik()
@@ -426,10 +447,10 @@ namespace Garage_2._0_MPT.Models
            // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();
-            stat.TotalWeels = reta.Where(o=>o.ParkOutDate==null).Select(o => o.NumberOfWheels).Sum();
+            stat.TotalWeels = reta.Where(o=>o.ParkedVehicle.ParkOutDate==null).Select(o => o.Vehicle.NumberOfWheels).Sum();
             stat.TotalIncome = reta.Select(o => o.Price).Sum() ;                     
-            stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
-            stat.myTypes = reta.Where(o => o.ParkOutDate == null).GroupBy(v => v.VehicleTyp.Name)
+            stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkedVehicle.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
+            stat.myTypes = reta.Where(o => o.ParkedVehicle.ParkOutDate == null).GroupBy(v => v.VehicleTyp.Name)
                     .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
 
 

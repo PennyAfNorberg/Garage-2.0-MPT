@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Garage_2._0_MPT.Models
 {
-    public class Members
+    public class Member
     {
         public int Id { get; set; }
         [MaxLength(25)]
@@ -23,6 +23,11 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public byte[] PassWord { get; set; }
+
+
+        public ICollection<Vehicle> Vehicles { get; set; }
+
+        public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
     }
 
     [Owned]

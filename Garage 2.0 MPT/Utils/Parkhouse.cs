@@ -68,11 +68,11 @@ namespace Garage_2._0_MPT.Utils
             this.Twos = Twos.ToList();
             this.Threes = Threes.ToList();
             _context = context;
-            var res = _context.ParkedVehicle.Where(p => p.Where != null).Select(x => new ParkedVehicle()
+            var res = _context.ParkedVehicle.Where(p => p.Where != null).Select(x => new ParkedViewModel()
             {
-                Id = x.Id,
-                VehicleTyp = x.VehicleTyp,
-                Where = x.Where
+                ParkedVehicle = x,
+                VehicleTyp = x.Vehicle.VehicleTyp,
+
             });
             AddSavedVehicles(res);
 
@@ -132,12 +132,12 @@ namespace Garage_2._0_MPT.Utils
 
 
 
-        public void AddSavedVehicles(IEnumerable<ParkedVehicle> parkedVehicles)
+        public void AddSavedVehicles(IEnumerable<ParkedViewModel> parkedVehicles)
         {
             foreach (var parkedVehicle in parkedVehicles)
             {
-                if(parkedVehicle.Where != null)
-                  AddSavedVehicle(parkedVehicle);
+                if(parkedVehicle.ParkedVehicle.Where != null)
+                  AddSavedVehicle(parkedVehicle.ParkedVehicle);
             }
 
             foreach(var item in NextFreeSpaces)
@@ -167,7 +167,7 @@ namespace Garage_2._0_MPT.Utils
         public bool Leave(ParkedVehicle parkedVehicle)
         {
             OccupidePositions.Remove(parkedVehicle.Position);
-            NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null;
+            NextFreeSpaces[parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded] = null;
             parkedVehicle.Where = null;
             parkedVehicle.Position = null;
             var dickcount = NextFreeSpaces.Count;
@@ -185,11 +185,13 @@ namespace Garage_2._0_MPT.Utils
                         X = 1,
                         Y = 1
                     }
-                        , parkedVehicle.VehicleTyp.SpacesNeeded);
+                        , parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded);
             }
             NextFreeSpaces = TempNextFreeSpaces;
             return true;
         }
+
+
 
 
         /// <summary>
@@ -202,54 +204,54 @@ namespace Garage_2._0_MPT.Utils
             Position nextOne = null;
             Position blaskn = null;
             Position blasko = null;
-            if(NextFreeSpaces.TryGetValue(parkedVehicle.VehicleTyp.SpacesNeeded, out nextOne))
+            if(NextFreeSpaces.TryGetValue(parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded, out nextOne))
             {
                 if (nextOne != null)
                 {
                     OccupidePositions.Add(nextOne);
                     parkedVehicle.Where = nextOne.ToString();
                     parkedVehicle.Position = nextOne;
-                    NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
+                    NextFreeSpaces[parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded] = null; /// one less to check.
                     var nextOne2 = new Position()
                     {
                         Z = nextOne.Z,
                         X = nextOne.X,
                         Y = nextOne.Y
                     };
-                    if (TestPos(nextOne2, parkedVehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
+                    if (TestPos(nextOne2, parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded, out blaskn, out blasko))
                     {
-                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        if (parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded < 0)
                         {
-                            nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract + 1) : ((blasko != null) ? (blasko.SpaceLeftForFract + 1) : (parkedVehicle.VehicleTyp.SpacesNeeded + 1));
+                            nextOne2.SpaceLeftForFract = (blaskn != null) ? (blaskn.SpaceLeftForFract + 1) : ((blasko != null) ? (blasko.SpaceLeftForFract + 1) : (parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded + 1));
                         }
                         else
                         {
-                            nextOne2.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                            nextOne2.SpaceOccupide = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded;
                         }
-                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne2;
+                        NextFreeSpaces[parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded] = nextOne2;
                     }
                     else
                     {
-                        nextOne = GetNextSpotWrapper(nextOne, parkedVehicle.VehicleTyp.SpacesNeeded, nextOne);
-                        NextFreeSpaces[parkedVehicle.VehicleTyp.SpacesNeeded] = nextOne;
+                        nextOne = GetNextSpotWrapper(nextOne, parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded, nextOne);
+                        NextFreeSpaces[parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded] = nextOne;
                     }
 
                     return true;
                 }
                 else
                 { // then we try to steal a prebooked slot.
-                    if (NextFreeSpaces.Keys.Any(p => p > parkedVehicle.VehicleTyp.SpacesNeeded))
+                    if (NextFreeSpaces.Keys.Any(p => p > parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded))
                     { // something to steal
-                        int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
+                        int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
                         nextOne = NextFreeSpaces[stealfromhere];
                         var saveoldSpaceneed = (nextOne.SpaceOccupide == null) ? nextOne.SpaceLeftForFract - 1 : nextOne.SpaceOccupide;
-                        if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                        if (parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded < 0)
                         {
-                            nextOne.SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                            nextOne.SpaceLeftForFract = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded + 1;
                         }
                         else
                         {
-                            nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                            nextOne.SpaceOccupide = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded;
                         }
                         OccupidePositions.Add(nextOne);
                         NextFreeSpaces[stealfromhere] = null;
@@ -265,18 +267,18 @@ namespace Garage_2._0_MPT.Utils
             }
             else
             { // then we try to steal a prebooked slot.
-                if (NextFreeSpaces.Keys.Any(p=>p> parkedVehicle.VehicleTyp.SpacesNeeded))
+                if (NextFreeSpaces.Keys.Any(p=>p> parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded))
                 { // something to steal
-                    int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
+                    int stealfromhere = NextFreeSpaces.Keys.Where(p => p > parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded).OrderBy(p => p).FirstOrDefault();
                     nextOne = NextFreeSpaces[stealfromhere];
                     var saveoldSpaceneed = (nextOne.SpaceOccupide == null) ? nextOne.SpaceLeftForFract - 1 : nextOne.SpaceOccupide;
-                    if (parkedVehicle.VehicleTyp.SpacesNeeded < 0)
+                    if (parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded < 0)
                     {
-                        nextOne.SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                        nextOne.SpaceLeftForFract = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded + 1;
                     }
                     else
                     {
-                        nextOne.SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                        nextOne.SpaceOccupide = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded;
                     }
                     OccupidePositions.Add(nextOne);
                     NextFreeSpaces[stealfromhere] = null;

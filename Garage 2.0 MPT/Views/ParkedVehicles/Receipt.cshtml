@@ -18,10 +18,10 @@
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 text-right">
             <p>
-                ParkeInDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkInDate)</em>
+                ParkeInDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkedVehicle.ParkInDate)</em>
             </p>
             <p>
-                ParkOutDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkOutDate)</em>
+                ParkOutDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkedVehicle.ParkOutDate)</em>
             </p>
             <p>
                 Receipt#:<em>ARSTA1801201523ID21w</em>
@@ -44,11 +44,11 @@
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.VehicleTyp.Name)</td>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.RegNr)</td>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.VehicleModel)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleTyp.Name)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.RegNr)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleModel)</td>
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.ParkedTime)</td>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.CostPerHour)</td>
+                <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleTyp.CostPerHour)</td>
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.Price)</td>
             </tr>
         </tbody>
@@ -62,13 +62,13 @@
 
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.NumberOfWheels)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.NumberOfWheels)</td>
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.VehicleBrand)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleBrand)</td>
      </tr>
      <tr>
-         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.VehicleColor)</td>
+         <td class="col-md-3">@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleColor)</td>
           <td class="col-md-3" style="text-align: center"> 3 </td>
     <td class="col-md-3 text-center">$16</td>
     <td class="col-md-3 text-center">$48</td>

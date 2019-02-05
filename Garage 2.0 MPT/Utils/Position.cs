@@ -32,13 +32,13 @@ namespace Garage_2._0_MPT.Utils
              X = Int32.Parse(parts2[0].Substring(1));
              Y = Int32.Parse(parts2[1].Substring(0, parts2[1].Length - 1));
 
-            if(parkedVehicle.VehicleTyp.SpacesNeeded<0)
+            if(parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded<0)
             {
-                SpaceLeftForFract = parkedVehicle.VehicleTyp.SpacesNeeded + 1;
+                SpaceLeftForFract = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded + 1;
             }
             else
             {
-                SpaceOccupide = parkedVehicle.VehicleTyp.SpacesNeeded;
+                SpaceOccupide = parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded;
             }
         }
 

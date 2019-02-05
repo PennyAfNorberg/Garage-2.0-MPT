@@ -77,12 +77,12 @@ namespace Garage_2._0_MPT.ViewCompontens
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.Where == null).ToList();
+                var res = (await AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
 
 
                 foreach (var item in res)
                 {
-                    parkhouse.Park(item);
+                    parkhouse.Park(item.ParkedVehicle);
                 }
 
 
@@ -100,23 +100,18 @@ namespace Garage_2._0_MPT.ViewCompontens
             }
         }
 
-        private async Task<ParkedVehicle[]> AddTimeAndPrice(bool includeparkedout = false)
+        private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
             return await db.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
-                            .Select(x => new ParkedVehicle()
+                            .Select(x => new ParkedViewModel()
                             {
-                                Id = x.Id,
-                                VehicleTyp = x.VehicleTyp,
-                                RegNr = x.RegNr,
-                                VehicleColor = x.VehicleColor,
-                                VehicleModel = x.VehicleModel,
-                                VehicleBrand = x.VehicleBrand,
-                                NumberOfWheels = x.NumberOfWheels,
-                                ParkInDate = x.ParkInDate,
-                                ParkOutDate = x.ParkOutDate,
-                                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
-                                CostPerHour = x.VehicleTyp.CostPerHour,
-                                Where = x.Where
+                                ParkedVehicle=x,
+                                Vehicle=x.Vehicle,
+                                VehicleTyp=x.Vehicle.VehicleTyp,
+                                Member=x.Member,
+
+                                Price = x.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
+                                CostPerHour = x.Vehicle.VehicleTyp.CostPerHour
                             })
                             .ToArrayAsync();
         }
