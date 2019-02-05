@@ -20,7 +20,7 @@ namespace Garage_2._0_MPT.Models
         [Required(ErrorMessage = "Email is Required")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-
+        [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public byte[] PassWord { get; set; }
     }

@@ -19,7 +19,7 @@ namespace Garage_2._0_MPT.Models
         public int VehicleTypId { get; set; }
         public VehicleTyp VehicleTyp { get; set; }
         [Display(Name = "Reg Nr")]
-        [Required]
+        [Required(ErrorMessage = "Reg nr is required")]
         public string RegNr { get; set; }
         [Display(Name = "Color")]
         public string VehicleColor { get; set; }
