@@ -14,41 +14,41 @@ namespace Garage_2._0_MPT.Models
         {
             ParkInDate = DateTime.Now;
         }
-        public int Id { get; set; }
+        public int Id { get; set; } // Alla
         [Display(Name = "Type")]
-        public int VehicleTypId { get; set; }
-        public VehicleTyp VehicleTyp { get; set; }
-        [Display(Name = "Reg Nr")]
-        public string RegNr { get; set; }
+        public int VehicleTypId { get; set; } //Vech
+        public VehicleTyp VehicleTyp { get; set; }  //Vech
+        [Display(Name = "Reg Nr")]  
+        public string RegNr { get; set; }  //Vech
         [Display(Name = "Color")]
-        public string VehicleColor { get; set; }
+        public string VehicleColor { get; set; }  //Vech
         [Display(Name = "Model")]
-        public string VehicleModel { get; set; }
+        public string VehicleModel { get; set; }  //Vech
         [Display(Name = "Brand")]
-        public string VehicleBrand { get; set; }
+        public string VehicleBrand { get; set; }  //Vech
         [Display(Name = "Wheels")]
-        public int NumberOfWheels { get; set; }
+        public int NumberOfWheels { get; set; }  //Vech
         [Display(Name = "Parking Time")]
-        public DateTime ParkInDate { get; set; }
+        public DateTime ParkInDate { get; set; } // Parked
         [Display(Name = "Leaving Time")]
-        public DateTime? ParkOutDate { get; set; }
+        public DateTime? ParkOutDate { get; set; } // Parked
         [NotMapped]
         [Display(Name = "Parked Time")]
-        public string ParkedTime { get; set; }
+        public string ParkedTime { get; set; } // viewmodel
         [NotMapped]
         [Display(Name = "Time")]
-        public int ParkedHours { get; set; }
+        public int ParkedHours { get; set; } // viewmodel
         [NotMapped]
         [Display(Name = "Price")]
-        public int Price { get; set; }  
+        public int Price { get; set; }  // viewmodel
         [NotMapped]
         [Display(Name = "CostPerHour")]
-        public int CostPerHour { get; set; }
+        public int CostPerHour { get; set; } // viewmodel
 
-        [Display(Name = "Parking Lot")]
+        [Display(Name = "Parking Lot")]  // Parked
         public string Where { get; set; }
         [NotMapped]
-        public Position Position { get; set; }
+        public Position Position { get; set; } // parked
 
 
     }
