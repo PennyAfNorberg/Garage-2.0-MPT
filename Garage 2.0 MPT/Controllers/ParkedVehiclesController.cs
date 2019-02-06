@@ -167,7 +167,7 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var res = (await AddTimeAndPrice());
+            var res = (await AddTimeAndPrice(true));
 
 
 
@@ -498,7 +498,7 @@ namespace Garage_2._0_MPT.Models
                 return null;
             else
 
-                return res3.ToArray();
+                return  res3.ToArray();
 
             //   .ToArrayAsync();
         }

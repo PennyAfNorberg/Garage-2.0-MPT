@@ -59,8 +59,8 @@
         <partial name="_CookieConsentPartial" />
         @if (ViewContext.RouteData.Values["action"].ToString() != "Receipt")
         {
-            @*  <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  />
-            @await Component.InvokeAsync("ParkingHouseStatus"); *@
+            @*  <partial name="_ParkingHouseStatusPartial" model=Model.ParkingsHouseStatusViewModel  />*@
+            @await Component.InvokeAsync("ParkingHouseStatus");
             <vc:parking_house_status />
         }
         <main role="main" class="pb-3">
