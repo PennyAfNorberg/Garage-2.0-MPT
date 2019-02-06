@@ -184,7 +184,7 @@ namespace Garage_2._0_MPT.Utils
         {
             OccupidePositions.Remove(parkedVehicle.Position);
             NextFreeSpaces[parkedVehicle.Vehicle.VehicleTyp.SpacesNeeded] = null;
-            parkedVehicle.Where = null;
+           // parkedVehicle.Where = null;
             parkedVehicle.Position = null;
             var dickcount = NextFreeSpaces.Count;
             Dictionary<int, Position> TempNextFreeSpaces = NextFreeSpaces.ToDictionary(k => k.Key, k => k.Value);

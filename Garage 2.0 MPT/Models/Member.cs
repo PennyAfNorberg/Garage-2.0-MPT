@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,12 +31,24 @@ namespace Garage_2._0_MPT.Models
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public byte[] PassWord { get; set; }
-
-
+        [NotMapped]
+        public string Message { get; set; }
         public ICollection<Vehicle> Vehicles { get; set; }
 
         public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
     }
 
-    
+    public class MemberViewModel
+    {
+        public Member Member { get; set; }
+        public ICollection<SubVehicle> Vehicles { get; set; }
+    }
+
+    public class SubVehicle
+    {
+        public Vehicle Vehicle { get; set; }
+        public VehicleTyp Vehicletype { get; set; }
+        public ICollection<SubParkedViewModel> SubParkedViewModels { get; set; }
+    }
+
 }

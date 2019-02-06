@@ -48,7 +48,8 @@
                 <input asp-for="ParkedVehicle.Vehicle.NumberOfWheels" name="NumberOfWheels" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.NumberOfWheels" class="text-danger"></span>
             </div>
-            <input type="hidden" value="@Model.Member.Id" name="MemberId" />
+            <label>Member id @Model.Member.FirstName  @Model.Member.LastName </label>
+            <input type="Text" readonly value="@Model.Member.Id" name="MemberId" />
             <!-- <div class="form-group">
         <label asp-for="ParkInDate" class="control-label"></label>
         <input asp-for="ParkInDate" class="form-control" />

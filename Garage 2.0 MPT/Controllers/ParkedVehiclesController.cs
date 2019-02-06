@@ -359,6 +359,43 @@ namespace Garage_2._0_MPT.Models
             return View(parkedVehicle);
         }
 
+
+        public async Task<IActionResult> Parkthis(int vehicleid)
+        {
+            var thisvehicle = await  _context.Vehicles.Where(v => v.Id == vehicleid).FirstOrDefaultAsync();
+            var memberid = thisvehicle.MemberId;
+            ParkedVehicle InparkedVehicle = new ParkedVehicle
+            {
+                MemberId = memberid,
+                Member = await _context.Members.Where(m => m.Id == memberid).FirstOrDefaultAsync(),
+                VehicleId = vehicleid,
+                Vehicle = thisvehicle
+
+            };
+            if (parkhouse.Park(InparkedVehicle))
+            {
+                _context.Add(InparkedVehicle);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { id = InparkedVehicle.Id });
+            }
+            else
+            {
+                var svar = new SingelViewModel
+                {
+                    ParkedVehicle = new ParkedViewModel
+                    {
+                        Vehicle = new Vehicle
+                        {
+                            RegNr = thisvehicle.RegNr
+                        }
+                    }
+                };
+
+
+                return View("GarageFull", svar);
+            }
+
+        }
         // POST: ParkedVehicles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
