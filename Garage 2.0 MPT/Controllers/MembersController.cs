@@ -149,7 +149,7 @@ namespace Garage_2._0_MPT.Controllers
         {
             return _context.Members.Any(e => e.Id == id);
         }
-        public async Task<IActionResult> ParkedCars(string Message, string Sort = "Name", string SearchString = "")
+        public async Task<IActionResult> SeekAndSort(string Message, string Sort = "Name", string SearchString = "")
         {
 
             Member[] reta = await _context.Members.Where(o => o.FirstName.ToLower().Contains(SearchString.ToLower())
