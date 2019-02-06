@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_2._0_MPT.Models;
+using System.Linq.Expressions;
 
 namespace Garage_2._0_MPT.Controllers
 {
@@ -147,6 +148,25 @@ namespace Garage_2._0_MPT.Controllers
         private bool MembersExists(int id)
         {
             return _context.Members.Any(e => e.Id == id);
+        }
+        public async Task<IActionResult> ParkedCars(string Message, string Sort = "Name", string SearchString = "")
+        {
+
+            Member[] reta = await _context.Members.Where(o => o.FirstName.ToLower().Contains(SearchString.ToLower())
+            || o.LastName.ToLower().Contains(SearchString.ToLower())
+            || o.Email.ToLower().Contains(SearchString.ToLower()))
+            .OrderBy(mySort(Sort)).ToArrayAsync();
+            return View("Index", reta);
+        }
+
+        private static Expression<Func<Member, string>> mySort(string sort)
+        {
+            if (sort.Equals("FirstName")) return s => s.FirstName;
+            else if (sort.Equals("LastName")) return s => s.LastName;
+            else if (sort.Equals("Email")) return s => s.Email;
+
+            else
+                return s => s.LastName;
         }
     }
 }

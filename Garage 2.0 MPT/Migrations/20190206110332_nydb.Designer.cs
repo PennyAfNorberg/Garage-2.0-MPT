@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190206110332_nydb")]
+    partial class nydb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,9 +27,6 @@ namespace Garage_2._0_MPT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("City")
-                        .HasMaxLength(20);
-
                     b.Property<string>("Email")
                         .IsRequired();
 
@@ -38,12 +37,6 @@ namespace Garage_2._0_MPT.Migrations
                         .HasMaxLength(25);
 
                     b.Property<byte[]>("PassWord");
-
-                    b.Property<string>("Street")
-                        .HasMaxLength(35);
-
-                    b.Property<string>("ZipCode")
-                        .HasMaxLength(8);
 
                     b.HasKey("Id");
 
@@ -163,6 +156,34 @@ namespace Garage_2._0_MPT.Migrations
                             CostPerHour = 200,
                             Name = "Truck",
                             SpacesNeeded = 2
+                        });
+                });
+
+            modelBuilder.Entity("Garage_2._0_MPT.Models.Member", b =>
+                {
+                    b.OwnsOne("Garage_2._0_MPT.Models.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("MemberId")
+                                .ValueGeneratedOnAdd()
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<string>("City")
+                                .HasMaxLength(20);
+
+                            b1.Property<string>("Street")
+                                .HasMaxLength(35);
+
+                            b1.Property<string>("ZipCode")
+                                .HasMaxLength(8);
+
+                            b1.HasKey("MemberId");
+
+                            b1.ToTable("Members");
+
+                            b1.HasOne("Garage_2._0_MPT.Models.Member")
+                                .WithOne("Address")
+                                .HasForeignKey("Garage_2._0_MPT.Models.Address", "MemberId")
+                                .OnDelete(DeleteBehavior.Cascade);
                         });
                 });
 

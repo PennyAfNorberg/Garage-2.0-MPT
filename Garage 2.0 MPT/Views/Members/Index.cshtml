@@ -12,13 +12,13 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="myTbBox" onclick='location.href="@Url.Action("ParkedCars", "Members", new {Sort = "FirstName" , Message="First Name"})"'>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
-            <th>
+            <th class="myTbBox" onclick='location.href="@Url.Action("ParkedCars", "Members", new {Sort = "LastName" , Message="Last Name"})"'>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
-            <th>
+            <th class="myTbBox" onclick='location.href="@Url.Action("ParkedCars", "Members", new {Sort = "Email" , Message="Email"})"'>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>

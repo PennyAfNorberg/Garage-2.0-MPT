@@ -35,12 +35,12 @@ namespace Garage_2._0_MPT.Models
                         ,
                         LastName = Faker.NameFaker.LastName()
                         ,
-                        Address = new Address
-                        {
-                            Street = Faker.LocationFaker.Street(),
-                            ZipCode = Faker.LocationFaker.PostCode(),
-                            City = Faker.LocationFaker.City(),
-                        },
+                         Street = Faker.LocationFaker.Street()
+                        ,
+                         ZipCode = Faker.LocationFaker.PostCode()
+                        ,
+                         City = Faker.LocationFaker.City()
+                        ,
                         Email = Faker.InternetFaker.Email(),
                         PassWord = new byte[] { 255, 0, 123 },
                     };
