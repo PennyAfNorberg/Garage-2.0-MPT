@@ -17,14 +17,21 @@
             </address>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 text-right">
-            <p>
-                ParkeInDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkedVehicle.ParkInDate)</em>
-            </p>
-            <p>
-                ParkOutDate:<em>@Html.DisplayFor(model => model.ParkedVehicle.ParkedVehicle.ParkOutDate)</em>
-            </p>
-            <p>
-                Receipt#:<em>ARSTA1801201523ID21w</em>
+            @foreach (var item in Model.ParkedVehicle.ParkedVehicles)
+            {
+
+                <p>
+                    ParkeInDate:<em>@Html.DisplayFor(modelitem => item.ParkedVehicle.ParkInDate)</em>
+                </p>
+                <p>
+                    ParkOutDate:<em>@Html.DisplayFor(modelitem => item.ParkedVehicle.ParkOutDate)</em>
+                </p>
+
+                <p>
+                    Receipt#:<em>ARSTA1801201523ID21w</em>
+
+                </p>
+            }
         </div>
     </div>
    
@@ -47,10 +54,16 @@
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleTyp.Name)</td>
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.RegNr)</td>
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleModel)</td>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.ParkedTime)</td>
+                @foreach (var item2 in Model.ParkedVehicle.ParkedVehicles)
+                {
+                    <td>@Html.DisplayFor(modelitem => item2.ParkedTime)</td>
+                }
                 <td>@Html.DisplayFor(model => model.ParkedVehicle.Vehicle.VehicleTyp.CostPerHour)</td>
-                <td>@Html.DisplayFor(model => model.ParkedVehicle.Price)</td>
-            </tr>
+                @foreach (var item3 in Model.ParkedVehicle.ParkedVehicles)
+                {
+                    <td>@Html.DisplayFor(modelitem => item3.Price)</td>
+                }
+                </tr>
         </tbody>
     </table>
 </div>            <!--  </tr>

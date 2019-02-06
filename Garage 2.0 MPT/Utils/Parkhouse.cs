@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Garage_2._0_MPT.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage_2._0_MPT.Utils
 {
@@ -68,12 +69,20 @@ namespace Garage_2._0_MPT.Utils
             this.Twos = Twos.ToList();
             this.Threes = Threes.ToList();
             _context = context;
-            var res = _context.ParkedVehicle.Where(p => p.Where != null).Select(x => new ParkedViewModel()
+            var res = _context.ParkedVehicle
+             //   .Include(pv => pv.Vehicle).ThenInclude(v => v.VehicleTyp)
+                .Where(p => p.Where != null);
+            
+            
+            /*.Select(p => new ParkedViewModel()
             {
-                ParkedVehicle = x,
-                VehicleTyp = x.Vehicle.VehicleTyp,
+                ParkedVehicles = new List<SubParkedViewModel> {
 
-            });
+                    new SubParkedViewModel {ParkedVehicle =p}
+                     },
+                VehicleTyp = p.Vehicle.VehicleTyp,
+
+            });*/
             AddSavedVehicles(res);
 
             PopulateNextFreeSpaces();
@@ -125,6 +134,9 @@ namespace Garage_2._0_MPT.Utils
 
         public bool Park(ParkedVehicle parkedVehicle)
         {
+
+            parkedVehicle.Vehicle.VehicleTyp = _context.Vehicles.Where(v => v.Id == parkedVehicle.VehicleId).Select(vt => vt.VehicleTyp).FirstOrDefault();
+
             bool foundnextspot=GetNextSpot(parkedVehicle);
            
             return foundnextspot;
@@ -132,12 +144,14 @@ namespace Garage_2._0_MPT.Utils
 
 
 
-        public void AddSavedVehicles(IEnumerable<ParkedViewModel> parkedVehicles)
+        public void AddSavedVehicles(IQueryable<ParkedVehicle> parkedVehicles)
         {
             foreach (var parkedVehicle in parkedVehicles)
             {
-                if(parkedVehicle.ParkedVehicle.Where != null)
-                  AddSavedVehicle(parkedVehicle.ParkedVehicle);
+
+                        AddSavedVehicle(parkedVehicle);
+
+                 
             }
 
             foreach(var item in NextFreeSpaces)

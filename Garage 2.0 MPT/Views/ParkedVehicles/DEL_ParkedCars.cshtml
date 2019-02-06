@@ -29,7 +29,7 @@
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleBrand)<span><img id="i5" class="updown" src="~/img/bullet_green.png" /></span>
             </th>
             <th class="myTbBox">
-                @Html.DisplayNameFor(model => model.Header.ParkedVehicle.Where)
+               Parking lot
             </th>
             <th></th>
         </tr>
@@ -53,14 +53,27 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Vehicle.VehicleBrand)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkedVehicle.Where)
-            </td>
-            <td>
-                <a asp-action="Check_Out" asp-route-id="@item.ParkedVehicle.Id">Check Out</a>
-                <a asp-action="Details" asp-route-id="@item.ParkedVehicle.Id">Details</a>
-                <!-- <a asp-action="Delete" asp-route-id="@item.ParkedVehicle.Id">Delete</a> |
-        <a asp-action="Receipt" asp-route-id="@item.ParkedVehicle.Id">Receipt</a> -->
+            <td colspan="2">
+                <table>
+                    @foreach (var item2 in item.ParkedVehicles)
+                    {
+
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
+                            </td>
+                            <td>
+                                <div class="allBtnTB">
+                                    <a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
+                                    <a class="myBtnTb" asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
+                                    <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
+                            <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item2.ParkedVehicle.Id">Receipt</a> -->
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
             </td>
         </tr>
 }

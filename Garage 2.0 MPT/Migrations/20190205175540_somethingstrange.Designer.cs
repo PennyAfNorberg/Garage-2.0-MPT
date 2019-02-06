@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190205175540_somethingstrange")]
+    partial class somethingstrange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,13 +49,13 @@ namespace Garage_2._0_MPT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("MemberId");
+                    b.Property<int?>("MemberId");
 
                     b.Property<DateTime>("ParkInDate");
 
                     b.Property<DateTime?>("ParkOutDate");
 
-                    b.Property<int>("VehicleId");
+                    b.Property<int?>("VehicleId");
 
                     b.Property<string>("Where");
 
@@ -72,7 +74,7 @@ namespace Garage_2._0_MPT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("MemberId");
+                    b.Property<int?>("MemberId");
 
                     b.Property<int>("NumberOfWheels");
 
@@ -94,6 +96,98 @@ namespace Garage_2._0_MPT.Migrations
                     b.HasIndex("VehicleTypId");
 
                     b.ToTable("Vehicles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            NumberOfWheels = 4,
+                            RegNr = "abc123",
+                            VehicleBrand = "Ferrari",
+                            VehicleColor = "Green",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            NumberOfWheels = 4,
+                            RegNr = "abc234",
+                            VehicleBrand = "Volvo",
+                            VehicleColor = "Red",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            NumberOfWheels = 4,
+                            RegNr = "abc345",
+                            VehicleBrand = "Saab",
+                            VehicleColor = "Blue",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 5
+                        },
+                        new
+                        {
+                            Id = 4,
+                            NumberOfWheels = 4,
+                            RegNr = "abc456",
+                            VehicleBrand = "Ferrari",
+                            VehicleColor = "Green",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            NumberOfWheels = 4,
+                            RegNr = "abc567",
+                            VehicleBrand = "Volvo",
+                            VehicleColor = "Red",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            NumberOfWheels = 4,
+                            RegNr = "abc678",
+                            VehicleBrand = "Saab",
+                            VehicleColor = "Black",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            NumberOfWheels = 4,
+                            RegNr = "Rymdopera",
+                            VehicleBrand = "Ferrari",
+                            VehicleColor = "Green",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            NumberOfWheels = 4,
+                            RegNr = "abc987",
+                            VehicleBrand = "Volvo",
+                            VehicleColor = "Red",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            NumberOfWheels = 4,
+                            RegNr = "Biffen",
+                            VehicleBrand = "Bmv",
+                            VehicleColor = "Black",
+                            VehicleModel = "okänd",
+                            VehicleTypId = 5
+                        });
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.VehicleTyp", b =>
@@ -189,21 +283,18 @@ namespace Garage_2._0_MPT.Migrations
                 {
                     b.HasOne("Garage_2._0_MPT.Models.Member", "Member")
                         .WithMany("ParkedVehicles")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("MemberId");
 
                     b.HasOne("Garage_2._0_MPT.Models.Vehicle", "Vehicle")
                         .WithMany("ParkedVehicles")
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("VehicleId");
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.Vehicle", b =>
                 {
                     b.HasOne("Garage_2._0_MPT.Models.Member", "Member")
                         .WithMany("Vehicles")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("MemberId");
 
                     b.HasOne("Garage_2._0_MPT.Models.VehicleTyp", "VehicleTyp")
                         .WithMany("Vehicles")

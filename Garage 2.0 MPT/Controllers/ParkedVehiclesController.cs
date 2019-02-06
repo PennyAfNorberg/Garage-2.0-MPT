@@ -65,26 +65,41 @@ namespace Garage_2._0_MPT.Models
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
- 
+                var res = (await AddTimeAndPrice());
+                if (res != null)
+                { 
 
-                foreach (var item in res)
-                {
-                    parkhouse.Park(item.ParkedVehicle);
-                }
 
-    
-                try
-                {
-                    _context.UpdateRange(res);
-                     _context.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
+                   var res2= res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null))
 
-                    throw;
+                    .Select(p => p.Select(pw => pw.ParkedVehicle))
+                   .ToList();
+
+                    var needtosavetoo = new List<ParkedVehicle>();
+
+                    foreach (var item in res2)
+                    {
+                        foreach (var item2 in item)
+                        {
+                            parkhouse.Park(item2);
+                            needtosavetoo.Add(item2);
+                        }
+
+                    }
+
+
+                    try
+                    {
+                        _context.ParkedVehicle.UpdateRange(needtosavetoo);
+                        _context.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+
+                        throw;
+                    }
+                    loadedSeed = true;
                 }
-                loadedSeed = true;
             }
         }
 
@@ -98,7 +113,7 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new ListViewModel
             {
-                ParkedViewModel = res,
+                ParkedViewModel = (IEnumerable<ParkedViewModel>) res,
                 Message= "Parked Vehicles"
 
             };
@@ -111,7 +126,7 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
-            var res = await AddTimeAndPrice(true);
+            var res =  await AddTimeAndPrice(true);
 
             var svar = new ListViewModel
             {
@@ -152,14 +167,21 @@ namespace Garage_2._0_MPT.Models
                 return NotFound();
             }
 
-            var res = await AddTimeAndPrice();
-
+            var res = await  AddTimeAndPrice();
 
 
 
             var svar = new SingelViewModel
             {
-                ParkedVehicle = res.FirstOrDefault(m => m.ParkedVehicle.Id == id),
+                ParkedVehicle = new ParkedViewModel
+                {
+                    ParkedVehicles = res.
+                Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
+                .FirstOrDefault().ToList()
+                , Vehicle = res.Select(o => o.Vehicle).Where(v => v.ParkedVehicles.Any(pv => pv.Id == id)).FirstOrDefault()
+                , VehicleTyp = res.Select(o => o.VehicleTyp).Where(vt => vt.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
+                , Member = res.Select(o => o.Member).Where(m => m.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
+                }
             };
 
             //await RePark();
@@ -180,9 +202,21 @@ namespace Garage_2._0_MPT.Models
             }
 
             await InitPlots();
+            var res = await AddTimeAndPrice();
             var svar = new SingelViewModel
             {
-                ParkedVehicle = (await AddTimeAndPrice(true)).FirstOrDefault(m => m.ParkedVehicle.Id == id)
+                ParkedVehicle = new ParkedViewModel
+                {
+                    ParkedVehicles = res.
+                Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
+                .FirstOrDefault().ToList()
+                                ,
+                    Vehicle = res.Select(o => o.Vehicle).Where(v => v.ParkedVehicles.Any(pv => pv.Id == id)).FirstOrDefault()
+                ,
+                    VehicleTyp = res.Select(o => o.VehicleTyp).Where(vt => vt.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
+                ,
+                    Member = res.Select(o => o.Member).Where(m => m.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
+                }
 
             };
 
@@ -319,7 +353,14 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var parkedVehicle = (await AddTimeAndPrice()).Select(pwm => pwm.ParkedVehicle).FirstOrDefault(m => m.Id == id);
+            var res = await AddTimeAndPrice();
+
+
+
+            var parkedVehicle = res.
+    Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
+    .FirstOrDefault().FirstOrDefault().ParkedVehicle;
+
             await InitPlots();
             parkedVehicle.ParkOutDate = DateTime.Now;
             try
@@ -379,7 +420,7 @@ namespace Garage_2._0_MPT.Models
         }
         public async Task<IActionResult> Test(string SearchString)
         {
-            var reta = await AddTimeAndPrice();
+            var reta =await   AddTimeAndPrice();
             return View("Index", reta);
         }
 
@@ -390,32 +431,47 @@ namespace Garage_2._0_MPT.Models
                 .Include(v => v.VehicleTyp)
                 .Include(v => v.Member);
 
-            var res2 = res
-                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))));
+            var res2 =  res
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null)))) ;
 
+            IQueryable<ParkedViewModel> res3;
 
+                res3 = res2.Select(x => new ParkedViewModel()
+                {
+                    ParkedVehicles = (x.ParkedVehicles == null) ? null : x.ParkedVehicles.Select(pv => new SubParkedViewModel
+                    {
+                        ParkedVehicle = pv,
+                        ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
+                        Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
+                        CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
+                    }).ToList(),
+                    Vehicle = x,
+                    VehicleTyp = x.VehicleTyp,
+                    Member = x.Member
+                });
 
-            var res3 = res2.Select(x => new ParkedViewModel()
-            {
-                ParkedVehicle = x.ParkedVehicles.FirstOrDefault(),
-                Vehicle = x,
-                VehicleTyp = x.VehicleTyp,
-                Member = x.Member,
-
-                ParkedTime = PrettyPrintTime(((x.ParkedVehicles.FirstOrDefault().ParkOutDate == null) ? DateTime.Now : x.ParkedVehicles.FirstOrDefault().ParkOutDate) - x.ParkedVehicles.FirstOrDefault().ParkInDate),
-                Price = x.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkedVehicles.FirstOrDefault().ParkOutDate == null) ? DateTime.Now : x.ParkedVehicles.FirstOrDefault().ParkOutDate) - x.ParkedVehicles.FirstOrDefault().ParkInDate).Value.TotalHours),
-                CostPerHour = x.VehicleTyp.CostPerHour,
-
-            });
-            return await res3
+            if (res3.Count() == 0)
+                return null;
+            else
+           
+            return   res3.ToArray();
                             
-                            .ToArrayAsync();
+                         //   .ToArrayAsync();
         }
+        /*        [NotMapped]
+        [Display(Name = "Parked Time")]
+        public string ParkedTime { get; set; } // viewmodel
 
+        [NotMapped]
+        [Display(Name = "Price")]
+        public int Price { get; set; }  // viewmodel
+        [NotMapped]
+        [Display(Name = "CostPerHour")]
+        public int CostPerHour { get; set; } // viewmodel*/
         
         public async Task<IActionResult> ParkedCars( string Message, string Sort="Name", string SearchString = "")
         {
-            var reta = await AddTimeAndPrice();
+            var reta =await  AddTimeAndPrice();
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
             else txt = $"Parked Vehicles sorted by {Message}";
@@ -447,11 +503,24 @@ namespace Garage_2._0_MPT.Models
            // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();
-            stat.TotalWeels = reta.Where(o=>o.ParkedVehicle.ParkOutDate==null).Select(o => o.Vehicle.NumberOfWheels).Sum();
-            stat.TotalIncome = reta.Select(o => o.Price).Sum() ;                     
-            stat.TodayTotalIncome = stat.TotalIncome - reta.Where(o => o.ParkedVehicle.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)).Select(o => o.Price).Sum();
-            stat.myTypes = reta.Where(o => o.ParkedVehicle.ParkOutDate == null).GroupBy(v => v.VehicleTyp.Name)
-                    .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
+            stat.TotalWeels = reta
+                .Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate==null))
+                .Select(o => o.Vehicle.NumberOfWheels)
+                .Sum();
+
+            stat.TotalIncome = reta
+                .Select(o => o.ParkedVehicles)
+                .Select(p => p.Select(pw => pw.Price).Sum())
+                .Sum();                     
+            stat.TodayTotalIncome = stat.TotalIncome - 
+                reta
+                 .Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate?.Date <= DateTime.Now.Date.AddDays(-1)))
+                 .Select(p => p.ParkedVehicles.Select(pw => pw.Price).Sum())
+                 .Sum();
+            stat.myTypes = reta
+                .Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate == null))
+                .GroupBy(v => v.VehicleTyp.Name)
+                .Select(g => new MyTypes{Name = g.Key,Count = g.Count()});
 
 
 

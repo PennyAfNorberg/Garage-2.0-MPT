@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Garage_2._0_MPT.Models;
 
 namespace Garage_2._0_MPT
 {
@@ -14,7 +16,15 @@ namespace Garage_2._0_MPT
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            IWebHost webHost = CreateWebHostBuilder(args).Build();
+            using (var scope = webHost.Services.CreateScope())
+            {
+
+                var services = scope.ServiceProvider;
+                SeedData.Initialize(services);
+            }
+
+            webHost.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

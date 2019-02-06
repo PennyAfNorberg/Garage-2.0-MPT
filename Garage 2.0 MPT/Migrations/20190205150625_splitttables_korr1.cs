@@ -6,9 +6,6 @@ namespace Garage_2._0_MPT.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ParkedVehicle_Members_MemberId",
-                table: "ParkedVehicle");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ParkedVehicle_Vehicles_VehicleId",
@@ -38,13 +35,7 @@ namespace Garage_2._0_MPT.Migrations
                 nullable: true,
                 oldClrType: typeof(int));
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ParkedVehicle_Members_MemberId",
-                table: "ParkedVehicle",
-                column: "MemberId",
-                principalTable: "Members",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ParkedVehicle_Vehicles_VehicleId",
