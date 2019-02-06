@@ -118,7 +118,7 @@ namespace Garage_2._0_MPT.Utils
                 {
                     firstPosition.SpaceOccupide = SpacesNeeded;
                 }
-                while (NextFreeSpaces.ContainsValue(firstPosition) || OccupidePositions.Contains(firstPosition))
+                if (NextFreeSpaces.ContainsValue(firstPosition) || OccupidePositions.Contains(firstPosition))
                     firstPosition = GetNextSpot(firstPosition, SpacesNeeded);
 
                 NextFreeSpaces[SpacesNeeded] = firstPosition;

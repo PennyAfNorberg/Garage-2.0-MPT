@@ -79,37 +79,48 @@ namespace Garage_2._0_MPT.ViewCompontens
 
 
                 var res = await AddTimeAndPrice();
-                var
+            
+                    var
                         ParkedVehicles = res.
                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Where == null))
                     .FirstOrDefault();
 
-                var needtosavetoo = new List<ParkedVehicle>();
-        
-
-
-
-
-                foreach (var item in res)
+                if (res != null)
                 {
-                    foreach (var item2 in item.ParkedVehicles)
+
+
+                    var res2 = res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null))
+
+                     .Select(p => p.Select(pw => pw.ParkedVehicle))
+                    .ToList();
+
+                    var needtosavetoo = new List<ParkedVehicle>();
+
+
+
+
+
+                    foreach (var item in res2)
                     {
-                        parkhouse.Park(item2.ParkedVehicle);
-                        needtosavetoo.Add(item2.ParkedVehicle);
+                        foreach (var item2 in item)
+                        {
+                            parkhouse.Park(item2);
+                            needtosavetoo.Add(item2);
+                        }
+
                     }
-                    
-                }
 
 
-                try
-                {
-                    db.ParkedVehicle.UpdateRange(needtosavetoo);
-                    db.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
+                    try
+                    {
+                        db.ParkedVehicle.UpdateRange(needtosavetoo);
+                        db.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
 
-                    throw;
+                        throw;
+                    }
                 }
                 loadedSeed = true;
             }

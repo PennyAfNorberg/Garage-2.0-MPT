@@ -17,7 +17,7 @@ namespace Garage_2._0_MPT.Models
         public int Id { get; set; } // Alla
         
         [Display(Name = "Parking Time")]
-        public DateTime ParkInDate { get; set; } // Parked
+        public DateTime? ParkInDate { get; set; } // Parked
         [Display(Name = "Leaving Time")]
         public DateTime? ParkOutDate { get; set; } // Parked
 

@@ -38,22 +38,28 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ParkedViewModel)
+        @foreach (var item in Model.ParkedViewModel.OrderByDescending(v => (v.ParkedVehicles == null) ? 0 : 1))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
+            </td>
+
+
+
+            @if (item.ParkedVehicles.Count>0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate== null))
+            {
                 <td colspan="6">
-                    <table>
-                        @foreach (var item2 in item.ParkedVehicles)
+                    <table class="noline">
+                        @foreach (var item2 in item.ParkedVehicles.OrderByDescending(v => (v.ParkedVehicle == null) ? 0 : 1))
                         {
+
                             <tr>
                                 <td>
                                     @Html.DisplayFor(modelItem => item2.ParkedTime)
@@ -74,12 +80,35 @@
                                     <a asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
                                     <a asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
                                     <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
-                <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
+                            <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
                                 </td>
                             </tr>
+
                         }
                     </table>
-                </tr>
+                </td>
+            }
+
+            @if (item.ParkedVehicles.Count == 0 || item.ParkedVehicles.All(pv => pv.ParkedVehicle.ParkOutDate != null))
+            {
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="allBtnTB">
+                        <a class="myBtnTb" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@item.Vehicle.Id">Park this</a>
+                        <a class="myBtnTb" asp-controller="ParkedVehicles" asp-action="VehicleDetails" asp-route-vehicleid="@item.Vehicle.Id">Details</a>
+                    </div>
+                </td>
+
+
+            }
+
+                    
+            </tr>
             }
         </tbody>
         </table>

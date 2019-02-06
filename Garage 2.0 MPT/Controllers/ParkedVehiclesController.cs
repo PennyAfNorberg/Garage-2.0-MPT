@@ -27,7 +27,7 @@ namespace Garage_2._0_MPT.Models
                     };
 
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
-
+             InitPlots();
         }
         private ParkingsHouseStatusViewModel GetParkingsHouseStatus()
         {
@@ -158,6 +158,57 @@ namespace Garage_2._0_MPT.Models
         }
 
 
+        public async Task<ActionResult> VehicleDetails(int? vehicleid)
+        {
+
+            if (vehicleid == null)
+            {
+                return NotFound();
+            }
+
+            var res = _context.Vehicles
+                .Include(v => v.VehicleTyp)
+                .Include(v => v.Member)
+                .Where(v => v.Id == vehicleid);
+
+            if(res.Count()==0)
+            {
+                return NotFound();
+            }
+
+            var svar= new SingelViewModel
+            {
+                ParkedVehicle = new ParkedViewModel
+                {
+                    //        ParkedVehicles = res.
+                    //   Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
+                    //   .FirstOrDefault().ToList(),
+                    Vehicle = await res.FirstOrDefaultAsync()
+                ,
+                    VehicleTyp = await res.Select(v=>v.VehicleTyp).FirstOrDefaultAsync()
+                ,
+                    Member = await res.Select(v=>v.Member).FirstOrDefaultAsync()
+                }
+
+            };
+            svar.ParkedVehicle.ParkedVehicles = new List<SubParkedViewModel>
+            {
+             new SubParkedViewModel{
+                 ParkedTime =null,
+                 ParkedVehicle= new ParkedVehicle
+                 {
+                     ParkInDate=null,
+                     Where=null
+
+                 }
+             }
+
+            };
+
+
+
+            return View("Details", svar);
+        }
 
         // GET: ParkedVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -437,10 +488,19 @@ namespace Garage_2._0_MPT.Models
 
             var res = await AddTimeAndPrice();
 
+            /* var p1 = res.
+                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id)).ToList();
 
+             var p2 = p1.FirstOrDefault(p => p.Any(pv=> pv.ParkedVehicle.Id==id));
+
+             var p3 = p2.FirstOrDefault(p => p != null);
+
+             var parkedVehicle = p3.ParkedVehicle;*/
             var parkedVehicle = res.
                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
-                    .FirstOrDefault().FirstOrDefault().ParkedVehicle;
+                    .FirstOrDefault(p => p.Any(pv => pv.ParkedVehicle.Id == id))
+                    .FirstOrDefault(p => p != null)
+                    .ParkedVehicle;
 
             await InitPlots();
             parkedVehicle.ParkOutDate = DateTime.Now;
