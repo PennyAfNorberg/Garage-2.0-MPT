@@ -95,20 +95,23 @@ namespace Garage_2._0_MPT.Models
 
         public VehicleTyp VehicleTyp { get; set; } //Vech
         public Vehicle Vehicle { get; set; }
-        public ParkedVehicle ParkedVehicle { get; set; }
+        public ICollection<SubParkedViewModel> ParkedVehicles { get; set; }
         public Member Member { get; set; }
+
+
+    }
+
+     public class SubParkedViewModel
+    {
+        public ParkedVehicle ParkedVehicle { get; set; }
         [NotMapped]
         [Display(Name = "Parked Time")]
         public string ParkedTime { get; set; } // viewmodel
-        [NotMapped]
-        [Display(Name = "Time")]
-        public int ParkedHours { get; set; } // viewmodel
         [NotMapped]
         [Display(Name = "Price")]
         public int Price { get; set; }  // viewmodel
         [NotMapped]
         [Display(Name = "CostPerHour")]
         public int CostPerHour { get; set; } // viewmodel
-
     }
 }

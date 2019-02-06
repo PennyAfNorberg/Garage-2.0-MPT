@@ -77,18 +77,33 @@ namespace Garage_2._0_MPT.ViewCompontens
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice()).Where(p => p.ParkedVehicle.Where == null).ToList();
+
+                var res = await AddTimeAndPrice();
+                var
+                        ParkedVehicles = res.
+                    Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Where == null))
+                    .FirstOrDefault();
+
+                var needtosavetoo = new List<ParkedVehicle>();
+        
+
+
 
 
                 foreach (var item in res)
                 {
-                    parkhouse.Park(item.ParkedVehicle);
+                    foreach (var item2 in item.ParkedVehicles)
+                    {
+                        parkhouse.Park(item2.ParkedVehicle);
+                        needtosavetoo.Add(item2.ParkedVehicle);
+                    }
+                    
                 }
 
 
                 try
                 {
-                    db.UpdateRange(res);
+                    db.ParkedVehicle.UpdateRange(needtosavetoo);
                     db.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -102,16 +117,19 @@ namespace Garage_2._0_MPT.ViewCompontens
 
         private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
-            return await db.ParkedVehicle.Where(v => (includeparkedout || v.ParkOutDate == null))
+            return await db.Vehicles
+                .Include(v => v.ParkedVehicles)
+                .Include(v => v.VehicleTyp)
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))))
                             .Select(x => new ParkedViewModel()
                             {
-                                ParkedVehicle=x,
-                                Vehicle=x.Vehicle,
-                                VehicleTyp=x.Vehicle.VehicleTyp,
-                                Member=x.Member,
+                                ParkedVehicles = x.ParkedVehicles.Select(pv => new SubParkedViewModel
+                                {
+                                    ParkedVehicle = pv,
 
-                                Price = x.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((x.ParkOutDate == null) ? DateTime.Now : x.ParkOutDate) - x.ParkInDate).Value.TotalHours),
-                                CostPerHour = x.Vehicle.VehicleTyp.CostPerHour
+                                }).ToList(),
+                                Vehicle=x,
+                                VehicleTyp=x.VehicleTyp
                             })
                             .ToArrayAsync();
         }
@@ -121,3 +139,30 @@ namespace Garage_2._0_MPT.ViewCompontens
 
     }
 }
+/*
+ *         {
+            var res = _context.Vehicles
+                .Include(v => v.ParkedVehicles)
+                .Include(v => v.VehicleTyp)
+                .Include(v => v.Member);
+
+            var res2 =  res
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null)))) ;
+
+
+
+            var res3 = res2.Select(x => new ParkedViewModel()
+            {
+                ParkedVehicles =  x.ParkedVehicles.Select(pv => new SubParkedViewModel
+                {
+                    ParkedVehicle=pv,
+                    ParkedTime = PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
+                    Price= pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
+                    CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
+                }).ToList() ,
+                Vehicle = x,
+                VehicleTyp = x.VehicleTyp,
+                Member = x.Member  
+            });
+            return await  res3.ToArrayAsync();
+*/

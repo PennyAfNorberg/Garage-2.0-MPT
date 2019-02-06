@@ -179,13 +179,7 @@ namespace Garage_2._0_MPT.Migrations
                 table: "Vehicles",
                 column: "VehicleTypId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ParkedVehicle_Members_MemberId",
-                table: "ParkedVehicle",
-                column: "MemberId",
-                principalTable: "Members",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ParkedVehicle_Vehicles_VehicleId",
