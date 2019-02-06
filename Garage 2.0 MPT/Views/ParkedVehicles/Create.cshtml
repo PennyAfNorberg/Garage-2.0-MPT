@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.VehicleTypId" class="control-label"></label>
-                <select asp-for="ParkedVehicle.Vehicle.VehicleTypId" class="form-control">
+                <select asp-for="ParkedVehicle.Vehicle.VehicleTypId" name="VehicleTypId" class="form-control">
                     <Option value=""></Option>
                     @foreach (var vehicleType in @Model.vehicleTypes)
                     {
@@ -25,29 +25,30 @@
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.RegNr" class="control-label"></label>
-                <input asp-for="ParkedVehicle.Vehicle.RegNr" class="form-control" />
+                <input asp-for="ParkedVehicle.Vehicle.RegNr" name="RegNr" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.RegNr" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.VehicleColor" class="control-label"></label>
-                <input asp-for="ParkedVehicle.Vehicle.VehicleColor" class="form-control" />
+                <input asp-for="ParkedVehicle.Vehicle.VehicleColor" name="VehicleColor" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.VehicleColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.VehicleModel" class="control-label"></label>
-                <input asp-for="ParkedVehicle.Vehicle.VehicleModel" class="form-control" />
+                <input asp-for="ParkedVehicle.Vehicle.VehicleModel" name="VehicleModel" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.VehicleModel" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.VehicleBrand" class="control-label"></label>
-                <input asp-for="ParkedVehicle.Vehicle.VehicleBrand" class="form-control" />
+                <input asp-for="ParkedVehicle.Vehicle.VehicleBrand" name="VehicleBrand" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.VehicleBrand" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Vehicle.NumberOfWheels" class="control-label"></label>
-                <input asp-for="ParkedVehicle.Vehicle.NumberOfWheels" class="form-control" />
+                <input asp-for="ParkedVehicle.Vehicle.NumberOfWheels" name="NumberOfWheels" class="form-control" />
                 <span asp-validation-for="ParkedVehicle.Vehicle.NumberOfWheels" class="text-danger"></span>
             </div>
+            <input type="hidden" value="@Model.Member.Id" name="MemberId" />
             <!-- <div class="form-group">
         <label asp-for="ParkInDate" class="control-label"></label>
         <input asp-for="ParkInDate" class="form-control" />

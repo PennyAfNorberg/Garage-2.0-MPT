@@ -170,6 +170,8 @@ namespace Garage_2._0_MPT.Utils
         //A (3,1)
         protected void AddSavedVehicle(ParkedVehicle parkedVehicle)
         {
+            parkedVehicle.Vehicle = _context.Vehicles.FirstOrDefault(v => v.Id == parkedVehicle.VehicleId);
+            parkedVehicle.Vehicle.VehicleTyp = _context.VehicleTyp.FirstOrDefault(vt => vt.VehicleTypId == parkedVehicle.Vehicle.VehicleTypId);
             var temppos = new Position(parkedVehicle);
             OccupidePositions.Add(temppos);
             parkedVehicle.Position = temppos;
