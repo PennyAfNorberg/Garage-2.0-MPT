@@ -24,7 +24,7 @@ namespace Garage_2._0_MPT.Models
                 // Let's seed!
                 var members = new List<Member>();
 
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     string name = Faker.NameFaker.Name();
 
@@ -57,13 +57,13 @@ namespace Garage_2._0_MPT.Models
                     {
                         VehicleTypId = Faker.NumberFaker.Number(5) + 1
                         ,
-                        RegNr = Faker.StringFaker.Randomize("AAA DDD")
+                        RegNr = Faker.StringFaker.Randomize("ABC")+ Faker.NumberFaker.Number(999)
                         ,
-                        VehicleColor = "Green"
+                        VehicleColor = myColor()
                         ,
                         VehicleModel = "BM"
                         ,
-                        VehicleBrand = Faker.CompanyFaker.BS()
+                        VehicleBrand = myBrand()
                         ,
                         NumberOfWheels = (Faker.NumberFaker.Number(2) * 2) + 2
                         ,
@@ -71,19 +71,19 @@ namespace Garage_2._0_MPT.Models
                     };
                     Vehicles.Add(Vehicle1);
                     int i = 1;
-                    while (i < Faker.NumberFaker.Number(3))
+                    while (i < Faker.NumberFaker.Number(5))
                     {
                         var Vehicle2 = new Vehicle
                         {
                             VehicleTypId = Faker.NumberFaker.Number(5) + 1
                            ,
-                            RegNr = Faker.StringFaker.Randomize("/(A-Z){3}\\s[0-9]{3}")
+                            RegNr = Faker.StringFaker.Randomize("CDE") + Faker.NumberFaker.Number(999)
                            ,
-                            VehicleColor = "Red"
+                            VehicleColor = myColor()
                            ,
                             VehicleModel = "911"
                            ,
-                            VehicleBrand = Faker.CompanyFaker.BS()
+                            VehicleBrand = myBrand()
                            ,
                             NumberOfWheels = (Faker.NumberFaker.Number(2) * 2) + 2
                            ,
@@ -100,7 +100,7 @@ namespace Garage_2._0_MPT.Models
                 var ParkedVehicles = new List<ParkedVehicle>();
                 foreach (var Vehicle in Vehicles)
                 {
-                    if (Faker.NumberFaker.Number(3) == 0)
+                    if (Faker.NumberFaker.Number(2) == 0)
                     {
                         var ParkedVehicle = new ParkedVehicle
                         {
@@ -120,6 +120,39 @@ namespace Garage_2._0_MPT.Models
                 context.ParkedVehicle.AddRange(ParkedVehicles);
                 context.SaveChanges();
             }
+        }
+        
+        private static string myBrand()
+        {
+            List<string> brand = new List<string>();                                   
+            brand.Add("Volvo");
+            brand.Add("Saab");
+            brand.Add("Bmv");
+            brand.Add("Alfa Romeo");
+            brand.Add("Apal");
+            brand.Add("Audi");
+            brand.Add("Bugatti");
+            brand.Add("Chrysler");
+            brand.Add("Koenigsegg");
+            brand.Add("Lamborghini");
+
+            return brand[Faker.NumberFaker.Number(9)];
+        }
+        private static string myColor()
+        {
+            List<string> brand = new List<string>();
+            brand.Add("Red");
+            brand.Add("Grean");
+            brand.Add("Black");
+            brand.Add("Pink");
+            brand.Add("Blue");
+            brand.Add("Gray");
+            brand.Add("Darkgray");
+            brand.Add("Gold");
+            brand.Add("Silver");
+            brand.Add("Brown");
+
+            return brand[Faker.NumberFaker.Number(9)];
         }
     }
 }

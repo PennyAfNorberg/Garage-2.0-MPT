@@ -22,6 +22,7 @@ namespace Garage_2._0_MPT.Controllers
         // GET: Members
         public async Task<IActionResult> Index()
         {
+           
             return View(await _context.Members.ToListAsync());
         }
 

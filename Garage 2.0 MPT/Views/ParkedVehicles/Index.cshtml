@@ -10,20 +10,23 @@
 <table class="table table-borderless ">
     <thead>
         <tr>
+            <th id="s_name" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "FirstName" , Message="FirstName"})"'>
+                @Html.DisplayNameFor(model => model.Header.Member.FirstName)
+            </th>
             <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "Name" , Message="Name"})"'>
-                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)<span><img id="i1" class="updown" src="~/img/bullet_green.png" /></span>
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)
             </th>
             <th id="s_reg" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "RegNr", Message="Reg nr" })"'>
-                @Html.DisplayNameFor(model => model.Header.Vehicle.RegNr)<span><img id="i2" class="updown" src="~/img/bullet_green.png" /></span>
+                @Html.DisplayNameFor(model => model.Header.Vehicle.RegNr)
             </th>
             <th id="s_col" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleColor", Message="Color" })"'>
-                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleColor)<span><img id="i3" class="updown" src="~/img/bullet_green.png" /></span>
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleColor)
             </th>
             <th id="s_mod" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleModel", Message="Model" })"'>
-                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleModel)<span><img id="i4" class="updown" src="~/img/bullet_green.png" /></span>
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleModel)
             </th>
             <th id="s_bra" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleBrand", Message="Brand" })"'>
-                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleBrand)<span><img id="i5" class="updown" src="~/img/bullet_green.png" /></span>
+                @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleBrand)
             </th>
             <th class="myTbBox">
                 ParkedTime
@@ -38,56 +41,77 @@
         </tr>
     </thead>
     <tbody>
-        @if(Model.ParkedViewModel!= null)
-        { 
-@foreach (var item in Model.ParkedViewModel) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vehicle.VehicleModel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vehicle.VehicleBrand)
-            </td>
-            <td colspan="4">
-                <table>
-                    @foreach (var item2 in item.ParkedVehicles)
-                    {
+        @if (Model.ParkedViewModel != null)
+        {
+            @foreach (var item in Model.ParkedViewModel)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Member.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.VehicleModel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.VehicleBrand)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedVehicle.Where)
+                    </td>
+                    <td>
+                        <div class="allBtnTB">
+                            <a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item.ParkedVehicles.FirstOrDefault().ParkedVehicle.Id">Check Out</a>
+                            <a class="myBtnTb" asp-action="Details" asp-route-id="@item.ParkedVehicles.FirstOrDefault().ParkedVehicle.Id">Details</a>
+                            @* <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |*@
+                            @*<a class="myBtnTb" asp-action="Receipt" asp-route-id="@item2.ParkedVehicle.Id">Receipt</a> -->*@
+                        </div>
+                        @*</td>
+        @*<td colspan="4">
+            <table>
+                @foreach (var item2 in item.ParkedVehicles)
+                {
 
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.ParkedTime)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.Price)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
-                            </td>
-                            <td>
-                                <div class="allBtnTB">
-                                    <a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
-                                    <a class="myBtnTb" asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
-                                    <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
-        <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item2.ParkedVehicle.Id">Receipt</a> -->
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                    </table>
-                </td>
-                
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item2.ParkedTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item2.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
+                        </td>*@
+<td>
+                                        <div class="allBtnTB">
+                                            @*<a class="myBtnTb" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>*@
+                                            @*<a class="myBtnTb" asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>*@
+                                           @* <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |*@
+                                            @*<a class="myBtnTb" asp-action="Receipt" asp-route-id="@item2.ParkedVehicle.Id">Receipt</a> -->*@
+                                        </div>
+                                    @*</td>
+                                </tr>
+                            }
+                        </table>
+                    </td>*@
 
-        </tr>
-}
+
+                </tr>
+            }
         }
     </tbody>
 </table>
