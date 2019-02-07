@@ -309,7 +309,8 @@ namespace Garage_2._0_MPT.Models
             {
                 ParkedVehicle = new ParkedVehicle(),
                 vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
-                Member = await _context.Members.FirstOrDefaultAsync()
+                Member = await _context.Members.FirstOrDefaultAsync(),
+                Members = await _context.Members.ToListAsync()
             };
 
             return View(res);
