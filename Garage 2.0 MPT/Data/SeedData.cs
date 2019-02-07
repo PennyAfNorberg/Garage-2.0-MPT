@@ -36,11 +36,11 @@ namespace Garage_2._0_MPT.Models
                         ,
                         LastName = Faker.NameFaker.LastName()
                         ,
-                         Street = Faker.LocationFaker.Street()
+                        Street = Faker.LocationFaker.Street()
                         ,
-                         ZipCode = Faker.LocationFaker.PostCode()
+                        ZipCode = Faker.LocationFaker.PostCode()
                         ,
-                         City = Faker.LocationFaker.City()
+                        City = Faker.LocationFaker.City()
                         ,
                         Email = Faker.InternetFaker.Email(),
                         PassWord = new byte[] { 255, 0, 123 },
@@ -58,7 +58,7 @@ namespace Garage_2._0_MPT.Models
                     {
                         VehicleTypId = Faker.NumberFaker.Number(5) + 1
                         ,
-                        RegNr = Faker.StringFaker.Randomize("ABC")+ Faker.NumberFaker.Number(999)
+                        RegNr = Faker.StringFaker.Randomize("ABC ") + Faker.NumberFaker.Number(999)
                         ,
                         VehicleColor = myColor()
                         ,
@@ -78,7 +78,7 @@ namespace Garage_2._0_MPT.Models
                         {
                             VehicleTypId = Faker.NumberFaker.Number(5) + 1
                            ,
-                            RegNr = Faker.StringFaker.Randomize("CDE") + Faker.NumberFaker.Number(999)
+                            RegNr = Faker.StringFaker.Randomize("CDE ") + Faker.NumberFaker.Number(999)
                            ,
                             VehicleColor = myColor()
                            ,
@@ -101,7 +101,7 @@ namespace Garage_2._0_MPT.Models
                 var ParkedVehicles = new List<ParkedVehicle>();
                 foreach (var Vehicle in Vehicles)
                 {
-                    if (Faker.NumberFaker.Number(2) == 0)
+                    if (Faker.NumberFaker.Number(1) == 0)
                     {
                         var ParkedVehicle = new ParkedVehicle
                         {
@@ -112,9 +112,18 @@ namespace Garage_2._0_MPT.Models
                             Where = null
                            ,
                             Position = null
-                            ,MemberId=Vehicle.MemberId
-                            ,VehicleId=Vehicle.Id
+                            ,
+                            MemberId = Vehicle.MemberId
+                            ,
+                            VehicleId = Vehicle.Id
                         };
+                        if (Faker.NumberFaker.Number(1) == 0 && ParkedVehicle.ParkInDate < DateTime.Now.AddDays(-2))
+                        {
+
+                            ParkedVehicle.ParkOutDate = DateTime.Now.AddDays(-1);
+                        }
+
+
                         ParkedVehicles.Add(ParkedVehicle);
                     }
                 }
@@ -122,10 +131,10 @@ namespace Garage_2._0_MPT.Models
                 context.SaveChanges();
             }
         }
-        
+
         private static string myBrand()
         {
-            List<string> brand = new List<string>();                                   
+            List<string> brand = new List<string>();
             brand.Add("Volvo");
             brand.Add("Saab");
             brand.Add("Bmv");

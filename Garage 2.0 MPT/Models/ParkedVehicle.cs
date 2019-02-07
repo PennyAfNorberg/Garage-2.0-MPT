@@ -110,9 +110,13 @@ namespace Garage_2._0_MPT.Models
         public string ParkedTime { get; set; } // viewmodel
         [NotMapped]        
         [Display(Name = "Price")]
+        [DataType(dataType: DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}", ApplyFormatInEditMode = true)]
         public int Price { get; set; }  // viewmodel
         [NotMapped]
         [Display(Name = "CostPerHour")]
+        [DataType(dataType: DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}", ApplyFormatInEditMode = true)]
         public int CostPerHour { get; set; } // viewmodel
     }
 }

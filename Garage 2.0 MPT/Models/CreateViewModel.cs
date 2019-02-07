@@ -9,7 +9,8 @@ namespace Garage_2._0_MPT.Models
     {
         public ParkedVehicle ParkedVehicle { get; set; }
         public List<VehicleTyp>  vehicleTypes { get; set; }
-        public Member Member { get; set; }
+        public List<Member> Members { get; set; }
+        
     }
 
     public class CreateSetViewModel
@@ -23,7 +24,7 @@ namespace Garage_2._0_MPT.Models
         public string VehicleBrand { get; set; }  //Vech
         public int NumberOfWheels { get; set; }  //V
         public DateTime ParkInDate { get; set; } // Parked
-
+        
         public DateTime? ParkOutDate { get; set; } // Parked
         public int MemberId { get; set; }
 

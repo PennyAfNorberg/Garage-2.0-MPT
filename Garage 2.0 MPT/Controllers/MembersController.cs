@@ -25,7 +25,7 @@ namespace Garage_2._0_MPT.Controllers
         // GET: Members
         public async Task<IActionResult> Index()
         {
-           
+
             return View(await _context.Members.ToListAsync());
         }
 
@@ -57,26 +57,26 @@ namespace Garage_2._0_MPT.Controllers
 
             IQueryable<MemberViewModel> res3;
 
-             res3 = res.Select(x => new MemberViewModel()
+            res3 = res.Select(x => new MemberViewModel()
             {
                 Member = x,
                 Vehicles = (x.Vehicles == null) ? null : x.Vehicles.Select(v => new SubVehicle
                 {
-                    Vehicle=v,
-                    Vehicletype=v.VehicleTyp,
-                    SubParkedViewModels=(v.ParkedVehicles==null || (!(v.ParkedVehicles.Any(pv=>pv.ParkOutDate==null))))?null: v.ParkedVehicles.Select(pv =>
-                    new SubParkedViewModel
-                    {
-                        ParkedVehicle = pv,
-                        ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
-                        Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
-                        CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
-                    }
+                    Vehicle = v,
+                    Vehicletype = v.VehicleTyp,
+                    SubParkedViewModels = (v.ParkedVehicles == null || (!(v.ParkedVehicles.Any(pv => pv.ParkOutDate == null)))) ? null : v.ParkedVehicles.Select(pv =>
+                               new SubParkedViewModel
+                               {
+                                   ParkedVehicle = pv,
+                                   ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
+                                   Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
+                                   CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
+                               }
                     ).ToList()
                 }
-                
-                ).ToList()
-             });
+
+               ).ToList()
+            });
 
 
 
@@ -165,7 +165,7 @@ namespace Garage_2._0_MPT.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,PassWord")] Member members)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Street,City,ZipCode,PassWord")] Member members)
         {
             PasswordWithSaltHasher pwHasher = new PasswordWithSaltHasher();
             HashWithSaltResult hashResultSha256 = pwHasher.HashWithSalt("ultra_safe_P455w0rD", 64, SHA256.Create());
@@ -201,7 +201,7 @@ namespace Garage_2._0_MPT.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,PassWord")] Member members)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Street,City,ZipCode,PassWord")] Member members)
         {
             if (id != members.Id)
             {

@@ -27,7 +27,7 @@ namespace Garage_2._0_MPT.Models
                     };
 
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
-             InitPlots();
+            InitPlots();
         }
         private ParkingsHouseStatusViewModel GetParkingsHouseStatus()
         {
@@ -172,12 +172,12 @@ namespace Garage_2._0_MPT.Models
                 .Include(v => v.Member)
                 .Where(v => v.Id == vehicleid);
 
-            if(res.Count()==0)
+            if (res.Count() == 0)
             {
                 return NotFound();
             }
 
-            var svar= new SingelViewModel
+            var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
                 {
@@ -186,9 +186,9 @@ namespace Garage_2._0_MPT.Models
                     //   .FirstOrDefault().ToList(),
                     Vehicle = await res.FirstOrDefaultAsync()
                 ,
-                    VehicleTyp = await res.Select(v=>v.VehicleTyp).FirstOrDefaultAsync()
+                    VehicleTyp = await res.Select(v => v.VehicleTyp).FirstOrDefaultAsync()
                 ,
-                    Member = await res.Select(v=>v.Member).FirstOrDefaultAsync()
+                    Member = await res.Select(v => v.Member).FirstOrDefaultAsync()
                 }
 
             };
@@ -308,7 +308,7 @@ namespace Garage_2._0_MPT.Models
             {
                 ParkedVehicle = new ParkedVehicle(),
                 vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
-                Member = await _context.Members.FirstOrDefaultAsync()
+                Members = await _context.Members.ToListAsync()
             };
 
             return View(res);
@@ -414,7 +414,7 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Parkthis(int vehicleid)
         {
-            var thisvehicle = await  _context.Vehicles.Where(v => v.Id == vehicleid).FirstOrDefaultAsync();
+            var thisvehicle = await _context.Vehicles.Where(v => v.Id == vehicleid).FirstOrDefaultAsync();
             var memberid = thisvehicle.MemberId;
             ParkedVehicle InparkedVehicle = new ParkedVehicle
             {
@@ -596,7 +596,7 @@ namespace Garage_2._0_MPT.Models
                 return null;
             else
 
-                return  res3.ToArray();
+                return res3.ToArray();
 
             //   .ToArrayAsync();
         }
@@ -666,9 +666,10 @@ namespace Garage_2._0_MPT.Models
                 .GroupBy(v => v.VehicleTyp.Name)
                 .Select(g => new MyTypes { Name = g.Key, Count = g.Count() });
 
-
-
             stat.members_count = reta.Select(members => members.Member).Count();
+
+            stat.ParkingSpaces = parkhouse.GetSpaces();
+            stat.FreeParkingSpaces = parkhouse.GetFreeSpaces();
 
             return View(stat);
         }
