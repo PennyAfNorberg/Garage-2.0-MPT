@@ -66,7 +66,7 @@
             @if (item.ParkedVehicles.Count > 0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate == null))
             {
                 <td colspan="6">
-                    <table class="noline">
+                    <table class="table-borderless">
                         @foreach (var item2 in item.ParkedVehicles.OrderByDescending(v => (v.ParkedVehicle == null) ? 0 : 1))
                         {
 
