@@ -11,7 +11,7 @@
     <thead>
         <tr>
             <th id="s_name" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "FirstName" , Message="FirstName"})"'>
-                @Html.DisplayNameFor(model => model.Header.Member.FirstName)
+                Name
             </th>
             <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "Name" , Message="Name"})"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)
@@ -41,13 +41,15 @@
         </tr>
     </thead>
     <tbody>
+
+
         @if (Model.ParkedViewModel != null)
         {
             @foreach (var item in Model.ParkedViewModel)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Member.FirstName)
+                        @Html.DisplayFor(modelItem => item.Member.FirstName)<span> </span> @Html.DisplayFor(modelItem => item.Member.LastName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
