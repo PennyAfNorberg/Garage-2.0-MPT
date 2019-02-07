@@ -665,9 +665,9 @@ namespace Garage_2._0_MPT.Models
                 .GroupBy(v => v.VehicleTyp.Name)
                 .Select(g => new MyTypes { Name = g.Key, Count = g.Count() });
 
-
-
             stat.members_count = reta.Select(members => members.Member).Count();
+
+          //  var t = parkhouse.GetSpaces();
 
             return View(stat);
         }
