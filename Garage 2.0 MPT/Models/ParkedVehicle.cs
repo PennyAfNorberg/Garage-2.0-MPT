@@ -108,7 +108,7 @@ namespace Garage_2._0_MPT.Models
         [NotMapped]
         [Display(Name = "Parked Time")]
         public string ParkedTime { get; set; } // viewmodel
-        [NotMapped]
+        [NotMapped]        
         [Display(Name = "Price")]
         public int Price { get; set; }  // viewmodel
         [NotMapped]

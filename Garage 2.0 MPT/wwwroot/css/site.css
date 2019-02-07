@@ -105,14 +105,17 @@ header {
 }
 .status_header {
     background-color: antiquewhite;
-    padding: 4px;
+    padding-left: 10px;
+    color:#444141;
+    
+    
 }
 
 .status_typ {
-    color: black;
-    font-size: 1.0em;
+    color: #444141;
+    font-size: 0.9em;
     margin: .5em;
-    margin-right:10px;
+    margin-right: 10px;
 }
 .status_place {
     color: #4d4848;

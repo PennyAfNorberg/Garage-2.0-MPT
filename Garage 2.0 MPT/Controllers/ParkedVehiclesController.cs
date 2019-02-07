@@ -667,6 +667,8 @@ namespace Garage_2._0_MPT.Models
 
 
 
+            stat.members_count = reta.Select(members => members.Member).Count();
+
             return View(stat);
         }
     }

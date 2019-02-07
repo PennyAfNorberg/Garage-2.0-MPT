@@ -10,10 +10,10 @@
 <table class="table table-borderless ">
     <thead>
         <tr>
-            <th id="s_name" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "FirstName" , Message="FirstName"})"'>
+            <th id="s_name" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "FirstName" , Message="Name"})"'>
                 Name
             </th>
-            <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "Name" , Message="Name"})"'>
+            <th id="s_typ" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "Name" , Message="Typ"})"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)
             </th>
             <th id="s_reg" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "RegNr", Message="Reg nr" })"'>

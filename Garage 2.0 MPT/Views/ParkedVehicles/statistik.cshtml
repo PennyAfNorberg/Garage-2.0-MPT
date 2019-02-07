@@ -22,13 +22,17 @@
         <div class="col">Total revenue from start:</div>
         <div class="col">@Html.DisplayFor(model => model.TotalIncome) Sek</div>
         <div class="w-100"></div>
+        <div class="col">Members in colective:</div>
+        <div class="col">@Html.DisplayFor(model => model.members_count)</div>
+        <div class="w-100"></div>
         @foreach (var item in Model.myTypes)
         {
             <div class="col"> @Html.DisplayFor(modelItem => item.Name)</div>
             <div class="col"> @Html.DisplayFor(modelItem => item.Count)</div>
             <div class="w-100"></div>
         }
-        <br/>
+
+        <br />
     </div>
 </div>
 <div>
