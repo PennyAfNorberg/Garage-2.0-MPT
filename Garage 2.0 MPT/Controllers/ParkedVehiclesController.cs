@@ -126,8 +126,7 @@ namespace Garage_2._0_MPT.Models
         // GET: ParkedVehicles
         public async Task<IActionResult> Overview()
         {
-            var freespaces = parkhouse.GetFreeSpaces();
-
+            var svar2 = parkhouse.GetFreeSpaces();
             var res = await AddTimeAndPrice(true);
 
             var svar = new ListViewModel
