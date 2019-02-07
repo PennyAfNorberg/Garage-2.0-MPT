@@ -619,7 +619,7 @@ namespace Garage_2._0_MPT.Models
 
             var svar = new ListViewModel
             {
-                ParkedViewModel = reta.Where(o => o.Vehicle.VehicleTyp.Name.ToLower().Contains(SearchString.ToLower())
+                ParkedViewModel = reta.Where(o => o.Vehicle.VehicleTyp.Name.ToLower().Equals(SearchString.ToLower())
                 || o.Vehicle.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s, Sort)),
 
                 Message = txt
@@ -631,7 +631,7 @@ namespace Garage_2._0_MPT.Models
         private static string Get_seek(ParkedViewModel s, string sort)
         {
             if (sort.Equals("Name")) return s.Vehicle.VehicleTyp.Name;
-            else if (sort.Equals("FirstName")) return s.Member.FirstName;
+            else if (sort.Equals("FirstName")) return s.Member.LastName;
             else if (sort.Equals("RegNr")) return s.Vehicle.RegNr;
             else if (sort.Equals("VehicleColor")) return s.Vehicle.VehicleColor;
             else if (sort.Equals("VehicleModel")) return s.Vehicle.VehicleModel;

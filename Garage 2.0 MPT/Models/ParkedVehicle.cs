@@ -82,6 +82,7 @@ namespace Garage_2._0_MPT.Models
      public class VehicleTyp
     {
         public int VehicleTypId { get; set; }
+        [Display(Name = "Typ")]
         public string Name { get; set; }
         public int CostPerHour { get; set; }
         public int SpacesNeeded { get; set; } // - => 1/

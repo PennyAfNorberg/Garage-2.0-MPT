@@ -90,32 +90,32 @@ header {
     width: 100%;
     display: inline-block;
     margin-left: 0px;
-    background-color: #938c8c;
-    color: white;
+    background-color: antiquewhite;
+    color: black;
     font-size: 1.2em;
-    
 }
 .wider {
     width: 100%;   
     margin: 0em 0.5em 0.5em 0;
 }
 .status_header {
-    background-color: #4d4747;
-    padding:4px;
+    background-color: antiquewhite;
+    padding: 4px;
 }
 
 .status_typ {
-    color: whitesmoke;
-    font-size: 1.2em;
-    margin: 1em;
-    
+    color: black;
+    font-size: 1.0em;
+    margin: .5em;
+    margin-right:10px;
 }
 .status_place {
-    color: cornsilk;
+    color: #4d4848;
     
     font-style: normal;
     font-size: .7em;
     padding-top: 4px;
+    
 }
 .header_table {
     padding-left: 10px;
