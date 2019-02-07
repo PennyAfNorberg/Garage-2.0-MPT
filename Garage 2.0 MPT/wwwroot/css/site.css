@@ -81,6 +81,11 @@ header {
     white-space: nowrap;
     margin-left:.5em;
 }
+
+.myBtnDetails {
+    white-space: nowrap;
+
+}
 .allBtnTB {
     font-size:80%;
     /*white-space: nowrap;*/
@@ -127,9 +132,16 @@ header {
     border-top:1px solid;
     border-top-color:bisque;
 }
+
+
+
+.extra-pad {
+    padding-bottom: 1em;
+
+}
 .stat_head {
     background-color: antiquewhite;
-    margin-bottom:.5em;
+    margin-bottom: .5em;
     font-size: 1.4em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

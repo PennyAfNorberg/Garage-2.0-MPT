@@ -10,6 +10,11 @@
 <table class="table table-borderless">
     <thead>
         <tr>
+
+            <th class="myTbBox">
+                Name
+            </th>
+
             <th class="myTbBox">
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleTyp.Name)
             </th>
@@ -41,6 +46,11 @@
         @foreach (var item in Model.ParkedViewModel.OrderByDescending(v => (v.ParkedVehicles == null) ? 0 : 1))
         {
         <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Vehicle.Member.FirstName)  @Html.DisplayFor(modelItem => item.Vehicle.Member.LastName)
+            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
             </td>
@@ -53,7 +63,7 @@
 
 
 
-            @if (item.ParkedVehicles.Count>0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate== null))
+            @if (item.ParkedVehicles.Count > 0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate == null))
             {
                 <td colspan="6">
                     <table class="noline">
@@ -73,14 +83,16 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item2.Price)
                                 </td>
-                                <th>
-                                    @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
-                                </th>
                                 <td>
-                                    <a asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
-                                    <a asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
-                                    <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
-                            <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
+                                    @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
+                                </td>
+                                <td>
+                                    <div class="allBtnTB">
+                                        <a asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
+                                        <a asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
+                                        <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
+                                <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
+                                    </div>
                                 </td>
                             </tr>
 
@@ -107,8 +119,8 @@
 
             }
 
-                    
-            </tr>
+
+        </tr>
             }
         </tbody>
         </table>
