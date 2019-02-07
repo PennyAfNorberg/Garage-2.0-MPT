@@ -101,7 +101,7 @@ namespace Garage_2._0_MPT.Models
                 var ParkedVehicles = new List<ParkedVehicle>();
                 foreach (var Vehicle in Vehicles)
                 {
-                    if (Faker.NumberFaker.Number(2) == 0)
+                    if (Faker.NumberFaker.Number(1) == 0)
                     {
                         var ParkedVehicle = new ParkedVehicle
                         {
@@ -112,10 +112,17 @@ namespace Garage_2._0_MPT.Models
                             Where = null
                            ,
                             Position = null
-                            ,MemberId=Vehicle.MemberId
-                            ,VehicleId=Vehicle.Id
+                            , MemberId = Vehicle.MemberId
+                            , VehicleId = Vehicle.Id
                         };
-                        ParkedVehicles.Add(ParkedVehicle);
+                        if (Faker.NumberFaker.Number(1) == 0 && ParkedVehicle.ParkInDate< DateTime.Now.AddDays(-2))
+                        {
+
+                            ParkedVehicle.ParkOutDate = DateTime.Now.AddDays(-1);
+                        }
+
+                                   
+                            ParkedVehicles.Add(ParkedVehicle);
                     }
                 }
                 context.ParkedVehicle.AddRange(ParkedVehicles);

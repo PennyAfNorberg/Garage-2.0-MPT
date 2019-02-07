@@ -118,7 +118,7 @@ namespace Garage_2._0_MPT.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,PassWord")] Member members)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Street,City,ZipCode,PassWord")] Member members)
         {
             if (ModelState.IsValid)
             {
@@ -150,7 +150,7 @@ namespace Garage_2._0_MPT.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,PassWord")] Member members)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Street,City,ZipCode,PassWord")] Member members)
         {
             if (id != members.Id)
             {

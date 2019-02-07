@@ -669,7 +669,8 @@ namespace Garage_2._0_MPT.Models
 
             stat.members_count = reta.Select(members => members.Member).Count();
 
-          //  var t = parkhouse.GetSpaces();
+           stat.ParkingSpaces = parkhouse.GetSpaces();
+           stat.FreeParkingSpaces = parkhouse.GetFreeSpaces();
 
             return View(stat);
         }
