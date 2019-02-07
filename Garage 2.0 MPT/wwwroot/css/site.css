@@ -19,6 +19,12 @@ html {
         font-size: 14px;
     }
 }
+@media (max-width: 990px) {
+    html {
+        font-size: 13px;
+    }
+}
+
 
 @media (max-width: 768px) {
   html {

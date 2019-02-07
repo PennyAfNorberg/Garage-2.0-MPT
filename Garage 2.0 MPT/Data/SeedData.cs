@@ -11,6 +11,7 @@ namespace Garage_2._0_MPT.Models
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
+
             var options = serviceProvider.GetRequiredService<DbContextOptions<Garage_2_0_MPTContext>>();
             using (var context = new Garage_2_0_MPTContext(options))
             {
@@ -104,7 +105,7 @@ namespace Garage_2._0_MPT.Models
                     {
                         var ParkedVehicle = new ParkedVehicle
                         {
-                            ParkInDate = Faker.DateTimeFaker.DateTime(DateTime.Now.AddDays(-2), DateTime.Now)
+                            ParkInDate = Faker.DateTimeFaker.DateTime(DateTime.Now.AddDays(-4), DateTime.Now)
                            ,
                             ParkOutDate = null
                            ,
