@@ -88,6 +88,31 @@ namespace Garage_2._0_MPT.Utils
             PopulateNextFreeSpaces();
         }
 
+
+         public int GetSpaces()
+         {
+            var svar = 0;
+            for (int i = 0; i < this.Floors; i++)
+            {
+                svar += this.Twos[i] * 2 + this.Threes[i] * 3;
+            }
+
+            return svar;
+
+         }
+        
+        public int GetFreeSpaces()
+        {
+            var svar = GetSpaces();
+            var svar2 = GetSpaces();
+            foreach (var position in OccupidePositions)
+            {
+                svar -= position.SpaceOccupide ?? 1;
+            }
+            return svar;
+        }
+
+
         protected void PopulateNextFreeSpaces()
         {
 
