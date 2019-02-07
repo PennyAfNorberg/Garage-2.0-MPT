@@ -1,10 +1,10 @@
 ﻿@model Garage_2._0_MPT.Models.ListViewModel
 
 @{
-    ViewData["Title"] = "Overviev";
+    ViewData["Title"] = "All";
 }
 
-<h1 class="header_table">Parked Cars</h1>
+<h1 class="header_table">All Vehicles</h1>
 
 
 <table class="table table-borderless">
@@ -24,21 +24,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleColor)
             </th>
-            <th class="myTbBox">
-                Parking time
-            </th>
-            <th class="myTbBox">
-                Park In
-            </th>
-            <th class="myTbBox">
-                Park Out
-            </th>
-            <th class="myTbBox">
-                Price
-            </th>
-            <th class="myTbBox">
-                Parking Lot
-            </th>
+            <th class="myTbBox" colspan="6">
+                <div class="row">
+                    <span class="col-2">Parked Time</span>
+                    <span class="col-4">Parked in when</span>
+                    <span class="col-1">Price</span>
+                    <span class="col-2">Lot</span>
+                    <span class="col-3"></span>
+                </div>
+</th>
             <th></th>
         </tr>
     </thead>
@@ -62,66 +56,68 @@
             </td>
 
 
+            <td colspan="6">
+                <div class="row">
 
-            @if (item.ParkedVehicles.Count > 0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate == null))
-            {
-                <td colspan="6">
-                    <table class="noline">
-                        @foreach (var item2 in item.ParkedVehicles.OrderByDescending(v => (v.ParkedVehicle == null) ? 0 : 1))
+                        @if (item.ParkedVehicles.Count > 0 && item.ParkedVehicles.Any(pv => pv.ParkedVehicle.ParkOutDate == null))
                         {
 
-                            <tr>
-                                <td>
+                            @foreach (var item2 in item.ParkedVehicles.OrderByDescending(v => (v.ParkedVehicle == null) ? 0 : 1))
+                            {
+
+
+                                <span class="col-2">
                                     @Html.DisplayFor(modelItem => item2.ParkedTime)
-                                </td>
-                                <td>
+                                </span>
+                                <span class="col-4">
                                     @Html.DisplayFor(modelItem => item2.ParkedVehicle.ParkInDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item2.ParkedVehicle.ParkOutDate)
-                                </td>
-                                <td>
+                                </span>
+                 
+                                <span class="col-1">
                                     @Html.DisplayFor(modelItem => item2.Price)
-                                </td>
-                                <td>
+                                </span>
+                                <span class="col-2 myBtnDetails">
                                     @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
-                                </td>
-                                <td>
-                                    <div class="allBtnTB">
-                                        <a asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
-                                        <a asp-action="Details" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
+                                </span>
+                                <span class="col-3">
+                                    <span class="allBtnTB">
+                                        <a class="myBtnDetails" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
+                                        <a class="myBtnDetails" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
                                         <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
-                                <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
-                                    </div>
-                                </td>
-                            </tr>
+                        <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
+                                    </span>
+
+
+                                </span>
+
+
+                            }
 
                         }
-                    </table>
-                </td>
-            }
 
-            @if (item.ParkedVehicles.Count == 0 || item.ParkedVehicles.All(pv => pv.ParkedVehicle.ParkOutDate != null))
-            {
-
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <div class="allBtnTB">
-                        <a class="myBtnTb" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@item.Vehicle.Id">Park this</a>
-                        <a class="myBtnTb" asp-controller="ParkedVehicles" asp-action="VehicleDetails" asp-route-vehicleid="@item.Vehicle.Id">Details</a>
-                    </div>
-                </td>
+                        @if (item.ParkedVehicles.Count == 0 || item.ParkedVehicles.All(pv => pv.ParkedVehicle.ParkOutDate != null))
+                        {
 
 
-            }
+
+                            <span class="col-2"></span>
+                            <span class="col-4"></span>
+                            <span class="col-1"></span>
+                            <span class="col-2"></span>
+                            <span class="col-3">
+                                <span class="allBtnTB">
+                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@item.Vehicle.Id">Park this&nbsp;</a>
+                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="VehicleDetails" asp-route-vehicleid="@item.Vehicle.Id">Details</a>
+                                </span>
+                            </span>
 
 
-        </tr>
+                        }
+                </div>
+            
+            </td>
+            </tr>
             }
         </tbody>
-        </table>
+    </table>
 

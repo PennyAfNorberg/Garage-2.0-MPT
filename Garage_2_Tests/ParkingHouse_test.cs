@@ -304,6 +304,7 @@ namespace Garage_2_Tests
             Assert.IsNull(testfull, "NextPos2 full diff");
         }
 
+        [TestMethod()]
         public void NextPos3_test()
         {
             // +y, +x, +z, -> 3 , 3+y, 3+x, 3+z, full no skip.
@@ -337,12 +338,13 @@ namespace Garage_2_Tests
             Assert.IsNull(testfull, "NextPos3 full diff");
         }
 
-        //protected bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
 
-        //protected Position GetNextSpotWrapper(Position Position, int SpacesNeeded, Position StopPosition = null)
+            //protected bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )
 
-        //protected Position GetNextSpot(Position Position, int SpacesNeeded, Position StopPosition = null)
+            //protected Position GetNextSpotWrapper(Position Position, int SpacesNeeded, Position StopPosition = null)
 
-    }
+            //protected Position GetNextSpot(Position Position, int SpacesNeeded, Position StopPosition = null)
+
+        }
 }
  
