@@ -50,28 +50,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="ParkedVehicle.Member.FirstName" class="control-label"></label>
-                <select asp-for="ParkedVehicle.Member.FirstName" name="MemberId" class="form-control">                  
+                <select asp-for="ParkedVehicle.Member.FirstName" name="MemberId" class="form-control">
                     @foreach (var Member in @Model.Members)
                     {
-                    <Option value="@Member.Id">@Member.FirstName @Member.LastName</Option>
+                        <Option value="@Member.Id">@Member.FirstName @Member.LastName</Option>
                     }
                 </select>
                 <span asp-validation-for="ParkedVehicle.Vehicle.VehicleTypId" class="text-danger"></span>
             </div>
-            @*<label>Member id @Model.Member.FirstName  @Model.Member.LastName </label>
-            <input type="Text" readonly value="@Model.Member.Id" name="MemberId" />*@
-            <!-- <div class="form-group">
-        <label asp-for="ParkInDate" class="control-label"></label>
-        <input asp-for="ParkInDate" class="form-control" />
-        <span asp-validation-for="ParkInDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ParkOutDate" class="control-label"></label>
-        <input asp-for="ParkOutDate" class="form-control" />
-        <span asp-validation-for="ParkOutDate" class="text-danger"></span>
-    </div>
 
-       -->
             <div class="form-group">
                 <input type="submit" value="Park" class="btn btn-primary" />
             </div>
