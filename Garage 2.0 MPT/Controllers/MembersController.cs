@@ -10,6 +10,8 @@ using Garage_2._0_MPT.Models;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_2._0_MPT.Controllers
 {
@@ -17,15 +19,34 @@ namespace Garage_2._0_MPT.Controllers
     {
         private readonly Garage_2_0_MPTContext _context;
 
-        public MembersController(Garage_2_0_MPTContext context)
+        private readonly UserManager<GarageUser> userManager;
+        private readonly IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory;
+
+        public MembersController(Garage_2_0_MPTContext context,
+             UserManager<GarageUser> userManager,
+            IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory)
         {
             _context = context;
+            this.userManager = userManager;
+            this.claimsPrincipalFactory = claimsPrincipalFactory;
         }
 
         // GET: Members
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Members.ToListAsync());
+            var res = await _context.Members.ToListAsync();
+            var id = userManager.GetUserId(User);
+            var curruser = await userManager.FindByIdAsync(id);
+            var role = curruser.Role;
+
+            if (role != "Admin")
+            {
+                res = res.Where(v => v.Id == curruser.MemberId).ToList();
+
+            }
+
+            return View(res);
         }
 
         // GET: Members/Details/5
@@ -60,6 +81,7 @@ namespace Garage_2._0_MPT.Controllers
 
 
         // GET: Members/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -87,6 +109,7 @@ namespace Garage_2._0_MPT.Controllers
         }
 
         // GET: Members/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,6 +118,16 @@ namespace Garage_2._0_MPT.Controllers
             }
 
             var members = await _context.Members.FindAsync(id);
+            var userid = userManager.GetUserId(User);
+            var curruser = await userManager.FindByIdAsync(userid);
+            var role = curruser.Role;
+
+            if (role != "Admin")
+            {
+                if (members.Id != curruser.MemberId)
+                    members = null;
+            }
+
             if (members == null)
             {
                 return NotFound();
@@ -138,6 +171,7 @@ namespace Garage_2._0_MPT.Controllers
         }
 
         // GET: Members/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,6 +181,17 @@ namespace Garage_2._0_MPT.Controllers
 
             var members = await _context.Members
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var userid = userManager.GetUserId(User);
+            var curruser = await userManager.FindByIdAsync(userid);
+            var role = curruser.Role;
+
+            if (role != "Admin")
+            {
+                if (members.Id != curruser.MemberId)
+                    members = null;
+            }
+
             if (members == null)
             {
                 return NotFound();

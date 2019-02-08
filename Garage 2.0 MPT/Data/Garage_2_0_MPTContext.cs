@@ -118,6 +118,7 @@ namespace Garage_2._0_MPT.Models
         public DbSet<Member> Members { get; set; }
 
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<GarageUser> GarageUser { get; set; }
 
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
 

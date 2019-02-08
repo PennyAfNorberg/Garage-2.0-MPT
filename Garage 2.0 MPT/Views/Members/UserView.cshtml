@@ -1,0 +1,12 @@
+﻿@model Garage_2._0_MPT.Models.MemberViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<h1>Details</h1>
+
+<div>
+    @await Component.InvokeAsync("VehicleForUser", new { MemberId = Model.Member.Id })
+</div>

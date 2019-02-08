@@ -20,7 +20,8 @@ namespace Garage_2._0_MPT.Models
         private bool loadedSeed = false;
         private readonly UserManager<GarageUser> userManager;
         private readonly IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory;
-
+        public ParkedViewModel[] SavedQyerydatafalse { get; set; } = null;
+        public ParkedViewModel[] SavedQyerydatatrue { get; set; } = null;
         public ParkedVehiclesController(Garage_2_0_MPTContext context,
             UserManager<GarageUser> userManager,
             IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory)
@@ -37,9 +38,26 @@ namespace Garage_2._0_MPT.Models
                     };
 
             parkhouse = new ParkHouse(Floor, Twos, Threes, _context);
-             InitPlots();
+            var res =  InitPlots();
+           
+
         }
 
+        private async Task<ParkedViewModel[]> GetQyerydataHelper(Boolean includeparkedout = false)
+        {
+            if(includeparkedout)
+            {
+                if (SavedQyerydatatrue == null)
+                    SavedQyerydatatrue = (await AddTimeAndPrice(includeparkedout));
+                return SavedQyerydatatrue;
+            }
+            else
+            {
+                if (SavedQyerydatafalse == null)
+                    SavedQyerydatafalse = (await AddTimeAndPrice(includeparkedout));
+                return SavedQyerydatafalse;
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> Register()
         {
@@ -77,7 +95,7 @@ namespace Garage_2._0_MPT.Models
                         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmationEmail = Url.Action("ConfirmEmailAddress", "ParkedVehicles",
                             new { token = token, email = user.Email }, Request.Scheme);
-                        System.IO.File.WriteAllText("d:\\kod\\tmp\\confirmationLink.txt", confirmationEmail);
+                        System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\NewtempconfirmationLink.txt", confirmationEmail);
                     }
                     else
                     {
@@ -154,7 +172,7 @@ namespace Garage_2._0_MPT.Models
                             if (validProviders.Contains("Email"))
                             {
                                 var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                                System.IO.File.WriteAllText("d:\\kod\\tmp\\email2sv.txt", token);
+                                System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\email2sv.txt", token);
 
                                 await HttpContext.SignInAsync(IdentityConstants.TwoFactorUserIdScheme,
                                     Store2FA(user.Id, "Email"));
@@ -213,7 +231,7 @@ namespace Garage_2._0_MPT.Models
                     var resetUrl = Url.Action("ResetPassword", "ParkedVehicles",
                         new { token = token, email = user.Email }, Request.Scheme);
 
-                    System.IO.File.WriteAllText("d:\\kod\\tmp\\resetLink.txt", resetUrl);
+                    System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\resetLink.txt", resetUrl);
                 }
                 else
                 {
@@ -395,55 +413,26 @@ namespace Garage_2._0_MPT.Models
             return RedirectToAction("Index");
         }
 
-        private ParkingsHouseStatusViewModel GetParkingsHouseStatus()
-        {
 
-            var work = parkhouse.GetNextFreeSpaces();
-            ParkingsHouseStatusViewModel svar = new ParkingsHouseStatusViewModel();
-            foreach (var item in work)
-            {
-                svar.NextFree[TranslateSize(item.Key)] = item.Value == null ? "Full" : item.Value.ToString();
-            }
 
-            return svar;
-
-        }
-
-        private string TranslateSize(int Size)
-        {
-            switch (Size)
-            {
-                case -3:
-                    return "MC";
-                case 1:
-                    return "Car";
-                case 2:
-                    return "Truck";
-                case 3:
-                    return "Bus";
-                default:
-                    return "";
-            }
-        }
-
-        private async Task InitPlots()
+        private async Task<Boolean> InitPlots()
         {
             if (!loadedSeed)
             {
 
-                var res = (await AddTimeAndPrice());
+                var res = await GetQyerydataHelper();
                 if (res != null)
                 {
 
 
-                    var res2 = res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null))
+                    var res2 = res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null && pw.ParkedVehicle.ParkOutDate == null))
 
                      .Select(p => p.Select(pw => pw.ParkedVehicle))
                     .ToList();
 
                     var needtosavetoo = new List<ParkedVehicle>();
 
-                    foreach (var item in res2)
+                    foreach (var item in res2.Where(spw=> spw != null))
                     {
                         foreach (var item2 in item)
                         {
@@ -457,7 +446,7 @@ namespace Garage_2._0_MPT.Models
                     try
                     {
                         _context.ParkedVehicle.UpdateRange(needtosavetoo);
-                        _context.SaveChanges();
+                       await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -465,8 +454,10 @@ namespace Garage_2._0_MPT.Models
                         throw;
                     }
                     loadedSeed = true;
+                    return true;
                 }
             }
+            return true;
         }
 
 
@@ -474,9 +465,17 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Index()
         {
-            var res = await AddTimeAndPrice();
-        
+            var res = await GetQyerydataHelper();
 
+            var id = userManager.GetUserId(User);
+            var curruser = await userManager.FindByIdAsync(id);
+            var role = curruser.Role;
+
+            if (role != "Admin")
+            {
+                res = res.Where(v => v.Vehicle.MemberId == curruser.MemberId).ToArray();
+
+            }
             var svar = new ListViewModel
             {
                 ParkedViewModel = (IEnumerable<ParkedViewModel>)res,
@@ -493,13 +492,17 @@ namespace Garage_2._0_MPT.Models
         [Authorize]
         public async Task<IActionResult> Overview()
         {
-            var svar2 = parkhouse.GetFreeSpaces();
-            var res = await AddTimeAndPrice(true);
-            var id = userManager.GetUserId(User);
-            var curruser= await userManager.FindByIdAsync(id); // error here
-         
 
-            var role = await userManager.GetRolesAsync(curruser);
+            ParkedViewModel[] res = await GetQyerydataHelper(true);
+            var id = userManager.GetUserId(User);
+            var curruser= await userManager.FindByIdAsync(id);
+            var role = curruser.Role;
+
+           if(role != "Admin")
+            {
+                res = res.Where(v => v.Vehicle.MemberId == curruser.MemberId).ToArray() ;
+
+            }
 
             var svar = new ListViewModel
             {
@@ -635,7 +638,7 @@ namespace Garage_2._0_MPT.Models
             }
 
             await InitPlots();
-            var res = await AddTimeAndPrice(true);
+            var res = await GetQyerydataHelper(true);
             var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
@@ -673,14 +676,26 @@ namespace Garage_2._0_MPT.Models
         }
 
         // GET: ParkedVehicles/Create
+        [Authorize]
         public async Task<IActionResult> Create()
         {
+            List<Member> Members = await _context.Members.ToListAsync();
+            var id = userManager.GetUserId(User);
+            var curruser = await userManager.FindByIdAsync(id);
+            var role = curruser.Role;
+
+            if (role != "Admin")
+            {
+                Members = Members.Where(v => v.Id == curruser.MemberId).ToList();
+
+            }
+
 
             var res = new CreateViewModel
             {
                 ParkedVehicle = new ParkedVehicle(),
                 vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
-                Members = await _context.Members.ToListAsync()
+                Members = Members
             };
 
             return View(res);
@@ -753,6 +768,9 @@ namespace Garage_2._0_MPT.Models
                 {
                     _context.Add(InparkedVehicle);
                     await _context.SaveChangesAsync();
+                    this.SavedQyerydatafalse = null;
+                    this.SavedQyerydatatrue = null;
+
                     return RedirectToAction(nameof(Details), new { id = InparkedVehicle.Id });
                 }
                 else
@@ -783,7 +801,7 @@ namespace Garage_2._0_MPT.Models
             return View(parkedVehicle);
         }
 
-
+        [Authorize]
         public async Task<IActionResult> Parkthis(int vehicleid)
         {
             var thisvehicle = await _context.Vehicles.Where(v => v.Id == vehicleid).FirstOrDefaultAsync();
@@ -855,11 +873,11 @@ namespace Garage_2._0_MPT.Models
             return View(parkedVehicle);
         }
 
-
+        [Authorize]
         public async Task<IActionResult> Check_Out(int? id)
         {
 
-            var res = await AddTimeAndPrice();
+            var res = await GetQyerydataHelper();
 
             /* var p1 = res.
                      Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id)).ToList();
@@ -883,6 +901,8 @@ namespace Garage_2._0_MPT.Models
                 parkhouse.Leave(parkedVehicle);
                 _context.Update(parkedVehicle);
                 await _context.SaveChangesAsync();
+                this.SavedQyerydatafalse = null;
+                this.SavedQyerydatatrue = null;
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -940,35 +960,50 @@ namespace Garage_2._0_MPT.Models
 
         private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
-            var res = _context.Vehicles
+            var res =  _context.Vehicles
                 .Include(v => v.ParkedVehicles)
                 .Include(v => v.VehicleTyp)
-                .Include(v => v.Member);
+                .Include(v => v.Member)
+                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))))
 
-            var res2 = res
-                .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))));
-
-            IQueryable<ParkedViewModel> res3;
-
-            res3 = res2.Select(x => new ParkedViewModel()
-            {
-                ParkedVehicles = (x.ParkedVehicles == null) ? null : x.ParkedVehicles.Select(pv => new SubParkedViewModel
+         //   var res2=res
+                .Select(x => new ParkedViewModel()
                 {
-                    ParkedVehicle = pv,
-                    ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
-                    Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
-                    CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
-                }).ToList(),
-                Vehicle = x,
-                VehicleTyp = x.VehicleTyp,
-                Member = x.Member
-            });
+                    ParkedVehicles = (x.ParkedVehicles == null) ? null : x.ParkedVehicles.Select(pv => new SubParkedViewModel
+                    {
+                        ParkedVehicle = pv,
+                        ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
+                        Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
+                        CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
+                    }).ToList(),
+                    Vehicle = x,
+                    VehicleTyp = x.VehicleTyp,
+                    Member = x.Member
+                });
+            /*  var res2 = res
+                  .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))));
 
-            if (res3.Count() == 0)
+              IQueryable<ParkedViewModel> res3;
+
+              res3 = res2.Select(x => new ParkedViewModel()
+              {
+                  ParkedVehicles = (x.ParkedVehicles == null) ? null : x.ParkedVehicles.Select(pv => new SubParkedViewModel
+                  {
+                      ParkedVehicle = pv,
+                      ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
+                      Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
+                      CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
+                  }).ToList(),
+                  Vehicle = x,
+                  VehicleTyp = x.VehicleTyp,
+                  Member = x.Member
+              });
+              */
+            if (res == null)
                 return null;
             else
-
-                return res3.ToArray();
+            
+                return   res.ToArray();
 
             //   .ToArrayAsync();
         }
@@ -1015,7 +1050,7 @@ namespace Garage_2._0_MPT.Models
 
         public async Task<IActionResult> Statistik()
         {
-            var reta = await AddTimeAndPrice(true);
+            var reta = await GetQyerydataHelper(true);
             // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();

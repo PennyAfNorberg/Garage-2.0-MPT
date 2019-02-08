@@ -11,10 +11,11 @@ namespace Garage_2._0_MPT.Models
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-
+            return;
             var options = serviceProvider.GetRequiredService<DbContextOptions<Garage_2_0_MPTContext>>();
             using (var context = new Garage_2_0_MPTContext(options))
             {
+
                 if (context.Vehicles.Any())
                 { // ändra till return efter första som funkar
                     context.Members.RemoveRange(context.Members);

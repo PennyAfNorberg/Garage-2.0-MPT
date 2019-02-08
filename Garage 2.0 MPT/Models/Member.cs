@@ -44,6 +44,7 @@ namespace Garage_2._0_MPT.Models
     {
         public Member Member { get; set; }
         public ICollection<SubVehicle> Vehicles { get; set; }
+        public string Message { get; set; } = null;
     }
 
     public class SubVehicle

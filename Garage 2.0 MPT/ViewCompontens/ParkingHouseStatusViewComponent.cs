@@ -45,6 +45,7 @@ namespace Garage_2._0_MPT.ViewCompontens
 
             var work = parkhouse.GetNextFreeSpaces();
             ParkingsHouseStatusViewModel svar = new ParkingsHouseStatusViewModel();
+
             foreach (var item in work)
             {
                 svar.NextFree[TranslateSize(item.Key)] = item.Value == null ? "Full" : item.Value.ToString();
@@ -78,21 +79,25 @@ namespace Garage_2._0_MPT.ViewCompontens
             {
 
 
-                var res = await AddTimeAndPrice();
+                var res =  db.Vehicles
+                    .Include(v => v.VehicleTyp)
+                    .Include(v => v.ParkedVehicles)
+                    .Where(v => v.ParkedVehicles!= null && v.ParkedVehicles.Any(pwm=>pwm.Where == null))
+                ;
+
+
             
-                    var
+                   /* var
                         ParkedVehicles = res.
                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Where == null))
-                    .FirstOrDefault();
+                    .FirstOrDefault();*/
 
                 if (res != null)
                 {
 
 
-                    var res2 = res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null))
-
-                     .Select(p => p.Select(pw => pw.ParkedVehicle))
-                    .ToList();
+                    var res2 =await res.Select(o => o.ParkedVehicles.Where(pw => pw.Where == null && pw.ParkOutDate==null))
+                    .ToListAsync();
 
                     var needtosavetoo = new List<ParkedVehicle>();
 
@@ -100,7 +105,7 @@ namespace Garage_2._0_MPT.ViewCompontens
 
 
 
-                    foreach (var item in res2)
+                    foreach (var item in res2.Where(spw=> spw != null))
                     {
                         foreach (var item2 in item)
                         {
@@ -125,7 +130,7 @@ namespace Garage_2._0_MPT.ViewCompontens
                 loadedSeed = true;
             }
         }
-
+        /*
         private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
             return await db.Vehicles
@@ -144,6 +149,7 @@ namespace Garage_2._0_MPT.ViewCompontens
                             })
                             .ToArrayAsync();
         }
+        */
 
 
 

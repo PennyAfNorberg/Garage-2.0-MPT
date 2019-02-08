@@ -17,5 +17,7 @@ namespace Garage_2._0_MPT.Models
 
         public List<Member> Members { get; set; }
         public int MemberId { get; set; }
+
+        public string Role { get; set; }
     }
 }
