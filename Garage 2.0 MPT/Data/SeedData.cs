@@ -105,7 +105,7 @@ namespace Garage_2._0_MPT.Models
                     {
                         var ParkedVehicle = new ParkedVehicle
                         {
-                            ParkInDate = Faker.DateTimeFaker.DateTime(DateTime.Now.AddDays(-4), DateTime.Now)
+                            ParkInDate = Faker.DateTimeFaker.DateTime(DateTime.Now.AddDays(-7), DateTime.Now)
                            ,
                             ParkOutDate = null
                            ,
@@ -117,7 +117,7 @@ namespace Garage_2._0_MPT.Models
                             ,
                             VehicleId = Vehicle.Id
                         };
-                        if (Faker.NumberFaker.Number(1) == 0 && ParkedVehicle.ParkInDate < DateTime.Now.AddDays(-2))
+                        if (Faker.NumberFaker.Number(3) == 0 && ParkedVehicle.ParkInDate < DateTime.Now.AddDays(-2))
                         {
 
                             ParkedVehicle.ParkOutDate = DateTime.Now.AddDays(-1);
