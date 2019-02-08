@@ -121,7 +121,7 @@ namespace Garage_2._0_MPT.Models
 
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
 
-        public DbSet<>  { get; set; }
+      
 
     }
 
