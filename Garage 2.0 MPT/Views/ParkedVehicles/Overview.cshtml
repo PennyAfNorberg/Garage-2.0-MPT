@@ -1,7 +1,7 @@
 ﻿@model Garage_2._0_MPT.Models.ListViewModel
 
 @{
-    ViewData["Title"] = "All";
+    ViewData["Title"] = "All Vehicles";
 }
 
 <h1 class="header_table">All Vehicles</h1>
@@ -28,8 +28,8 @@
                 <div class="row">
                     <span class="col-2">Parked Time</span>
                     <span class="col-4">Parked in when</span>
-                    <span class="col-1">Price</span>
-                    <span class="col-2">Lot</span>
+                    <span class="col-2">Price</span>
+                    <span class="col-1">Lot</span>
                     <span class="col-3"></span>
                 </div>
 </th>
@@ -48,7 +48,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
             </td>
-            <td>
+            <td class="myTbBox">
                 @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
             </td>
             <td>
@@ -73,16 +73,16 @@
                                     @Html.DisplayFor(modelItem => item2.ParkedVehicle.ParkInDate)
                                 </span>
                  
-                                <span class="col-1">
+                                <span class="col-2 myTbBox">
                                     @Html.DisplayFor(modelItem => item2.Price)
                                 </span>
-                                <span class="col-2 myBtnDetails">
+                                <span class="col-1 myBtnDetails">
                                     @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
                                 </span>
                                 <span class="col-3">
                                     <span class="allBtnTB">
-                                        <a class="myBtnDetails" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
-                                        <a class="myBtnDetails" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
+                                        <a class="myBtnDetails litespace" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
+                                        <a class="myBtnDetails litespace" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
                                         <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
                         <a asp-action="Receipt" asp-route-id="@item.2ParkedVehicle.Id">Receipt</a>-->
                                     </span>
@@ -106,8 +106,8 @@
                             <span class="col-2"></span>
                             <span class="col-3">
                                 <span class="allBtnTB">
-                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@item.Vehicle.Id">Park this&nbsp;</a>
-                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="VehicleDetails" asp-route-vehicleid="@item.Vehicle.Id">Details</a>
+                                    <a class="myBtnDetails litespace" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@item.Vehicle.Id">Park this&nbsp;</a>
+                                    <a class="myBtnDetails litespace" asp-controller="ParkedVehicles" asp-action="VehicleDetails" asp-route-vehicleid="@item.Vehicle.Id">Details</a>
                                 </span>
                             </span>
 

@@ -54,7 +54,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
                     </td>
                     @*<td>
@@ -63,16 +63,16 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Vehicle.VehicleModel)
                     </td>*@
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.Vehicle.VehicleBrand)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedTime)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().Price)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedVehicle.Where)
                     </td>
                     <td>

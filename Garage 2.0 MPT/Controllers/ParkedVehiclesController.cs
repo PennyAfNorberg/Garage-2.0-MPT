@@ -133,10 +133,15 @@ namespace Garage_2._0_MPT.Models
         {
             if (timespan == null)
                 throw new ArgumentNullException();
-
-            if (timespan.Value.Days > 0)
+            if (timespan.Value.Days > 1)
             {
-                return $"{timespan.Value.Days} d " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
+
+                return $"{timespan.Value.Days}Days " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
+            }
+            else if (timespan.Value.Days > 0)
+            {
+                
+                return $"{timespan.Value.Days}Day " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
             }
             else
             {
