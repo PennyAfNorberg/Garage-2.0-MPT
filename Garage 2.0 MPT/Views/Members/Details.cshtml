@@ -50,84 +50,9 @@
             @Html.DisplayNameFor(model => model.Vehicles)
         </dt>
         <dd class="col-sm-10">
-            @if (Model.Vehicles != null)
-            {
-            <div class="row">
-                <!--<tr><th>Type</th><th>Reg.nr</th><th>Color</th><th>Model</th><th>Brand</th><th>Parked Time</th><th>Price</th><th>Parking lot</th><th>Controll</th></tr> -->
-                @foreach (var Vehicle in Model.Vehicles.OrderByDescending(v => (v.SubParkedViewModels == null) ? 0 : 1))
-                {
+            @await Component.InvokeAsync("VehicleForUser", new { MemberId = Model.Member.Id })
+           
 
-                    <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                        @Html.DisplayFor(modelItem => Vehicle.Vehicletype.Name)
-                    </span>
-                    <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                        @Html.DisplayFor(modelItem => Vehicle.Vehicle.RegNr)
-                    </span>
-                    <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                        @Html.DisplayFor(modelItem => Vehicle.Vehicle.VehicleColor)
-                    </span>
-                    <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                        @Html.DisplayFor(modelItem => Vehicle.Vehicle.VehicleModel)
-                    </span>
-                    <span class="col-xl-4 col-sm-4 col-md-4 col-lg-4">
-                        @Html.DisplayFor(modelItem => Vehicle.Vehicle.VehicleBrand)
-                    </span>
-       
-              
-
-
-
-                        @if (Vehicle.SubParkedViewModels != null)
-                        {
-
-                            @foreach (var item2 in Vehicle.SubParkedViewModels)
-                            {
-                                <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                                </span>
-                                <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                                    @Html.DisplayFor(modelItem => item2.ParkedTime)
-                                </span>
-                                <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                                    @Html.DisplayFor(modelItem => item2.Price)
-                                </span>
-                                <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                                    @Html.DisplayFor(modelItem => item2.ParkedVehicle.Where)
-                                </span>
-                                <span class="col-xl-4 col-sm-4 col-md-4 col-lg-4">
-                                    <span class="allBtnTB">
-                                        <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="Check_Out" asp-route-id="@item2.ParkedVehicle.Id">Check Out</a>
-                                        <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-route-id="@item2.ParkedVehicle.Id">Details</a>
-                                        <!-- <a asp-action="Delete" asp-route-id="@item2.ParkedVehicle.Id">Delete</a> |
-                            <a class="myBtnTb" asp-action="Receipt" asp-route-id="@item2.ParkedVehicle.Id">Receipt</a> -->
-                                    </span>
-                                </span>
-
-                            }
-
-                        }
-                        @if (Vehicle.SubParkedViewModels == null)
-                        {
-                            <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2">
-                            </span>
-                            <span class="col-xl-2 col-sm-3 col-md-2 col-lg-2"></span>
-                            <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2"></span>
-
-                            <span class="col-xl-2 col-sm-2 col-md-2 col-lg-2"></span>
-
-                            <span class="col-xl-4 col-sm-4 col-md-4 col-lg-4">
-                                <span class="allBtnTB">
-                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="Parkthis" asp-route-vehicleid="@Vehicle.Vehicle.Id">Park this</a>
-                                    <a class="myBtnDetails" asp-controller="ParkedVehicles" asp-action="vehicleDetails" asp-route-vehicleid="@Vehicle.Vehicle.Id">Details</a>
-                                </span>
-                            </span>
-                        }
-            
-                            <span class="col-xl-12 col-sm-12 col-md-12 col-lg-12 extra-pad"></span>
-
-                     }
-</div>
-             }
-            
         </dd>
     </dl>
 
