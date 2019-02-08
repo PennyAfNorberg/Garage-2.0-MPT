@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Garage_2._0_MPT.Models;
 using System.Linq.Expressions;
-using Garage_2._0_MPT.Utils;
 using System.Security.Cryptography;
 using System.IO;
 
@@ -25,8 +25,7 @@ namespace Garage_2._0_MPT.Controllers
         // GET: Members
         public async Task<IActionResult> Index()
         {
-
-            return View(await _context.Members.ToListAsync());
+              return View(await _context.Members.ToListAsync());
         }
 
         // GET: Members/Details/5
@@ -36,8 +35,21 @@ namespace Garage_2._0_MPT.Controllers
             {
                 return NotFound();
             }
+            var res =   _context.Members
+                .Include(v => v.Vehicles)
+                 .Where(m => m.Id == id)
+                 ;
 
-            var members = (await AddTimeAndPrice(id.Value)).FirstOrDefault();
+            var members = await res.Select(x => new MemberViewModel()
+            {
+                Member = x,
+                Vehicles = (x.Vehicles == null) ? null : x.Vehicles.Select(v => new SubVehicle
+                {
+                    Vehicle = v
+                }
+                ).ToList()
+            }).FirstOrDefaultAsync();
+
             if (members == null)
             {
                 return NotFound();
@@ -46,69 +58,6 @@ namespace Garage_2._0_MPT.Controllers
             return View(members);
         }
 
-        private async Task<MemberViewModel[]> AddTimeAndPrice(int id)
-        {
-            var res = _context.Members
-                .Include(v => v.Vehicles).ThenInclude(v => v.ParkedVehicles)
-                .Include(v => v.Vehicles).ThenInclude(v => v.VehicleTyp)
-                .Where(m => m.Id == id);
-
-
-
-            IQueryable<MemberViewModel> res3;
-
-            res3 = res.Select(x => new MemberViewModel()
-            {
-                Member = x,
-                Vehicles = (x.Vehicles == null) ? null : x.Vehicles.Select(v => new SubVehicle
-                {
-                    Vehicle = v,
-                    Vehicletype = v.VehicleTyp,
-                    SubParkedViewModels = (v.ParkedVehicles == null || (!(v.ParkedVehicles.Any(pv => pv.ParkOutDate == null)))) ? null : v.ParkedVehicles.Select(pv =>
-                               new SubParkedViewModel
-                               {
-                                   ParkedVehicle = pv,
-                                   ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
-                                   Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
-                                   CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
-                               }
-                    ).ToList()
-                }
-
-               ).ToList()
-            });
-
-
-
-
-            if (res3.Count() == 0)
-                return null;
-            else
-
-                return res3.ToArray();
-
-            //   .ToArrayAsync();
-        }
-
-
-        private string PrettyPrintTime(TimeSpan? timespan)
-        {
-            if (timespan == null)
-                throw new ArgumentNullException();
-
-            if (timespan.Value.Days > 0)
-            {
-                return $"{timespan.Value.Days} d " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
-            }
-            else
-            {
-
-                return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}";
-
-            }
-
-
-        }
 
         // GET: Members/Create
         public IActionResult Create()
@@ -116,47 +65,6 @@ namespace Garage_2._0_MPT.Controllers
             return View();
         }
 
-        private static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
-        {
-            // Check arguments.
-            if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException("plainText");
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
-            byte[] encrypted;
-
-            // Create an Aes object
-            // with the specified key and IV.
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.Key = Key;
-                aesAlg.IV = IV;
-
-                // Create an encryptor to perform the stream transform.
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                // Create the streams used for encryption.
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            //Write all data to the stream.
-                            swEncrypt.Write(plainText);
-                        }
-                        encrypted = msEncrypt.ToArray();
-                    }
-                }
-            }
-
-
-            // Return the encrypted bytes from the memory stream.
-            return encrypted;
-
-        }
 
 
 
@@ -167,9 +75,7 @@ namespace Garage_2._0_MPT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Street,City,ZipCode,PassWord")] Member members)
         {
-            PasswordWithSaltHasher pwHasher = new PasswordWithSaltHasher();
-            HashWithSaltResult hashResultSha256 = pwHasher.HashWithSalt("ultra_safe_P455w0rD", 64, SHA256.Create());
-            HashWithSaltResult hashResultSha512 = pwHasher.HashWithSalt("ultra_safe_P455w0rD", 64, SHA512.Create());
+    
 
             if (ModelState.IsValid)
             {

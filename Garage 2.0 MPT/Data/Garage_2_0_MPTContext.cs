@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Garage_2._0_MPT.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Garage_2._0_MPT.Models
 {
@@ -16,6 +18,7 @@ namespace Garage_2._0_MPT.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Vehicle>()
                 .HasOne(Pv => Pv.VehicleTyp)
@@ -39,6 +42,14 @@ namespace Garage_2._0_MPT.Models
          .HasOne(Pv => Pv.Member)
          .WithMany(c => c.ParkedVehicles)
          .HasForeignKey(v => new { v.MemberId });
+
+
+            modelBuilder.Entity<GarageUser>()
+           .HasOne(Pv => Pv.Member)
+           .WithMany(c => c.GarageUsers);
+        
+
+            modelBuilder.Entity<GarageUser>(user => user.HasIndex(x => x.Locale).IsUnique(false));
 
             modelBuilder.Entity<VehicleTyp>()
                 .HasData(
@@ -107,7 +118,16 @@ namespace Garage_2._0_MPT.Models
         public DbSet<Member> Members { get; set; }
 
         public DbSet<Vehicle> Vehicles { get; set; }
+
+        public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
+
+        public DbSet<>  { get; set; }
+
     }
+
+
+
+
 }
 /*
 public enum VehicleTyp

@@ -23,5 +23,8 @@ namespace Garage_2._0_MPT.ViewCompontens
             var res = await db.VehicleTyp.ToArrayAsync();
             return View(res);
         }
+
+
+
     }
 }

@@ -36,6 +36,8 @@ namespace Garage_2._0_MPT.Models
         public ICollection<Vehicle> Vehicles { get; set; }
 
         public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
+
+        public ICollection<GarageUser> GarageUsers { get; set; }
     }
 
     public class MemberViewModel

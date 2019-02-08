@@ -4,14 +4,16 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190208022228_addmorehocks")]
+    partial class addmorehocks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,8 +40,6 @@ namespace Garage_2._0_MPT.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<int>("MemberId");
-
                     b.Property<string>("NormalizedEmail");
 
                     b.Property<string>("NormalizedUserName");
@@ -59,8 +59,6 @@ namespace Garage_2._0_MPT.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Locale");
-
-                    b.HasIndex("MemberId");
 
                     b.ToTable("GarageUser");
                 });
@@ -210,31 +208,6 @@ namespace Garage_2._0_MPT.Migrations
                             Name = "Truck",
                             SpacesNeeded = 2
                         });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityUserClaim");
-                });
-
-            modelBuilder.Entity("Garage_2._0_MPT.GarageUser", b =>
-                {
-                    b.HasOne("Garage_2._0_MPT.Models.Member", "Member")
-                        .WithMany("GarageUsers")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.ParkedVehicle", b =>

@@ -18,6 +18,24 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '842141169466117',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v3.2'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
@@ -27,7 +45,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <form id="seek01" name="seek01" class="form-inline"  asp-action="SeekAndSort" metode="Post">
+                    <form id="seek01" name="seek01" class="form-inline" asp-action="SeekAndSort" metode="Post">
                         <span class="myTbBox">
                             <input id="seek_text01" type="text" list="VehicleTypesNav" name="SearchString" class="form-control mr-sm-2" placeholder="" aria-label="Search" required pattern="\b(?x) \d+ \s \w+">
                             <datalist id="VehicleTypesNav">
@@ -36,16 +54,16 @@
                             <button id="sbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Filter">Search</button>
                         </span>
                     </form>
-                        }
+                    }
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Parked</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Create">Park</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Overview">Overview</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Overview">All</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Statistik">Statistik</a>
@@ -53,6 +71,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-light"  asp-area="" asp-controller="ParkedVehicles" asp-action="Login">Login</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="ParkedVehicles" asp-action="RegisterAuthenticator">Register Authenticator</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
