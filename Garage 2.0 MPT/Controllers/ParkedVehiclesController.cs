@@ -105,7 +105,7 @@ namespace Garage_2._0_MPT.Models
             var svar = new ListViewModel
             {
                 ParkedViewModel = (IEnumerable<ParkedViewModel>)res,
-                Message = "Parked Vehicles"
+                Message = "..."
 
             };
 
@@ -537,7 +537,7 @@ namespace Garage_2._0_MPT.Models
             var reta = await AddTimeAndPrice();
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
-            else txt = $"Parked Vehicles sorted by {Message}";
+            else txt = $"Sorted by {Message}";
 
             var svar = new ListViewModel
             {

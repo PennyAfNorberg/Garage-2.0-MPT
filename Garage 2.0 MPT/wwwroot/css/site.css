@@ -154,3 +154,7 @@ header {
     font-size: 1.4em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.mini_text {
+    font-size: 0.4em;
+    color:#808080;
+}
