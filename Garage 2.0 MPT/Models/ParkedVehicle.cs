@@ -48,9 +48,10 @@ namespace Garage_2._0_MPT.Models
         public string RegNr { get; set; } //Vech
         [Display(Name = "Color")]
         public string VehicleColor { get; set; }  //Vech
-        [Display(Name = "Model")]
+        [Display(Name = "Model")]        
         public string VehicleModel { get; set; }  //Vech
         [Display(Name = "Brand")]
+        [Required(ErrorMessage = "Brand nr is required")]
         public string VehicleBrand { get; set; }  //Vech
         [Display(Name = "Wheels")]
         public int NumberOfWheels { get; set; }  //Vech

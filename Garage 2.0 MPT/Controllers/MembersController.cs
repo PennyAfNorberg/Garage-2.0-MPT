@@ -50,8 +50,6 @@ namespace Garage_2._0_MPT.Controllers
                 .Include(v => v.Vehicles).ThenInclude(v => v.VehicleTyp)
                 .Where(m => m.Id == id);
 
-
-
             IQueryable<MemberViewModel> res3;
 
             res3 = res.Select(x => new MemberViewModel()
@@ -75,16 +73,10 @@ namespace Garage_2._0_MPT.Controllers
                ).ToList()
             });
 
-
-
-
             if (res3.Count() == 0)
                 return null;
             else
-
                 return res3.ToArray();
-
-            //   .ToArrayAsync();
         }
 
 
@@ -99,12 +91,8 @@ namespace Garage_2._0_MPT.Controllers
             }
             else
             {
-
                 return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}";
-
             }
-
-
         }
 
         // GET: Members/Create
@@ -215,7 +203,6 @@ namespace Garage_2._0_MPT.Controllers
         }
         public async Task<IActionResult> SeekAndSort(string Message, string Sort = "Name", string SearchString = "")
         {
-
             Member[] reta = await _context.Members.Where(o => o.FirstName.ToLower().Contains(SearchString.ToLower())
             || o.LastName.ToLower().Contains(SearchString.ToLower())
             || o.Email.ToLower().Contains(SearchString.ToLower()))
