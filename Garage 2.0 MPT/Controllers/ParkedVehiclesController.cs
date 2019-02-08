@@ -496,8 +496,8 @@ namespace Garage_2._0_MPT.Models
             var svar2 = parkhouse.GetFreeSpaces();
             var res = await AddTimeAndPrice(true);
             var id = userManager.GetUserId(User);
-            var curruser= await userManager.FindByIdAsync(id);
-            var res3
+            var curruser= await userManager.FindByIdAsync(id); // error here
+         
 
             var role = await userManager.GetRolesAsync(curruser);
 
