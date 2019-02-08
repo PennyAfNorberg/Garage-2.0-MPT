@@ -304,39 +304,39 @@ namespace Garage_2_Tests
             Assert.IsNull(testfull, "NextPos2 full diff");
         }
 
-        [TestMethod()]
-        public void NextPos3_test()
-        {
-            // +y, +x, +z, -> 3 , 3+y, 3+x, 3+z, full no skip.
-            //Arrange
-            Position
+        //[TestMethod()]
+        //public void NextPos3_test()
+        //{
+        //    // +y, +x, +z, -> 3 , 3+y, 3+x, 3+z, full no skip.
+        //    //Arrange
+        //    Position
                     
             
-                     test3x = new Position { Z = 1, X = 3, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
-                     test3z = new Position { Z = 1, X = 5, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
-                     testfull = new Position { Z = 2, X = 5, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null };
-            Position 
+        //             test3x = new Position { Z = 1, X = 3, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
+        //             test3z = new Position { Z = 1, X = 5, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
+        //             testfull = new Position { Z = 2, X = 5, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null };
+        //    Position 
          
-                     ok3x = new Position { Z = 1, X = 4, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
-                     ok3z = new Position { Z = 2, X = 4, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null };
-            // okfull = null;
+        //             ok3x = new Position { Z = 1, X = 4, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null },
+        //             ok3z = new Position { Z = 2, X = 4, Y = 1, SpaceLeftForFract = -2, SpaceOccupide = null };
+        //    // okfull = null;
 
-            //act
+        //    //act
 
 
 
-            test3x = NextPos2(test3x);
-            test3z = NextPos2(test3z);
-            testfull = NextPos2(testfull);
+        //    test3x = NextPos2(test3x);
+        //    test3z = NextPos2(test3z);
+        //    testfull = NextPos2(testfull);
 
-            //Assert
+        //    //Assert
 
 
    
-            Assert.IsTrue(ok3x.Equals(test3x), "NextPos3 3 +x diff");
-            Assert.IsTrue(ok3z.Equals(test3z), "NextPos3 3 +z diff");
-            Assert.IsNull(testfull, "NextPos3 full diff");
-        }
+        //    Assert.IsTrue(ok3x.Equals(test3x), "NextPos3 3 +x diff");
+        //    Assert.IsTrue(ok3z.Equals(test3z), "NextPos3 3 +z diff");
+        //  //  Assert.IsNull(testfull, "NextPos3 full diff");
+        //}
 
 
             //protected bool TestPos(Position position, int SpacesNeeded, out Position checkthisN, out Position checkthisO ,int delta =0  )

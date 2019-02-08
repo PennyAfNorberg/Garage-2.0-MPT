@@ -4,68 +4,22 @@ using Garage_2._0_MPT.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage_2._0_MPT.Migrations
 {
     [DbContext(typeof(Garage_2_0_MPTContext))]
-    partial class Garage_2_0_MPTContextModelSnapshot : ModelSnapshot
+    [Migration("20190208105330_prices2")]
+    partial class prices2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Garage_2._0_MPT.GarageUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<string>("Locale");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<int>("MemberId");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("Role");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Locale");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("GarageUser");
-                });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.Member", b =>
                 {
@@ -213,31 +167,6 @@ namespace Garage_2._0_MPT.Migrations
                             Name = "Truck",
                             SpacesNeeded = 2
                         });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityUserClaim");
-                });
-
-            modelBuilder.Entity("Garage_2._0_MPT.GarageUser", b =>
-                {
-                    b.HasOne("Garage_2._0_MPT.Models.Member", "Member")
-                        .WithMany("GarageUsers")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Garage_2._0_MPT.Models.ParkedVehicle", b =>

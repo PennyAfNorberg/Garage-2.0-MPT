@@ -80,6 +80,7 @@ namespace Garage_2._0_MPT.Controllers
         }
 
 
+
         // GET: Members/Create
         [Authorize]
         public IActionResult Create()
@@ -217,7 +218,6 @@ namespace Garage_2._0_MPT.Controllers
         }
         public async Task<IActionResult> SeekAndSort(string Message, string Sort = "Name", string SearchString = "")
         {
-
             Member[] reta = await _context.Members.Where(o => o.FirstName.ToLower().Contains(SearchString.ToLower())
             || o.LastName.ToLower().Contains(SearchString.ToLower())
             || o.Email.ToLower().Contains(SearchString.ToLower()))

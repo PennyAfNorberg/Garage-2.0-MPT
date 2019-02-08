@@ -4,7 +4,7 @@
     ViewData["Title"] = "Parked vehicles";
 }
 
-<h1 class="header_table">@Model.Message</h1>
+<h1 class="header_table">Parked Vehicles <span class="mini_text">@Model.Message</span></h1>
 
 
 <table class="table table-borderless ">
@@ -19,12 +19,12 @@
             <th id="s_reg" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "RegNr", Message="Reg nr" })"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.RegNr)
             </th>
-            <th id="s_col" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleColor", Message="Color" })"'>
+            @*<th id="s_col" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleColor", Message="Color" })"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleColor)
-            </th>
-            <th id="s_mod" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleModel", Message="Model" })"'>
+            </th>*@
+            @*<th id="s_mod" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleModel", Message="Model" })"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleModel)
-            </th>
+            </th>*@
             <th id="s_bra" class="myTbBox" onclick='location.href="@Url.Action("SeekAndSort", "ParkedVehicles", new {Sort = "VehicleBrand", Message="Brand" })"'>
                 @Html.DisplayNameFor(model => model.Header.Vehicle.VehicleBrand)
             </th>
@@ -54,25 +54,25 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.VehicleTyp.Name)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.Vehicle.RegNr)
                     </td>
-                    <td>
+                    @*<td>
                         @Html.DisplayFor(modelItem => item.Vehicle.VehicleColor)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Vehicle.VehicleModel)
-                    </td>
-                    <td>
+                    </td>*@
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.Vehicle.VehicleBrand)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedTime)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().Price)
                     </td>
-                    <td>
+                    <td class="myTbBox">
                         @Html.DisplayFor(modelItem => item.ParkedVehicles.FirstOrDefault().ParkedVehicle.Where)
                     </td>
                     <td>

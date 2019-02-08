@@ -53,12 +53,12 @@ namespace Garage_2._0_MPT.Models
 
             modelBuilder.Entity<VehicleTyp>()
                 .HasData(
-                    new VehicleTyp { VehicleTypId = 1, Name = "Car", CostPerHour = 100, SpacesNeeded = 1 },
-                    new VehicleTyp { VehicleTypId = 2, Name = "Bus", CostPerHour = 300, SpacesNeeded = 3 },
-                    new VehicleTyp { VehicleTypId = 3, Name = "Motorbike", CostPerHour = 50, SpacesNeeded = -3 },
-                    new VehicleTyp { VehicleTypId = 4, Name = "Caravan", CostPerHour = 150, SpacesNeeded = 1 },
-                    new VehicleTyp { VehicleTypId = 5, Name = "RV", CostPerHour = 200, SpacesNeeded = 2 },
-                    new VehicleTyp { VehicleTypId = 6, Name = "Truck", CostPerHour = 200, SpacesNeeded = 2 }
+                    new VehicleTyp { VehicleTypId = 1, Name = "Car", CostPerHour = 25, SpacesNeeded = 1 },
+                    new VehicleTyp { VehicleTypId = 2, Name = "Bus", CostPerHour = 75, SpacesNeeded = 3 },
+                    new VehicleTyp { VehicleTypId = 3, Name = "Motorbike", CostPerHour = 15, SpacesNeeded = -3 },
+                    new VehicleTyp { VehicleTypId = 4, Name = "Caravan", CostPerHour = 95, SpacesNeeded = 1 },
+                    new VehicleTyp { VehicleTypId = 5, Name = "RV", CostPerHour = 140, SpacesNeeded = 2 },
+                    new VehicleTyp { VehicleTypId = 6, Name = "Truck", CostPerHour = 140, SpacesNeeded = 2 }
 
                 );
 /*

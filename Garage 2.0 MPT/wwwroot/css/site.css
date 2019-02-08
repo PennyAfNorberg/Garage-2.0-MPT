@@ -96,7 +96,9 @@ header {
     font-size:80%;
     /*white-space: nowrap;*/
 }
-
+.litespace{
+ margin-left:1em;
+}
 .Gobig {
     width: 100%;
     display: inline-block;
@@ -153,4 +155,8 @@ header {
     margin-bottom: .5em;
     font-size: 1.4em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.mini_text {
+    font-size: 0.4em;
+    color:#808080;
 }

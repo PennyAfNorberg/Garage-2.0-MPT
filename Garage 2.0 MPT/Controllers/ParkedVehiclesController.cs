@@ -428,7 +428,7 @@ namespace Garage_2._0_MPT.Models
                     var res2 = res.Select(o => o.ParkedVehicles.Where(pw => pw.ParkedVehicle.Where == null && pw.ParkedVehicle.ParkOutDate == null))
 
                      .Select(p => p.Select(pw => pw.ParkedVehicle))
-                    .ToList();
+                     .ToList();
 
                     var needtosavetoo = new List<ParkedVehicle>();
 
@@ -441,8 +441,6 @@ namespace Garage_2._0_MPT.Models
                         }
 
                     }
-
-
                     try
                     {
                         _context.ParkedVehicle.UpdateRange(needtosavetoo);
@@ -459,8 +457,6 @@ namespace Garage_2._0_MPT.Models
             }
             return true;
         }
-
-
         // GET: ParkedVehicles
 
         public async Task<IActionResult> Index()
@@ -479,14 +475,12 @@ namespace Garage_2._0_MPT.Models
             var svar = new ListViewModel
             {
                 ParkedViewModel = (IEnumerable<ParkedViewModel>)res,
-                Message = "Parked Vehicles"
+                Message = "..."
 
             };
 
             return View(svar);
         }
-
-
 
         // GET: ParkedVehicles
         [Authorize]
@@ -518,22 +512,21 @@ namespace Garage_2._0_MPT.Models
         {
             if (timespan == null)
                 throw new ArgumentNullException();
-
-            if (timespan.Value.Days > 0)
+            if (timespan.Value.Days > 1)
             {
-                return $"{timespan.Value.Days} d " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
+
+                return $"{timespan.Value.Days}Days " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
+            }
+            else if (timespan.Value.Days > 0)
+            {
+                
+                return $"{timespan.Value.Days}Day " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
             }
             else
             {
-
                 return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}";
-
             }
-
-
         }
-
-
         public async Task<ActionResult> VehicleDetails(int? vehicleid)
         {
 
@@ -593,28 +586,18 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-
             var res = (await AddTimeAndPrice(true));
-
-
-
             var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
                 {
-                    //        ParkedVehicles = res.
-                    //   Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
-                    //   .FirstOrDefault().ToList(),
                     Vehicle = res.Select(o => o.Vehicle).Where(v => v.ParkedVehicles.Any(pv => pv.Id == id)).FirstOrDefault()
                 ,
                     VehicleTyp = res.Select(o => o.VehicleTyp).Where(vt => vt.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
                 ,
                     Member = res.Select(o => o.Member).Where(m => m.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
                 }
-
             };
-
-
             svar.ParkedVehicle.ParkedVehicles = svar.ParkedVehicle.Vehicle.ParkedVehicles.Where(pv => pv.Id == id).Select(x => new SubParkedViewModel
             {
                 ParkedVehicle = x
@@ -636,27 +619,19 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-
             await InitPlots();
             var res = await GetQyerydataHelper(true);
             var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
                 {
-                    //    ParkedVehicles = res.
-                    //Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
-                    //.FirstOrDefault().ToList()
-                    //               ,
                     Vehicle = res.Select(o => o.Vehicle).Where(v => v.ParkedVehicles.Any(pv => pv.Id == id)).FirstOrDefault()
                 ,
                     VehicleTyp = res.Select(o => o.VehicleTyp).Where(vt => vt.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
                 ,
                     Member = res.Select(o => o.Member).Where(m => m.Vehicles.Any(v => v.ParkedVehicles.Any(pv => pv.Id == id))).FirstOrDefault()
                 }
-
             };
-
-
             var CostPerHour = res.Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.Id == id)).Select(o => o.ParkedVehicles).Select(spv => spv.Select(pv => pv.CostPerHour)).FirstOrDefault().FirstOrDefault();
             var Price = res.Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.Id == id)).Select(o => o.ParkedVehicles).Select(spv => spv.Select(pv => pv.Price)).FirstOrDefault().FirstOrDefault();
             var ParkedTime = res.Where(o => o.ParkedVehicles.Any(pv => pv.ParkedVehicle.Id == id)).Select(o => o.ParkedVehicles).Select(spv => spv.Select(pv => pv.ParkedTime)).FirstOrDefault().FirstOrDefault();
@@ -668,9 +643,7 @@ namespace Garage_2._0_MPT.Models
                 Price = Price,
                 ParkedTime = ParkedTime
 
-
             }).ToList();
-
 
             return View(svar);
         }
@@ -697,7 +670,6 @@ namespace Garage_2._0_MPT.Models
                 vehicleTypes = await _context.VehicleTyp.OrderBy(vt => vt.Name).ToListAsync(),
                 Members = Members
             };
-
             return View(res);
         }
 
@@ -721,8 +693,6 @@ namespace Garage_2._0_MPT.Models
                     }
                 }
             };
-
-
             if (reg_bussey.Count > 0)
             {
                 // return RedirectToAction(nameof(Create));
@@ -732,8 +702,6 @@ namespace Garage_2._0_MPT.Models
 
             if (ModelState.IsValid)
             {
-
-
                 await InitPlots();
                 // if model does not exist.
                 if (!(_context.Vehicles.Any(v => v.RegNr == parkedVehicle.RegNr)))
@@ -751,7 +719,6 @@ namespace Garage_2._0_MPT.Models
                     _context.Vehicles.Add(initVehicle);
                     await _context.SaveChangesAsync();
                 }
-
 
                 parkedVehicle.VehicleTyp = await _context.VehicleTyp.Where(v => v.VehicleTypId == parkedVehicle.VehicleTypId).FirstOrDefaultAsync();
 
@@ -779,8 +746,6 @@ namespace Garage_2._0_MPT.Models
                     return View("GarageFull", svar);
                 }
             }
-
-
 
             return View(svar);
         }
@@ -812,7 +777,6 @@ namespace Garage_2._0_MPT.Models
                 Member = await _context.Members.Where(m => m.Id == memberid).FirstOrDefaultAsync(),
                 VehicleId = vehicleid,
                 Vehicle = thisvehicle
-
             };
             if (parkhouse.Park(InparkedVehicle))
             {
@@ -832,11 +796,8 @@ namespace Garage_2._0_MPT.Models
                         }
                     }
                 };
-
-
                 return View("GarageFull", svar);
             }
-
         }
         // POST: ParkedVehicles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -849,7 +810,6 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -879,14 +839,6 @@ namespace Garage_2._0_MPT.Models
 
             var res = await GetQyerydataHelper();
 
-            /* var p1 = res.
-                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id)).ToList();
-
-             var p2 = p1.FirstOrDefault(p => p.Any(pv=> pv.ParkedVehicle.Id==id));
-
-             var p3 = p2.FirstOrDefault(p => p != null);
-
-             var parkedVehicle = p3.ParkedVehicle;*/
             var parkedVehicle = res.
                     Select(o => o.ParkedVehicles).Select(pw => pw.Where(pwm => pwm.ParkedVehicle.Id == id))
                     .FirstOrDefault(p => p.Any(pv => pv.ParkedVehicle.Id == id))
@@ -915,7 +867,6 @@ namespace Garage_2._0_MPT.Models
                     throw;
                 }
             }
-
             return RedirectToAction(nameof(Receipt), new { id = id });
         }
 
@@ -947,7 +898,6 @@ namespace Garage_2._0_MPT.Models
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool ParkedVehicleExists(int id)
         {
             return _context.ParkedVehicle.Any(e => e.Id == id);
@@ -957,7 +907,6 @@ namespace Garage_2._0_MPT.Models
             var reta = await AddTimeAndPrice();
             return View("Index", reta);
         }
-
         private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
             var res =  _context.Vehicles
@@ -1007,31 +956,19 @@ namespace Garage_2._0_MPT.Models
 
             //   .ToArrayAsync();
         }
-        /*        [NotMapped]
-        [Display(Name = "Parked Time")]
-        public string ParkedTime { get; set; } // viewmodel
-
-        [NotMapped]
-        [Display(Name = "Price")]
-        public int Price { get; set; }  // viewmodel
-        [NotMapped]
-        [Display(Name = "CostPerHour")]
-        public int CostPerHour { get; set; } // viewmodel*/
 
         public async Task<IActionResult> SeekAndSort(string Message, string Sort = "Name", string SearchString = "")
         {
             var reta = await AddTimeAndPrice();
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
-            else txt = $"Parked Vehicles sorted by {Message}";
+            else txt = $"Sorted by {Message}";
 
             var svar = new ListViewModel
             {
                 ParkedViewModel = reta.Where(o => o.Vehicle.VehicleTyp.Name.ToLower().Equals(SearchString.ToLower())
                 || o.Vehicle.RegNr.ToLower().Contains(SearchString.ToLower())).OrderBy(s => Get_seek(s, Sort)),
-
                 Message = txt
-
             };
             return View("Index", svar);
         }
@@ -1073,7 +1010,7 @@ namespace Garage_2._0_MPT.Models
                 .GroupBy(v => v.VehicleTyp.Name)
                 .Select(g => new MyTypes { Name = g.Key, Count = g.Count() });
 
-            stat.members_count = reta.Select(members => members.Member).Count();
+            stat.members_count = _context.Members.Count();
 
             stat.ParkingSpaces = parkhouse.GetSpaces();
             stat.FreeParkingSpaces = parkhouse.GetFreeSpaces();
