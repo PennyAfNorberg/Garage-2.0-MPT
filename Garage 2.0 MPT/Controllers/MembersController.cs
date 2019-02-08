@@ -33,8 +33,21 @@ namespace Garage_2._0_MPT.Controllers
             {
                 return NotFound();
             }
+            var res = _context.Members
+                .Include(v => v.Vehicles)
+                 .Where(m => m.Id == id)
+                 ;
 
-            var members = (await AddTimeAndPrice(id.Value)).FirstOrDefault();
+            var members = await res.Select(x => new MemberViewModel()
+            {
+                Member = x,
+                Vehicles = (x.Vehicles == null) ? null : x.Vehicles.Select(v => new SubVehicle
+                {
+                    Vehicle = v
+                }
+                ).ToList()
+            }).FirstOrDefaultAsync();
+
             if (members == null)
             {
                 return NotFound();
@@ -43,57 +56,10 @@ namespace Garage_2._0_MPT.Controllers
             return View(members);
         }
 
-        private async Task<MemberViewModel[]> AddTimeAndPrice(int id)
-        {
-            var res = _context.Members
-                .Include(v => v.Vehicles).ThenInclude(v => v.ParkedVehicles)
-                .Include(v => v.Vehicles).ThenInclude(v => v.VehicleTyp)
-                .Where(m => m.Id == id);
-
-            IQueryable<MemberViewModel> res3;
-
-            res3 = res.Select(x => new MemberViewModel()
-            {
-                Member = x,
-                Vehicles = (x.Vehicles == null) ? null : x.Vehicles.Select(v => new SubVehicle
-                {
-                    Vehicle = v,
-                    Vehicletype = v.VehicleTyp,
-                    SubParkedViewModels = (v.ParkedVehicles == null || (!(v.ParkedVehicles.Any(pv => pv.ParkOutDate == null)))) ? null : v.ParkedVehicles.Select(pv =>
-                               new SubParkedViewModel
-                               {
-                                   ParkedVehicle = pv,
-                                   ParkedTime = (pv == null) ? null : PrettyPrintTime(((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate),
-                                   Price = pv.Vehicle.VehicleTyp.CostPerHour * (int)Math.Ceiling((((pv.ParkOutDate == null) ? DateTime.Now : pv.ParkOutDate) - pv.ParkInDate).Value.TotalHours),
-                                   CostPerHour = pv.Vehicle.VehicleTyp.CostPerHour
-                               }
-                    ).ToList()
-                }
-
-               ).ToList()
-            });
-
-            if (res3.Count() == 0)
-                return null;
-            else
-                return res3.ToArray();
-        }
 
 
-        private string PrettyPrintTime(TimeSpan? timespan)
-        {
-            if (timespan == null)
-                throw new ArgumentNullException();
 
-            if (timespan.Value.Days > 0)
-            {
-                return $"{timespan.Value.Days} d " + PrettyPrintTime(timespan - timespan.Value.Days * new TimeSpan(1, 0, 0, 0));
-            }
-            else
-            {
-                return $"{timespan.Value.Hours:D2}:{timespan.Value.Minutes:D2}:{timespan.Value.Seconds:D2}";
-            }
-        }
+
 
         // GET: Members/Create
         public IActionResult Create()
