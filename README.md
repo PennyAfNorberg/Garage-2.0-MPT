@@ -1,4 +1,20 @@
 # Garage-2.0-MPT
 
- For using this one you ought too at first start upp activate the class seeddata or rewrite it, but stop that seeding after the first start up.
+Now you need to add a secret by 'manage user secrets' in solution explorer and that one needs
+
+  "facebook": {
+    "AppId": "<value>",
+    "AppSecret": "<value>"
+  },
+  "From": {
+    "Name": "<value>",
+    "Address": "<value>"
+  },
+  "Smtp": {
+    "Address": "<value>",
+    "Port": <value>,
+    "User": "<value>",
+    "PassWord": "<value>"
+  }
+  leave User blank is not needed for smtp.
  
