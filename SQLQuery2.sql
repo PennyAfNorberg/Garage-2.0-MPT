@@ -1,11 +1,5 @@
 ﻿select *
- from Members t1
-
- select *
-  from Vehicles t2
-
-  select *
-   from VehicleTyp t3
-
-   select *
-   from ParkedVehicle t4
+-- update t1 set [role]='Admin'
+from garageuser t1
+where
+ t1.UserName='Penny@lysator.liu.se'

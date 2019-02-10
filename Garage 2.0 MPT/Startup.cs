@@ -68,13 +68,16 @@ namespace Garage_2._0_MPT
                 options.TokenLifespan = TimeSpan.FromDays(2));
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/ParkedVehicles/Login");
+          
 
-     /*       services.AddAuthentication()
+
+           services.AddAuthentication()
     .AddFacebook("facebook", options =>
     {
-        options.AppId = "842141169466117";
+        options.AppId =Configuration.GetSection("facebook")["AppId"];
+        options.AppSecret = Configuration.GetSection("facebook")["AppSecret"];
         options.SignInScheme = IdentityConstants.ExternalScheme;
-    });*/
+    });
 
             //  services.AddDbContext<Garage_2_0_MPTContext>(options =>
             //         options.UseSqlServer(Configuration.GetConnectionString("Garage_2_0_MPTContext")));
@@ -95,7 +98,7 @@ namespace Garage_2._0_MPT
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

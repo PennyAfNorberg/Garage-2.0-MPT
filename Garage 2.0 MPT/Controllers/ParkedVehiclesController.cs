@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_2._0_MPT.Utils;
+using Microsoft.Extensions.Configuration;
+using MailKit.Net.Smtp;
+using MailKit;
+using MimeKit;
+using MailKit.Security;
 
 namespace Garage_2._0_MPT.Models
 {
@@ -20,15 +25,21 @@ namespace Garage_2._0_MPT.Models
         private bool loadedSeed = false;
         private readonly UserManager<GarageUser> userManager;
         private readonly IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory;
+        private readonly IConfiguration configuration;
+
         public ParkedViewModel[] SavedQyerydatafalse { get; set; } = null;
         public ParkedViewModel[] SavedQyerydatatrue { get; set; } = null;
+
+
         public ParkedVehiclesController(Garage_2_0_MPTContext context,
             UserManager<GarageUser> userManager,
-            IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory)
+            IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory
+            , IConfiguration Configuration)
         {
             _context = context;
             this.userManager = userManager;
             this.claimsPrincipalFactory = claimsPrincipalFactory;
+            this.configuration = Configuration;
             int Floor = 3;
             int[] Twos = new int[3]
                 { 2,3,2
@@ -43,6 +54,13 @@ namespace Garage_2._0_MPT.Models
 
         }
 
+
+        private void initSecrets()
+        {
+
+            ViewData["Facebook"] = configuration.GetSection("facebook")["AppId"];
+        }     
+ 
         private async Task<ParkedViewModel[]> GetQyerydataHelper(Boolean includeparkedout = false)
         {
             if(includeparkedout)
@@ -95,7 +113,9 @@ namespace Garage_2._0_MPT.Models
                         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmationEmail = Url.Action("ConfirmEmailAddress", "ParkedVehicles",
                             new { token = token, email = user.Email }, Request.Scheme);
-                        System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\NewtempconfirmationLink.txt", confirmationEmail);
+
+                        await SendMail(model.UserName, model.UserName.Substring(0, model.UserName.IndexOf("@")), "Confirm Email please", "Click or open this link "+ confirmationEmail);
+                       // System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\NewtempconfirmationLink.txt", confirmationEmail);
                     }
                     else
                     {
@@ -134,6 +154,7 @@ namespace Garage_2._0_MPT.Models
         [HttpGet]
         public IActionResult Login()
         {
+            initSecrets();
             return View();
         }
 
@@ -172,7 +193,8 @@ namespace Garage_2._0_MPT.Models
                             if (validProviders.Contains("Email"))
                             {
                                 var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                                System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\email2sv.txt", token);
+                                await SendMail(model.UserName, model.UserName.Substring(0, model.UserName.IndexOf("@")), "2 factor email", "Use this token " + token);
+                               // System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\email2sv.txt", token);
 
                                 await HttpContext.SignInAsync(IdentityConstants.TwoFactorUserIdScheme,
                                     Store2FA(user.Id, "Email"));
@@ -230,8 +252,8 @@ namespace Garage_2._0_MPT.Models
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
                     var resetUrl = Url.Action("ResetPassword", "ParkedVehicles",
                         new { token = token, email = user.Email }, Request.Scheme);
-
-                    System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\resetLink.txt", resetUrl);
+                    await SendMail(model.Email, model.Email.Substring(0, model.Email.IndexOf("@")), "Forgot password link", "CClick or open this link: " + resetUrl);
+                    // System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\resetLink.txt", resetUrl);
                 }
                 else
                 {
@@ -457,20 +479,86 @@ namespace Garage_2._0_MPT.Models
             }
             return true;
         }
-        // GET: ParkedVehicles
+        private async Task<bool> SendMail(string to, string toname, string subject, string body)
+        {
+            // init mimiemessage
+            var message = new MimeMessage();
+            ///Garage@johannorberg.org
+            //from
+            message.From.Add(new MailboxAddress(configuration.GetSection("From")["Name"], configuration.GetSection("From")["Address"])); 
+            // to
+            message.To.Add(new MailboxAddress(toname, to));
+            // subject
+            message.Subject = subject;
+            // body
+            message.Body = new TextPart("plain")
+            {
+                Text = body
+            };
+            // conf and send
 
+            using (var client = new SmtpClient())
+            {
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true; // may need to change
+
+                var user = configuration.GetSection("Smtp")["User"];
+                var adress = configuration.GetSection("Smtp")["Address"];
+                var port= Int32.Parse(configuration.GetSection("Smtp")["Port"]);
+                if (string.IsNullOrEmpty(user))
+                {
+                    client.Connect(adress, port, SecureSocketOptions.Auto); 
+                }
+                else
+                {
+                    var password = configuration.GetSection("Smtp")["PassWord"];
+                    client.Connect(adress, port, false); 
+                    client.Authenticate(user, password);
+                }
+                await client.SendAsync(message);
+
+                client.Disconnect(true);
+            }
+
+            return true;
+
+        }
+
+        private async Task<string> GetRole(string UserId)
+        {
+            var res = await _context.GarageUser.FirstOrDefaultAsync(u => u.Id == UserId);
+
+            return res?.Role;
+
+        }
+
+        private async Task<int?> GetMemberid(string UserId)
+        {
+            var res = await _context.GarageUser.FirstOrDefaultAsync(u => u.Id == UserId);
+
+            return res?.MemberId;
+
+        }
+
+        // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
             var res = await GetQyerydataHelper();
-
+            
             var id = userManager.GetUserId(User);
-            var curruser = await userManager.FindByIdAsync(id);
-            var role = curruser.Role;
-
-            if (role != "Admin")
+            if (id != null)
             {
-                res = res.Where(v => v.Vehicle.MemberId == curruser.MemberId).ToArray();
 
+                var role = await GetRole(id);
+                var memberid = await GetMemberid(id);
+                memberid = memberid ?? -1;
+
+                if (role != "Admin")
+                {
+                    
+
+                    res = res.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
+
+                }
             }
             var svar = new ListViewModel
             {
@@ -479,6 +567,7 @@ namespace Garage_2._0_MPT.Models
 
             };
 
+           
             return View(svar);
         }
 
@@ -489,15 +578,17 @@ namespace Garage_2._0_MPT.Models
 
             ParkedViewModel[] res = await GetQyerydataHelper(true);
             var id = userManager.GetUserId(User);
-            var curruser= await userManager.FindByIdAsync(id);
-            var role = curruser.Role;
+            var role = await GetRole(id);
+            var memberid = await GetMemberid(id);
+            memberid = memberid ?? -1;
 
-           if(role != "Admin")
+            if (role != "Admin")
             {
-                res = res.Where(v => v.Vehicle.MemberId == curruser.MemberId).ToArray() ;
+
+
+                res = res.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
 
             }
-
             var svar = new ListViewModel
             {
                 ParkedViewModel = res
@@ -586,7 +677,19 @@ namespace Garage_2._0_MPT.Models
             {
                 return NotFound();
             }
-            var res = (await AddTimeAndPrice(true));
+            var res = await GetQyerydataHelper(true);
+            var userid = userManager.GetUserId(User);
+            var role = await GetRole(userid);
+            var memberid = await GetMemberid(userid);
+            memberid = memberid ?? -1;
+
+            if (role != "Admin")
+            {
+
+
+                res = res.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
+
+            }
             var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
@@ -621,6 +724,20 @@ namespace Garage_2._0_MPT.Models
             }
             await InitPlots();
             var res = await GetQyerydataHelper(true);
+
+            var userid = userManager.GetUserId(User);
+            var role = await GetRole(userid);
+            var memberid = await GetMemberid(userid);
+            memberid = memberid ?? -1;
+
+            if (role != "Admin")
+            {
+
+
+                res = res.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
+
+            }
+
             var svar = new SingelViewModel
             {
                 ParkedVehicle = new ParkedViewModel
@@ -654,12 +771,14 @@ namespace Garage_2._0_MPT.Models
         {
             List<Member> Members = await _context.Members.ToListAsync();
             var id = userManager.GetUserId(User);
-            var curruser = await userManager.FindByIdAsync(id);
-            var role = curruser.Role;
+            var role = await GetRole(id);
+            var memberid = await GetMemberid(id);
+            memberid = memberid ?? -1;
+
 
             if (role != "Admin")
             {
-                Members = Members.Where(v => v.Id == curruser.MemberId).ToList();
+                Members = Members.Where(v => v.Id == memberid.Value).ToList();
 
             }
 
@@ -909,13 +1028,14 @@ namespace Garage_2._0_MPT.Models
         }
         private async Task<ParkedViewModel[]> AddTimeAndPrice(bool includeparkedout = false)
         {
-            var res =  _context.Vehicles
+            var res =  await _context.Vehicles
                 .Include(v => v.ParkedVehicles)
                 .Include(v => v.VehicleTyp)
                 .Include(v => v.Member)
                 .Where(v => (includeparkedout || (v.ParkedVehicles != null && v.ParkedVehicles.Any(pw => pw.ParkOutDate == null))))
+                .ToArrayAsync();
 
-         //   var res2=res
+            var res2=res
                 .Select(x => new ParkedViewModel()
                 {
                     ParkedVehicles = (x.ParkedVehicles == null) ? null : x.ParkedVehicles.Select(pv => new SubParkedViewModel
@@ -948,11 +1068,11 @@ namespace Garage_2._0_MPT.Models
                   Member = x.Member
               });
               */
-            if (res == null)
+            if (res2 == null)
                 return null;
             else
             
-                return   res.ToArray();
+                return   res2.ToArray();
 
             //   .ToArrayAsync();
         }
@@ -960,6 +1080,16 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> SeekAndSort(string Message, string Sort = "Name", string SearchString = "")
         {
             var reta = await AddTimeAndPrice();
+            var userid = userManager.GetUserId(User);
+            var role = await GetRole(userid);
+            var memberid = await GetMemberid(userid);
+            memberid = memberid ?? -1;
+
+            if (role != "Admin")
+            {
+                reta = reta.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
+
+            }
             string txt;
             if (SearchString != "") txt = $"Serch resultat of reg nr: {SearchString}";
             else txt = $"Sorted by {Message}";
@@ -988,6 +1118,20 @@ namespace Garage_2._0_MPT.Models
         public async Task<IActionResult> Statistik()
         {
             var reta = await GetQyerydataHelper(true);
+
+            var userid = userManager.GetUserId(User);
+            var role = await GetRole(userid);
+            var memberid = await GetMemberid(userid);
+            memberid = memberid ?? -1;
+
+            if (role != "Admin")
+            {
+
+
+                reta = reta.Where(v => v.Vehicle.MemberId == memberid.Value).ToArray();
+
+            }
+
             // var reta_no = await AddTimeAndPrice();
             //   reta.Select(o => o.NumberOfWheels).Sum();
             StatViewModel stat = new StatViewModel();

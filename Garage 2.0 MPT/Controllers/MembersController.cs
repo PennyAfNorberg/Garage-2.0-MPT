@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace Garage_2._0_MPT.Controllers
 {
@@ -21,14 +22,34 @@ namespace Garage_2._0_MPT.Controllers
 
         private readonly UserManager<GarageUser> userManager;
         private readonly IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory;
+        private readonly IConfiguration configuration;
 
         public MembersController(Garage_2_0_MPTContext context,
              UserManager<GarageUser> userManager,
-            IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory)
+            IUserClaimsPrincipalFactory<GarageUser> claimsPrincipalFactory
+             , IConfiguration Configuration)
         {
             _context = context;
             this.userManager = userManager;
             this.claimsPrincipalFactory = claimsPrincipalFactory;
+            this.configuration = Configuration;
+          
+        }
+
+        private async Task<string> GetRole(string UserId)
+        {
+            var res = await _context.GarageUser.FirstOrDefaultAsync(u => u.Id == UserId);
+
+            return res?.Role;
+
+        }
+
+        private async Task<int?> GetMemberid(string UserId)
+        {
+            var res = await _context.GarageUser.FirstOrDefaultAsync(u => u.Id == UserId);
+
+            return res?.MemberId;
+
         }
 
         // GET: Members
@@ -36,15 +57,21 @@ namespace Garage_2._0_MPT.Controllers
         public async Task<IActionResult> Index()
         {
             var res = await _context.Members.ToListAsync();
+
             var id = userManager.GetUserId(User);
-            var curruser = await userManager.FindByIdAsync(id);
-            var role = curruser.Role;
+            var role = await GetRole(id);
+            var memberid = await GetMemberid(id);
+            memberid = memberid ?? -1;
 
             if (role != "Admin")
             {
-                res = res.Where(v => v.Id == curruser.MemberId).ToList();
+
+
+                res = res.Where(v => v.Id == memberid.Value).ToList();
 
             }
+
+
 
             return View(res);
         }

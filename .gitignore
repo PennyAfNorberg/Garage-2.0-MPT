@@ -261,3 +261,6 @@ __pycache__/
 *.pyc
 # tar ej med databas settings
 appsettings.json
+
+# ej heller sectrets
+Sectret.json

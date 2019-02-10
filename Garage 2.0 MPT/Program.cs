@@ -29,6 +29,13 @@ namespace Garage_2._0_MPT
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+      //      .ConfigureAppConfiguration((hostingContext, config) =>
+      //      {
+      //          config.SetBasePath(Directory.GetCurrentDirectory());
+            //    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+      //          config.AddJsonFile("Sectret.json", optional: false, reloadOnChange: false);
+            //    config.AddEnvironmentVariables();
+      //      })
                 .UseStartup<Startup>();
     }
 }
