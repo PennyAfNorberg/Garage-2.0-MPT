@@ -19,6 +19,6 @@
   </ItemGroup>
 
 
-  <ProjectExtensions><VisualStudio><UserProperties Sectret_1json__JSONSchema="http://json.schemastore.org/appsettings" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

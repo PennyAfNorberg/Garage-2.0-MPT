@@ -54,31 +54,31 @@ namespace Garage_2._0_MPT
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
             })
-    .AddEntityFrameworkStores<Garage_2_0_MPTContext>()
-    .AddDefaultTokenProviders()
-    .AddTokenProvider<EmailConfirmationTokenProvider<GarageUser>>("emailconf")
-    .AddPasswordValidator<DoesNotContainPasswordValidator<GarageUser>>();
+            .AddEntityFrameworkStores<Garage_2_0_MPTContext>()
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<EmailConfirmationTokenProvider<GarageUser>>("emailconf")
+            .AddPasswordValidator<DoesNotContainPasswordValidator<GarageUser>>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<GarageUser>,
-    GarageUserClaimsPrincipalFactory>();
+                     GarageUserClaimsPrincipalFactory>();
 
             services.Configure<DataProtectionTokenProviderOptions>(options =>
-       options.TokenLifespan = TimeSpan.FromHours(3));
+                     options.TokenLifespan = TimeSpan.FromHours(3));
             services.Configure<EmailConfirmationTokenProviderOptions>(options =>
-                options.TokenLifespan = TimeSpan.FromDays(2));
+                     options.TokenLifespan = TimeSpan.FromDays(2));
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/ParkedVehicles/Login");
-          
 
-
-           services.AddAuthentication()
-    .AddFacebook("facebook", options =>
-    {
-        options.AppId =Configuration.GetSection("facebook")["AppId"];
-        options.AppSecret = Configuration.GetSection("facebook")["AppSecret"];
-        options.SignInScheme = IdentityConstants.ExternalScheme;
-    });
-
+            if (Configuration.GetSection("facebook")["AppId"] != "" && Configuration.GetSection("facebook")["AppSecret"] != "")
+            {
+                services.AddAuthentication()
+                     .AddFacebook("facebook", options =>
+                     {
+                         options.AppId = Configuration.GetSection("facebook")["AppId"];
+                         options.AppSecret = Configuration.GetSection("facebook")["AppSecret"];
+                         options.SignInScheme = IdentityConstants.ExternalScheme;
+                     });
+            }
             //  services.AddDbContext<Garage_2_0_MPTContext>(options =>
             //         options.UseSqlServer(Configuration.GetConnectionString("Garage_2_0_MPTContext")));
 
