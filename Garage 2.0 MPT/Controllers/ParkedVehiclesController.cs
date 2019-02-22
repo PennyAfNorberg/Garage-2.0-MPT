@@ -252,7 +252,7 @@ namespace Garage_2._0_MPT.Models
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
                     var resetUrl = Url.Action("ResetPassword", "ParkedVehicles",
                         new { token = token, email = user.Email }, Request.Scheme);
-                    await SendMail(model.Email, model.Email.Substring(0, model.Email.IndexOf("@")), "Forgot password link", "CClick or open this link: " + resetUrl);
+                    await SendMail(model.Email, model.Email.Substring(0, model.Email.IndexOf("@")), "Forgot password link", "Click or open this link: " + resetUrl);
                     // System.IO.File.WriteAllText("C:\\Users\\Penny\\source\\repos\\resetLink.txt", resetUrl);
                 }
                 else
